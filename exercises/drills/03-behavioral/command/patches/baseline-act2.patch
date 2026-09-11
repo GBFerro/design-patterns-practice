@@ -1,0 +1,113 @@
+diff --git a/src/panel.ts b/src/panel.ts
+index 20ec7e5..c3d9e71 100644
+--- a/src/panel.ts
++++ b/src/panel.ts
+@@ -1,33 +1,73 @@
+ import type { ActionRecord, InstrumentPanel } from "./types.ts";
+ 
++interface Snapshot {
++  readonly focuserPosition: number;
++  readonly filterSlot: number;
++  readonly history: readonly string[];
++}
++
++interface Position {
++  readonly focuserPosition: number;
++  readonly filterSlot: number;
++}
++
++function applyEffect(position: Position, action: ActionRecord): Position {
++  switch (action.type) {
++    case "move-focuser":
++      return { ...position, focuserPosition: position.focuserPosition + action.deltaMicrons };
++    case "rotate-wheel":
++      return { ...position, filterSlot: action.toSlot };
++    case "macro":
++      return action.actions.reduce(applyEffect, position);
++  }
++}
++
++function describe(action: ActionRecord): string {
++  switch (action.type) {
++    case "move-focuser":
++      return `move-focuser(${action.deltaMicrons})`;
++    case "rotate-wheel":
++      return `rotate-wheel(${action.toSlot})`;
++    case "macro":
++      return `macro(${action.actions.map(describe).join(", ")})`;
++  }
++}
++
+ class ConcretePanel implements InstrumentPanel {
+-  private _focuserPosition = 0;
+-  private _filterSlot = 1;
+-  private readonly _history: string[] = [];
++  private states: Snapshot[] = [{ focuserPosition: 0, filterSlot: 1, history: [] }];
++  private pointer = 0;
++
++  private get current(): Snapshot {
++    return this.states[this.pointer]!;
++  }
+ 
+   get focuserPosition(): number {
+-    return this._focuserPosition;
++    return this.current.focuserPosition;
+   }
+ 
+   get filterSlot(): number {
+-    return this._filterSlot;
++    return this.current.filterSlot;
+   }
+ 
+   get history(): readonly string[] {
+-    return this._history;
++    return this.current.history;
+   }
+ 
+   run(action: ActionRecord): void {
+-    switch (action.type) {
+-      case "move-focuser":
+-        this._focuserPosition += action.deltaMicrons;
+-        this._history.push(`move-focuser(${action.deltaMicrons})`);
+-        break;
+-      case "rotate-wheel":
+-        this._filterSlot = action.toSlot;
+-        this._history.push(`rotate-wheel(${action.toSlot})`);
+-        break;
+-    }
++    const position = applyEffect(this.current, action);
++    const next: Snapshot = { ...position, history: [...this.current.history, describe(action)] };
++    this.states = [...this.states.slice(0, this.pointer + 1), next];
++    this.pointer += 1;
++  }
++
++  undo(): void {
++    if (this.pointer === 0) throw new Error("Nothing to undo.");
++    this.pointer -= 1;
++  }
++
++  redo(): void {
++    if (this.pointer === this.states.length - 1) throw new Error("Nothing to redo.");
++    this.pointer += 1;
+   }
+ }
+ 
+diff --git a/src/types.ts b/src/types.ts
+index 940fb6b..53fd6d2 100644
+--- a/src/types.ts
++++ b/src/types.ts
+@@ -1,10 +1,13 @@
+ export type ActionRecord =
+   | { readonly type: "move-focuser"; readonly deltaMicrons: number }
+-  | { readonly type: "rotate-wheel"; readonly toSlot: number };
++  | { readonly type: "rotate-wheel"; readonly toSlot: number }
++  | { readonly type: "macro"; readonly actions: readonly ActionRecord[] };
+ 
+ export interface InstrumentPanel {
+   readonly focuserPosition: number;
+   readonly filterSlot: number;
+   readonly history: readonly string[];
+   run(action: ActionRecord): void;
++  undo(): void;
++  redo(): void;
+ }

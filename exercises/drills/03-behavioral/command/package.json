@@ -1,0 +1,11 @@
+{
+  "name": "@dp/drill-command",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-command": "./solutions/command/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

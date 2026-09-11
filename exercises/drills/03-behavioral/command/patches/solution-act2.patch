@@ -1,0 +1,118 @@
+diff --git a/solutions/command/commands/factory.ts b/solutions/command/commands/factory.ts
+index 715b8ef..1185ca7 100644
+--- a/solutions/command/commands/factory.ts
++++ b/solutions/command/commands/factory.ts
+@@ -1,5 +1,6 @@
+ import type { Command } from "../command.ts";
+ import type { ActionRecord, PanelState } from "../types.ts";
++import { MacroCommand } from "./macro.ts";
+ import { MoveFocuserCommand } from "./move-focuser.ts";
+ import { RotateWheelCommand } from "./rotate-wheel.ts";
+ 
+@@ -10,5 +11,7 @@ export function toCommand(state: PanelState, action: ActionRecord): Command {
+       return new MoveFocuserCommand(state, action.deltaMicrons);
+     case "rotate-wheel":
+       return new RotateWheelCommand(state, action.toSlot);
++    case "macro":
++      return new MacroCommand(action.actions.map((sub) => toCommand(state, sub)));
+   }
+ }
+diff --git a/solutions/command/commands/macro.ts b/solutions/command/commands/macro.ts
+new file mode 100644
+index 0000000..ef0e6e6
+--- /dev/null
++++ b/solutions/command/commands/macro.ts
+@@ -0,0 +1,19 @@
++import type { Command } from "../command.ts";
++
++export class MacroCommand implements Command {
++  readonly description: string;
++
++  constructor(private readonly commands: readonly Command[]) {
++    this.description = `macro(${commands.map((command) => command.description).join(", ")})`;
++  }
++
++  execute(): void {
++    for (const command of this.commands) command.execute();
++  }
++
++  undo(): void {
++    for (let index = this.commands.length - 1; index >= 0; index -= 1) {
++      this.commands[index]!.undo();
++    }
++  }
++}
+diff --git a/solutions/command/panel.ts b/solutions/command/panel.ts
+index 785dfc9..7a09e0d 100644
+--- a/solutions/command/panel.ts
++++ b/solutions/command/panel.ts
+@@ -21,6 +21,14 @@ class ConcretePanel implements InstrumentPanel {
+   run(action: ActionRecord): void {
+     this.queue.run(toCommand(this.state, action));
+   }
++
++  undo(): void {
++    this.queue.undo();
++  }
++
++  redo(): void {
++    this.queue.redo();
++  }
+ }
+ 
+ export function createPanel(): InstrumentPanel {
+diff --git a/solutions/command/queue.ts b/solutions/command/queue.ts
+index 7cda68c..a88df8c 100644
+--- a/solutions/command/queue.ts
++++ b/solutions/command/queue.ts
+@@ -1,12 +1,29 @@
+ import type { Command } from "./command.ts";
+ 
+-/** Runs commands, and remembers what it ran. */
++/** Runs commands, remembers what it ran, and can walk that history backward
++ *  and forward. */
+ export class CommandQueue {
+   private readonly done: Command[] = [];
++  private readonly undone: Command[] = [];
+ 
+   run(command: Command): void {
+     command.execute();
+     this.done.push(command);
++    this.undone.length = 0;
++  }
++
++  undo(): void {
++    const command = this.done.pop();
++    if (command === undefined) throw new Error("Nothing to undo.");
++    command.undo();
++    this.undone.push(command);
++  }
++
++  redo(): void {
++    const command = this.undone.pop();
++    if (command === undefined) throw new Error("Nothing to redo.");
++    command.execute();
++    this.done.push(command);
+   }
+ 
+   get history(): readonly string[] {
+diff --git a/solutions/command/types.ts b/solutions/command/types.ts
+index 2ac5491..b10a0ff 100644
+--- a/solutions/command/types.ts
++++ b/solutions/command/types.ts
+@@ -5,11 +5,14 @@ export interface PanelState {
+ 
+ export type ActionRecord =
+   | { readonly type: "move-focuser"; readonly deltaMicrons: number }
+-  | { readonly type: "rotate-wheel"; readonly toSlot: number };
++  | { readonly type: "rotate-wheel"; readonly toSlot: number }
++  | { readonly type: "macro"; readonly actions: readonly ActionRecord[] };
+ 
+ export interface InstrumentPanel {
+   readonly focuserPosition: number;
+   readonly filterSlot: number;
+   readonly history: readonly string[];
+   run(action: ActionRecord): void;
++  undo(): void;
++  redo(): void;
+ }

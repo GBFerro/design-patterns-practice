@@ -50,7 +50,7 @@ alone, and is marked as a stretch exercise.
 | Pattern | Drill | Verdict | Status |
 | --- | --- | --- | --- |
 | Chain of Responsibility | — | `—` | ⬜ |
-| Command | — | `—` | ⬜ |
+| Command | [`drill-command`](../exercises/drills/03-behavioral/command/) | `essential` | ✅ |
 | Interpreter | — | `—` | ⬜ |
 | Iterator | — | `—` | ⬜ |
 | Mediator | — | `—` | ⬜ |
@@ -63,6 +63,6 @@ alone, and is marked as a stretch exercise.
 
 ---
 
-_3 of 23 drills written._
+_4 of 23 drills written._
 
-_Verdicts so far — essential: 3 · situational: 0 · niche: 0 · avoid: 0._
+_Verdicts so far — essential: 4 · situational: 0 · niche: 0 · avoid: 0._

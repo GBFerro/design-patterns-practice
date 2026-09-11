@@ -1,0 +1,41 @@
+{
+  "id": "drill-command",
+  "title": "Command",
+  "type": "drill",
+  "category": "behavioral",
+  "patterns": ["Command"],
+  "verdict": "essential",
+  "difficulty": 3,
+  "estimatedMinutes": 40,
+  "prerequisites": ["drill-strategy"],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Hollowell Observatory",
+  "subDomain": "instrument control",
+  "act2": {
+    "axis": "aligned",
+    "summary": "undo/redo, then a macro command made of commands, including a macro nested inside a macro",
+    "extensionBudget": { "maxFilesModified": 4, "maxLinesModified": 35, "maxHunks": 5 }
+  },
+  "forbidden": [
+    "switch\\s*\\(\\s*action\\.type\\s*\\)",
+    "_focuserPosition",
+    "_filterSlot"
+  ],
+  "solutions": [
+    {
+      "slug": "command",
+      "title": "Action records turned into Command objects that know how to undo themselves",
+      "absorbsAct2": true,
+      "tradeoff": "Every action becomes an object with an execute() and an undo() instead of a case in a switch. The price: two files and a factory function sit between an ActionRecord and the effect it has, for two action kinds that could have stayed a six-line switch forever if undo had never been asked for."
+    }
+  ],
+  "reviewFocus": [
+    "Does MacroCommand's undo() reverse sub-commands in the correct (reverse) order, and does a macro nested inside a macro still undo as one unit?",
+    "Is RotateWheelCommand capturing fromSlot at construction time or at execute() time - and does the walkthrough explain why that choice matters for a command sitting in a macro before it runs?",
+    "Is there still exactly one place (the factory) that knows which ActionRecord becomes which Command, or did that knowledge leak into the panel or the queue?",
+    "Is the walkthrough honest that the no-pattern baseline wins on file count and hunk count, and that lines-touched is the axis that actually tells this story?",
+    "Would a plain function-based Command (a record of two closures, execute and undo, instead of a class implementing an interface) have been a reasonable alternative here?"
+  ]
+}
