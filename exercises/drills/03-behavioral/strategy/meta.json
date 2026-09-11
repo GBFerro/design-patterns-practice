@@ -1,0 +1,40 @@
+{
+  "id": "drill-strategy",
+  "title": "Strategy",
+  "type": "drill",
+  "category": "behavioral",
+  "patterns": ["Strategy"],
+  "verdict": "essential",
+  "difficulty": 2,
+  "estimatedMinutes": 40,
+  "prerequisites": [],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Hollowell Observatory",
+  "subDomain": "scheduling policy",
+  "act2": {
+    "axis": "aligned",
+    "summary": "a fourth policy, and the policy name now arrives from a config file an operator can typo",
+    "extensionBudget": { "maxFilesModified": 1, "maxLinesModified": 3 }
+  },
+  "forbidden": [
+    "switch\\s*\\(\\s*options\\.policy",
+    "options\\.policy\\s*===\\s*\""
+  ],
+  "solutions": [
+    {
+      "slug": "strategy",
+      "title": "Policy objects behind a ranking interface",
+      "absorbsAct2": true,
+      "tradeoff": "A new policy is one new file and one line of registration. The price: reading the whole night plan now means opening the packer and one policy, and a policy can only express itself as a total ordering - a policy that needs to look at what is already scheduled does not fit the interface."
+    }
+  ],
+  "reviewFocus": [
+    "Is the packing invariant (horizon, budget, start minutes, skipped) in exactly one place, or did it get copied into the policies?",
+    "Does the strategy interface express the varying axis only - ordering - or did packing leak into it?",
+    "Are the policy names owned by one place, so the error message and the dispatch cannot drift apart?",
+    "Does the git log show small steps with a green suite between them, or one commit called 'refactor'?",
+    "Is `rank` the right name for what the policy does, and would `order`, `sort` or `choose` have been better?"
+  ]
+}

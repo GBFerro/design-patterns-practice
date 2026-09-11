@@ -1,0 +1,27 @@
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # Practising needs nothing installed. These three are the optional gates
+      # that ./dp check skips locally and that CI is here to run - in particular
+      # `tsc`, which is the one thing the zero-dependency harness cannot do.
+      - name: Install the optional toolchain
+        run: npm install --no-save typescript@^5.6.0 @types/node@^22.0.0 oxlint@^1.0.0 oxfmt@0.65.0
+
+      - name: ./dp check
+        run: ./dp check

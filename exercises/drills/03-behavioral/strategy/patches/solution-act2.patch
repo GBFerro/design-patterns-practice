@@ -1,0 +1,31 @@
+diff --git a/solutions/strategy/policies/darkest-first.ts b/solutions/strategy/policies/darkest-first.ts
+new file mode 100644
+index 0000000..c3a811b
+--- /dev/null
++++ b/solutions/strategy/policies/darkest-first.ts
+@@ -0,0 +1,9 @@
++import type { SchedulingPolicy } from "../policy.ts";
++
++/** Highest targets first: less atmosphere in the way, better seeing. */
++export const darkestFirst: SchedulingPolicy = {
++  name: "darkest-first",
++  rank(candidates) {
++    return [...candidates].sort((a, b) => b.altitudeDeg - a.altitudeDeg);
++  },
++};
+diff --git a/solutions/strategy/policies/registry.ts b/solutions/strategy/policies/registry.ts
+index 80b78f4..f68aea2 100644
+--- a/solutions/strategy/policies/registry.ts
++++ b/solutions/strategy/policies/registry.ts
+@@ -1,9 +1,10 @@
+ import type { SchedulingPolicy } from "../policy.ts";
++import { darkestFirst } from "./darkest-first.ts";
+ import { fairShare } from "./fair-share.ts";
+ import { maxScience } from "./max-science.ts";
+ import { maxTargets } from "./max-targets.ts";
+ 
+-const policies: readonly SchedulingPolicy[] = [maxTargets, maxScience, fairShare];
++const policies: readonly SchedulingPolicy[] = [maxTargets, maxScience, fairShare, darkestFirst];
+ 
+ /** The one place that knows which policies exist. */
+ export function policyNames(): readonly string[] {

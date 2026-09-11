@@ -1,0 +1,38 @@
+🌐 **English** · [🇧🇷 Português](./README.pt.md)
+
+# design-patterns-practice
+
+Hands-on TypeScript exercises for the 23 GoF design patterns. **Every exercise has two acts.**
+
+1. **Act 1** — the code is under a specific pressure. You restructure it. The suite is green before you start and green when you finish: behaviour is preserved.
+2. **Act 2** — `./dp act2 <id>` reveals a change nobody told you about. You implement it, and `./dp trade <id>` measures both sides of the bargain: what the structure cost you, and what the change cost with it and without it.
+
+A pattern is not proven by a green suite. It is proven by what the second change costs — so this repository measures that, exercise by exercise, and publishes the counterfactual next to the answer.
+
+> **Unofficial.** No connection to the authors of *Design Patterns* or to refactoring.guru. Both are prerequisites, not replaced by anything here. No text, pseudocode, illustration or example domain is taken from either.
+
+**It runs with zero install.** Node 22.6 or newer is the only requirement; the harness is Node's own test runner and its TypeScript stripping.
+
+```bash
+git clone <your fork> && cd design-patterns-practice
+./dp                      # the exercise list
+./dp start strategy       # act 1: the brief, and the suite in watch mode
+./dp act2 strategy        # act 2: the change you were not told about
+./dp trade strategy       # paid × bought, against the declared budget
+```
+
+- [The catalogue](./docs/CATALOG.md) — the 23 patterns, each with a verdict
+- [How to practise](./docs/HOW-TO-PRACTICE.md)
+- [The recommended order](./docs/PATH.md) — which is *not* the folder order
+- [What TypeScript already solved](./docs/TYPESCRIPT.md)
+- [Design notes](./docs/DESIGN.md) · [Roadmap](./docs/ROADMAP.md) · [Contributing](./CONTRIBUTING.md)
+
+## Drills — the pattern is named
+
+| Id | Pattern | Difficulty | Time | Verdict | Act 2 axis |
+| --- | --- | --- | --- | --- | --- |
+| [`drill-strategy`](./exercises/drills/03-behavioral/strategy/) | Strategy | ●●○ | ~40 min | `essential` | aligned |
+
+---
+
+_1 of 36 exercises written (23 drills · 8 choices · 5 katas)._

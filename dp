@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# The whole harness: Node's own test runner and its TypeScript stripping.
+# No install, no dependency, no lockfile.
+set -euo pipefail
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+exec node \
+  --experimental-transform-types \
+  --disable-warning=ExperimentalWarning \
+  "$HERE/scripts/dispatch.ts" "$@"

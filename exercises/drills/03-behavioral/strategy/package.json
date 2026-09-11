@@ -1,0 +1,11 @@
+{
+  "name": "@dp/drill-strategy",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-strategy": "./solutions/strategy/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "comment": "The 23 canonical GoF pattern names. Source of truth for the validator.",
+  "creational": [
+    "Factory Method",
+    "Abstract Factory",
+    "Builder",
+    "Prototype",
+    "Singleton"
+  ],
+  "structural": [
+    "Adapter",
+    "Bridge",
+    "Composite",
+    "Decorator",
+    "Facade",
+    "Flyweight",
+    "Proxy"
+  ],
+  "behavioral": [
+    "Chain of Responsibility",
+    "Command",
+    "Interpreter",
+    "Iterator",
+    "Mediator",
+    "Memento",
+    "Observer",
+    "State",
+    "Strategy",
+    "Template Method",
+    "Visitor"
+  ],
+  "notInRefactoringGuru": ["Interpreter"]
+}

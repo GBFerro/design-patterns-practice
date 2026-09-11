@@ -1,0 +1,47 @@
+diff --git a/src/scheduling.ts b/src/scheduling.ts
+index 03175d3..141c068 100644
+--- a/src/scheduling.ts
++++ b/src/scheduling.ts
+@@ -1,6 +1,6 @@
+ import type { NightPlan, ObservationRequest, PlanEntry, PlanOptions } from "./types.ts";
+ 
+-const KNOWN_POLICIES = ["max-targets", "max-science", "fair-share"];
++const KNOWN_POLICIES = ["max-targets", "max-science", "fair-share", "darkest-first"];
+ 
+ export function policyNames(): readonly string[] {
+   return KNOWN_POLICIES;
+@@ -13,7 +13,7 @@ export function planNight(
+   if (!KNOWN_POLICIES.includes(options.policy)) {
+     throw new Error(
+       `Unknown scheduling policy "${options.policy}". ` +
+-        `Available: max-targets, max-science, fair-share.`,
++        `Available: max-targets, max-science, fair-share, darkest-first.`,
+     );
+   }
+ 
+@@ -91,6 +91,25 @@ export function planNight(
+       }
+       break;
+     }
++
++    // Highest targets first: less atmosphere in the way, better seeing.
++    case "darkest-first": {
++      const queue = submitted
++        .filter((request) => request.altitudeDeg >= 20)
++        .slice()
++        .sort((a, b) => b.altitudeDeg - a.altitudeDeg);
++      for (const request of queue) {
++        if (usedMinutes + request.minutes > options.budgetMinutes) continue;
++        entries.push({
++          requestId: request.id,
++          targetName: request.targetName,
++          startsAtMinute: usedMinutes,
++          minutes: request.minutes,
++        });
++        usedMinutes += request.minutes;
++      }
++      break;
++    }
+   }
+ 
+   const scheduled = new Set(entries.map((entry) => entry.requestId));
