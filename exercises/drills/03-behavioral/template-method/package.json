@@ -1,0 +1,11 @@
+{
+  "name": "@dp/drill-template-method",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-template-method": "./solutions/template-method/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

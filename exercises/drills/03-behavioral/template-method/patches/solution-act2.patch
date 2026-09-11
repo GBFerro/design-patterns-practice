@@ -1,0 +1,75 @@
+diff --git a/solutions/template-method/instruments/guide-camera.ts b/solutions/template-method/instruments/guide-camera.ts
+new file mode 100644
+index 0000000..c0803d9
+--- /dev/null
++++ b/solutions/template-method/instruments/guide-camera.ts
+@@ -0,0 +1,21 @@
++import type { InstrumentHooks } from "../pipeline.ts";
++
++const PORT = "usb-gdc-4";
++
++/** An uncooled finder camera used only to hold lock between exposures. No
++ *  reference frame exists for it, so it does not calibrate at all. */
++export const guideCamera: InstrumentHooks = {
++  name: "guide-camera",
++  connect() {
++    return { port: PORT };
++  },
++  capture(_connection, _calibration, _target) {
++    return { frames: 60, exposureSeconds: 0.5 };
++  },
++  download(capture) {
++    return { bytes: capture.frames * 400_000 };
++  },
++  disconnect() {
++    // Nothing to park; the sensor just stops reading.
++  },
++};
+diff --git a/solutions/template-method/instruments/registry.ts b/solutions/template-method/instruments/registry.ts
+index bd371fc..3599cc9 100644
+--- a/solutions/template-method/instruments/registry.ts
++++ b/solutions/template-method/instruments/registry.ts
+@@ -1,9 +1,15 @@
+ import type { InstrumentHooks } from "../pipeline.ts";
++import { guideCamera } from "./guide-camera.ts";
+ import { spectrograph } from "./spectrograph.ts";
+ import { thermalImager } from "./thermal-imager.ts";
+ import { wideFieldCamera } from "./wide-field-camera.ts";
+ 
+-const instruments: readonly InstrumentHooks[] = [wideFieldCamera, spectrograph, thermalImager];
++const instruments: readonly InstrumentHooks[] = [
++  wideFieldCamera,
++  spectrograph,
++  thermalImager,
++  guideCamera,
++];
+ 
+ export function findInstrument(name: string): InstrumentHooks {
+   const instrument = instruments.find((candidate) => candidate.name === name);
+diff --git a/solutions/template-method/pipeline.ts b/solutions/template-method/pipeline.ts
+index f709196..5196076 100644
+--- a/solutions/template-method/pipeline.ts
++++ b/solutions/template-method/pipeline.ts
+@@ -8,8 +8,9 @@ import type { CalibrationLog, CaptureLog, ConnectionLog, DownloadLog, NightLog,
+ export interface InstrumentHooks {
+   readonly name: string;
+   connect(): ConnectionLog;
+-  calibrate(connection: ConnectionLog): CalibrationLog;
+-  capture(connection: ConnectionLog, calibration: CalibrationLog, target: string): CaptureLog;
++  /** Omit when the instrument has nothing to calibrate against. */
++  calibrate?(connection: ConnectionLog): CalibrationLog;
++  capture(connection: ConnectionLog, calibration: CalibrationLog | undefined, target: string): CaptureLog;
+   download(capture: CaptureLog): DownloadLog;
+   disconnect(connection: ConnectionLog): void;
+ }
+@@ -20,8 +21,8 @@ export function runPipeline(hooks: InstrumentHooks, target: string): NightLog {
+   const connection = hooks.connect();
+   steps.push({ step: "connect", detail: connection.port });
+ 
+-  const calibration = hooks.calibrate(connection);
+-  steps.push({ step: "calibrate", detail: calibration.reference });
++  const calibration = hooks.calibrate?.(connection);
++  if (calibration !== undefined) steps.push({ step: "calibrate", detail: calibration.reference });
+ 
+   const capture = hooks.capture(connection, calibration, target);
+   steps.push({ step: "capture", detail: `${capture.frames} frames @ ${capture.exposureSeconds}s` });

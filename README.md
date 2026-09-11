@@ -32,7 +32,8 @@ git clone <your fork> && cd design-patterns-practice
 | Id | Pattern | Difficulty | Time | Verdict | Act 2 axis |
 | --- | --- | --- | --- | --- | --- |
 | [`drill-strategy`](./exercises/drills/03-behavioral/strategy/) | Strategy | ●●○ | ~40 min | `essential` | aligned |
+| [`drill-template-method`](./exercises/drills/03-behavioral/template-method/) | Template Method | ●●○ | ~35 min | `essential` | ⚠ orthogonal |
 
 ---
 
-_1 of 36 exercises written (23 drills · 8 choices · 5 katas)._
+_2 of 36 exercises written (23 drills · 8 choices · 5 katas)._

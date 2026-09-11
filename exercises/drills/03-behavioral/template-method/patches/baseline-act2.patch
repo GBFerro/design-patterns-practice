@@ -1,0 +1,48 @@
+diff --git a/src/pipelines.ts b/src/pipelines.ts
+index 54ef925..b8fa719 100644
+--- a/src/pipelines.ts
++++ b/src/pipelines.ts
+@@ -63,6 +63,25 @@ function runThermalImagerNight(target: string): NightLog {
+   return { instrument: "thermal-imager", target, steps };
+ }
+ 
++
++function runGuideCameraNight(target: string): NightLog {
++  const steps: StepLog[] = [];
++
++  const port = "usb-gdc-4";
++  steps.push({ step: "connect", detail: port });
++
++  const frames = 60;
++  const exposureSeconds = 0.5;
++  steps.push({ step: "capture", detail: `${frames} frames @ ${exposureSeconds}s` });
++
++  const bytes = frames * 400_000;
++  steps.push({ step: "download", detail: `${bytes} bytes` });
++
++  steps.push({ step: "disconnect", detail: port });
++
++  return { instrument: "guide-camera", target, steps };
++}
++
+ export function runNight(instrument: string, target: string): NightLog {
+   switch (instrument) {
+     case "wide-field-camera":
+@@ -71,13 +90,15 @@ export function runNight(instrument: string, target: string): NightLog {
+       return runSpectrographNight(target);
+     case "thermal-imager":
+       return runThermalImagerNight(target);
++    case "guide-camera":
++      return runGuideCameraNight(target);
+     default:
+       throw new Error(
+-        `Unknown instrument "${instrument}". Available: wide-field-camera, spectrograph, thermal-imager.`,
++        `Unknown instrument "${instrument}". Available: wide-field-camera, spectrograph, thermal-imager, guide-camera.`,
+       );
+   }
+ }
+ 
+ export function instrumentNames(): readonly string[] {
+-  return ["wide-field-camera", "spectrograph", "thermal-imager"];
++  return ["wide-field-camera", "spectrograph", "thermal-imager", "guide-camera"];
+ }

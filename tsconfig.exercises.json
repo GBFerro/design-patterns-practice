@@ -1,7 +1,7 @@
 {
+  "//": "The exercise code (src/ and solutions/) imports nothing from Node, so it typechecks with no @types/node installed. This is the cheap gate this repo can run without any devDependency; tsconfig.json is the full one that also covers tests/ and scripts/.",
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "comment:types": "The exercise code imports nothing from Node, so it typechecks with no @types/node installed. This is the cheap gate; tsconfig.json is the full one.",
     "types": []
   },
   "include": ["exercises/**/src/**/*.ts", "exercises/**/solutions/**/*.ts"]

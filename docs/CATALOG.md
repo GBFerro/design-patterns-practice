@@ -58,11 +58,11 @@ alone, and is marked as a stretch exercise.
 | Observer | — | `—` | ⬜ |
 | State | — | `—` | ⬜ |
 | Strategy | [`drill-strategy`](../exercises/drills/03-behavioral/strategy/) | `essential` | ✅ |
-| Template Method | — | `—` | ⬜ |
+| Template Method | [`drill-template-method`](../exercises/drills/03-behavioral/template-method/) | `essential` | ✅ |
 | Visitor | — | `—` | ⬜ |
 
 ---
 
-_1 of 23 drills written._
+_2 of 23 drills written._
 
-_Verdicts so far — essential: 1 · situational: 0 · niche: 0 · avoid: 0._
+_Verdicts so far — essential: 2 · situational: 0 · niche: 0 · avoid: 0._

@@ -1,0 +1,41 @@
+{
+  "id": "drill-template-method",
+  "title": "Template Method",
+  "type": "drill",
+  "category": "behavioral",
+  "patterns": ["Template Method"],
+  "verdict": "essential",
+  "difficulty": 2,
+  "estimatedMinutes": 35,
+  "prerequisites": ["drill-strategy"],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Hollowell Observatory",
+  "subDomain": "nightly pipeline",
+  "act2": {
+    "axis": "orthogonal",
+    "summary": "a fourth instrument that must SKIP the calibrate step entirely, not run it as a no-op",
+    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 17, "maxHunks": 3 }
+  },
+  "forbidden": [
+    "function runWideFieldCameraNight",
+    "function runSpectrographNight",
+    "function runThermalImagerNight"
+  ],
+  "solutions": [
+    {
+      "slug": "template-method",
+      "title": "A shared pipeline function taking instrument hooks",
+      "absorbsAct2": true,
+      "tradeoff": "A new instrument that fits the five fixed steps is one new file. A new instrument that needs to skip one of the five steps is not: it means reopening the shared pipeline and the hooks interface, which is exactly the file the pattern exists to stop you from reopening."
+    }
+  ],
+  "reviewFocus": [
+    "Is there still exactly one place that knows the order of the five steps, after the guide camera was added?",
+    "Did making calibrate optional quietly make it meaningless to skip for the wrong reason in a future instrument (a lazy implementer just omitting it)?",
+    "Is the walkthrough honest that this route did NOT clearly win against the no-pattern baseline - fewer files but fewer hunks on one side, more total lines on the other?",
+    "Would a stage-list design (each instrument declares an ordered array of named steps) have been a better bet from the start, given this axis was foreseeable?",
+    "Does the git log show the skeleton being extracted before the instruments were split into files, or the other way around?"
+  ]
+}

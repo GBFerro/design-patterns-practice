@@ -111,26 +111,47 @@ export function run(argv: readonly string[]): number {
     ok = false;
   }
 
+  const orthogonal = meta.act2.axis === "orthogonal";
   const baselinePatch = join(exercise.dir, BASELINE_PATCH);
   if (existsSync(baselinePatch)) {
     const summary = summarisePatchFile(baselinePatch);
     const verdict = checkBudget(summary, budget);
     const proved = provePatch(exercise, BASELINE_PATCH, undefined);
-    // The counterfactual is supposed to BLOW the budget. If it fits, the pattern
-    // bought nothing here and the exercise is making a claim it cannot support.
-    ok = ok && !verdict.withinBudget && proved;
-    line(
-      `  ${verdict.withinBudget ? CROSS : TICK} ${bold("sem o pattern")}   ${describe(summary)}`,
-    );
-    line(
-      `      ${proved ? TICK : CROSS} o ato 2 também passa sem o pattern${proved ? " (tinha de passar: o requisito é o mesmo)" : " — o contrafactual está quebrado"}`,
-    );
-    if (verdict.withinBudget) {
+    if (orthogonal) {
+      // Orthogonal exercises make no claim about which route is cheaper - that is
+      // the point. Only the counterfactual's honesty (it compiles, it passes the
+      // same requirement) is asserted.
+      ok = ok && proved;
+      line(`  ${dim("~")} ${bold("sem o pattern")}   ${describe(summary)}`);
       line(
-        `      ${CROSS} ${bold("o contrafactual caberia no orçamento")} — este exercício não prova nada`,
+        `      ${proved ? TICK : CROSS} o ato 2 também passa sem o pattern${proved ? "" : " — o contrafactual está quebrado"}`,
+      );
+      line(
+        dim(
+          `      eixo orthogonal: a comparação não é sobre qual rota é mais barata — ${
+            verdict.withinBudget
+              ? "aqui o contrafactual COUBE no orçamento do pattern"
+              : "aqui o contrafactual estourou o orçamento do pattern"
+          }, e os dois resultados são informativos.`,
+        ),
       );
     } else {
-      line(`      ${dim(`estoura por: ${verdict.reasons.join("; ")}`)}`);
+      // The counterfactual is supposed to BLOW the budget. If it fits, the pattern
+      // bought nothing here and the exercise is making a claim it cannot support.
+      ok = ok && !verdict.withinBudget && proved;
+      line(
+        `  ${verdict.withinBudget ? CROSS : TICK} ${bold("sem o pattern")}   ${describe(summary)}`,
+      );
+      line(
+        `      ${proved ? TICK : CROSS} o ato 2 também passa sem o pattern${proved ? " (tinha de passar: o requisito é o mesmo)" : " — o contrafactual está quebrado"}`,
+      );
+      if (verdict.withinBudget) {
+        line(
+          `      ${CROSS} ${bold("o contrafactual caberia no orçamento")} — este exercício não prova nada`,
+        );
+      } else {
+        line(`      ${dim(`estoura por: ${verdict.reasons.join("; ")}`)}`);
+      }
     }
   } else {
     line(`  ${dim("sem patches/baseline-act2.patch — o contrafactual não foi medido")}`);
