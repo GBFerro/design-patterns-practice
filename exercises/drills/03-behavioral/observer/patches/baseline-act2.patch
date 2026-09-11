@@ -1,0 +1,79 @@
+diff --git a/src/center.ts b/src/center.ts
+index eb5b7e6..d6c0ff5 100644
+--- a/src/center.ts
++++ b/src/center.ts
+@@ -1,4 +1,4 @@
+-import type { Alert, AlertCenter } from "./types.ts";
++import type { Alert, AlertCenter, AlertObserver } from "./types.ts";
+ import { describeAlert } from "./types.ts";
+ 
+ class ControlRoomLog {
+@@ -55,12 +55,45 @@ class ConcreteAlertCenter implements AlertCenter {
+   private readonly pager = new OperatorPager();
+   private readonly dome = new DomeGuard();
+   private readonly report = new NightReport();
++  private readonly subscribers: AlertObserver[] = [];
+ 
+   publish(alert: Alert): void {
+-    this.log.record(alert);
+-    this.pager.page(alert);
+-    this.dome.respond(alert);
+-    this.report.append(alert);
++    try {
++      this.log.record(alert);
++    } catch {
++      // A broken subscriber is that subscriber's problem, not everyone else's.
++    }
++    try {
++      this.pager.page(alert);
++    } catch {
++      // A broken subscriber is that subscriber's problem, not everyone else's.
++    }
++    try {
++      this.dome.respond(alert);
++    } catch {
++      // A broken subscriber is that subscriber's problem, not everyone else's.
++    }
++    try {
++      this.report.append(alert);
++    } catch {
++      // A broken subscriber is that subscriber's problem, not everyone else's.
++    }
++    for (const subscriber of this.subscribers) {
++      try {
++        subscriber.onAlert(alert);
++      } catch {
++        // A broken subscriber is that subscriber's problem, not everyone else's.
++      }
++    }
++  }
++
++  subscribe(observer: AlertObserver): void {
++    this.subscribers.push(observer);
++  }
++
++  unsubscribe(observer: AlertObserver): void {
++    const index = this.subscribers.indexOf(observer);
++    if (index !== -1) this.subscribers.splice(index, 1);
+   }
+ 
+   get logEntries(): readonly string[] {
+diff --git a/src/types.ts b/src/types.ts
+index 99a06f0..be29e7b 100644
+--- a/src/types.ts
++++ b/src/types.ts
+@@ -11,8 +11,14 @@ export function describeAlert(alert: Alert): string {
+   }
+ }
+ 
++export interface AlertObserver {
++  onAlert(alert: Alert): void;
++}
++
+ export interface AlertCenter {
+   publish(alert: Alert): void;
++  subscribe(observer: AlertObserver): void;
++  unsubscribe(observer: AlertObserver): void;
+   readonly logEntries: readonly string[];
+   readonly pagerEntries: readonly string[];
+   readonly domeEntries: readonly string[];

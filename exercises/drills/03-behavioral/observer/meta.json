@@ -1,0 +1,39 @@
+{
+  "id": "drill-observer",
+  "title": "Observer",
+  "type": "drill",
+  "category": "behavioral",
+  "patterns": ["Observer"],
+  "verdict": "essential",
+  "difficulty": 2,
+  "estimatedMinutes": 35,
+  "prerequisites": ["drill-strategy"],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Hollowell Observatory",
+  "subDomain": "alert distribution",
+  "act2": {
+    "axis": "aligned",
+    "summary": "a fifth, unforeseen consumer that can subscribe and unsubscribe at runtime, and one that throws without taking the others down",
+    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 19, "maxHunks": 2 }
+  },
+  "forbidden": [
+    "this\\.log\\.record\\(alert\\);\\s*\\n\\s*this\\.pager\\.page"
+  ],
+  "solutions": [
+    {
+      "slug": "observer",
+      "title": "Built-in consumers as observers, behind one notify loop",
+      "absorbsAct2": true,
+      "tradeoff": "Every consumer speaks one method (onAlert) instead of its own domain-flavored name (record/page/respond/append), and a new consumer can attach at runtime instead of being a name in the center's own file. The price: reading 'what does publishing an alert actually do' now means finding the loop and then finding every subscriber, instead of reading four lines top to bottom."
+    }
+  ],
+  "reviewFocus": [
+    "Does subscribe()/unsubscribe() touch anything about the four built-in consumers, or do they keep working exactly as they did in act 1?",
+    "Is the try/catch around the loop doing anything besides swallowing the error - should a broken observer be logged or reported anywhere, or is silent containment the right call here?",
+    "Would unsubscribe() misbehave if the same observer were subscribed twice (indexOf + splice only removes the first occurrence) - and does any test actually cover that?",
+    "Is the walkthrough honest about why DomeGuard ignoring seeing alerts is a decision the consumer makes for itself, not something the center decides on its behalf?",
+    "Does the git log show subscribe/unsubscribe and the try/catch landing as one focused step, or mixed in with unrelated cleanup?"
+  ]
+}

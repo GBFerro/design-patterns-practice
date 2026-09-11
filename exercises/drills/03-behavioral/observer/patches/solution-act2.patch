@@ -1,0 +1,41 @@
+diff --git a/solutions/observer/center.ts b/solutions/observer/center.ts
+index 3b91cc6..af2019b 100644
+--- a/solutions/observer/center.ts
++++ b/solutions/observer/center.ts
+@@ -12,7 +12,22 @@ class ConcreteAlertCenter implements AlertCenter {
+   private readonly observers: AlertObserver[] = [this.log, this.pager, this.dome, this.report];
+ 
+   publish(alert: Alert): void {
+-    for (const observer of this.observers) observer.onAlert(alert);
++    for (const observer of this.observers) {
++      try {
++        observer.onAlert(alert);
++      } catch {
++        // A broken subscriber is that subscriber's problem, not everyone else's.
++      }
++    }
++  }
++
++  subscribe(observer: AlertObserver): void {
++    this.observers.push(observer);
++  }
++
++  unsubscribe(observer: AlertObserver): void {
++    const index = this.observers.indexOf(observer);
++    if (index !== -1) this.observers.splice(index, 1);
+   }
+ 
+   get logEntries(): readonly string[] {
+diff --git a/solutions/observer/types.ts b/solutions/observer/types.ts
+index cf262b3..cfba9a1 100644
+--- a/solutions/observer/types.ts
++++ b/solutions/observer/types.ts
+@@ -19,6 +19,8 @@ export interface AlertObserver {
+ 
+ export interface AlertCenter {
+   publish(alert: Alert): void;
++  subscribe(observer: AlertObserver): void;
++  unsubscribe(observer: AlertObserver): void;
+   readonly logEntries: readonly string[];
+   readonly pagerEntries: readonly string[];
+   readonly domeEntries: readonly string[];
