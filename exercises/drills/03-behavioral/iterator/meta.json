@@ -1,0 +1,37 @@
+{
+  "id": "drill-iterator",
+  "title": "Iterator",
+  "type": "drill",
+  "category": "behavioral",
+  "patterns": ["Iterator"],
+  "verdict": "essential",
+  "difficulty": 2,
+  "estimatedMinutes": 30,
+  "prerequisites": ["drill-strategy"],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Hollowell Observatory",
+  "subDomain": "observation log",
+  "act2": {
+    "axis": "aligned",
+    "summary": "a reverse traversal (most recent first, reused by three reports) and a bounded forward scan that must stop once it has enough matches, both reported against how many entries were actually visited",
+    "extensionBudget": { "maxFilesModified": 3, "maxLinesModified": 74, "maxHunks": 4 }
+  },
+  "forbidden": ["\\.entryAt\\(", "\\.entriesInPage\\(", "for \\(let page = 0"],
+  "solutions": [
+    {
+      "slug": "iterator",
+      "title": "The log is iterable; nothing outside it does page arithmetic",
+      "absorbsAct2": true,
+      "tradeoff": "Every report reads as a plain traversal instead of a page/offset double loop. The price: ObservationLog now owns the one and only place that walks pages, so a genuinely new traversal order still means opening that file, not just the caller's."
+    }
+  ],
+  "reviewFocus": [
+    "Do allMessages/lastEntries/findFirst still know pages exist after the refactor, or do they only see entries?",
+    "Does the new reverse traversal reuse ObservationLog's own page structure, or does a caller reconstruct paging arithmetic by hand?",
+    "Is `scanned` in the act 2 functions counting real work (entries actually visited), or is it decorative on top of an eager implementation?",
+    "Is the walkthrough honest about how close this act 2's numbers are between the two routes, and about why (see ACT2.md)?",
+    "Does `[Symbol.iterator]` get used directly (for...of, spread), or does the solution route reintroduce a hasNext()/next() protocol GoF itself only describes as one option?"
+  ]
+}

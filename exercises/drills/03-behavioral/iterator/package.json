@@ -1,0 +1,11 @@
+{
+  "name": "@dp/drill-iterator",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-iterator": "./solutions/iterator/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

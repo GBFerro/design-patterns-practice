@@ -1,0 +1,106 @@
+diff --git a/solutions/iterator/index.ts b/solutions/iterator/index.ts
+index 04a51bb..dc4a429 100644
+--- a/solutions/iterator/index.ts
++++ b/solutions/iterator/index.ts
+@@ -1,3 +1,10 @@
+ export { ObservationLog } from "./log.ts";
+-export { allMessages, findFirst, lastEntries } from "./reports.ts";
++export {
++  allMessages,
++  findFirst,
++  firstMatches,
++  lastEntries,
++  mostRecentMatch,
++  recentMessages,
++} from "./reports.ts";
+ export type { LogEntry } from "./types.ts";
+diff --git a/solutions/iterator/log.ts b/solutions/iterator/log.ts
+index fd2e95e..79d9fed 100644
+--- a/solutions/iterator/log.ts
++++ b/solutions/iterator/log.ts
+@@ -24,4 +24,16 @@ export class ObservationLog implements Iterable<LogEntry> {
+       }
+     }
+   }
++
++  /** The same entries, most recent first. Walked back-to-front: `o` starts
++   *  at `page.length - 1`, not `page.length`, or this reads one slot past
++   *  the page on every call - the one place that boundary has to be right. */
++  *reversed(): Generator<LogEntry> {
++    for (let p = this.pages.length - 1; p >= 0; p--) {
++      const page = this.pages[p]!;
++      for (let o = page.length - 1; o >= 0; o--) {
++        yield page[o]!;
++      }
++    }
++  }
+ }
+diff --git a/solutions/iterator/reports.ts b/solutions/iterator/reports.ts
+index 0edbce6..858d66a 100644
+--- a/solutions/iterator/reports.ts
++++ b/solutions/iterator/reports.ts
+@@ -6,10 +6,16 @@ export function allMessages(log: ObservationLog): string[] {
+   return [...log].map((entry) => entry.message);
+ }
+ 
+-/** The most recent `count` entries, oldest of that group first. */
++/** The most recent `count` entries, oldest of that group first. Walks from
++ *  the tail, not the head, so a large `count` on a small log is the only
++ *  case that pays for the whole log. */
+ export function lastEntries(log: ObservationLog, count: number): LogEntry[] {
+-  const all = [...log];
+-  return all.slice(Math.max(0, all.length - count));
++  const recent: LogEntry[] = [];
++  for (const entry of log.reversed()) {
++    recent.push(entry);
++    if (recent.length === count) break;
++  }
++  return recent.reverse();
+ }
+ 
+ /** The first entry whose message contains `needle`, or undefined if none does. */
+@@ -19,3 +25,44 @@ export function findFirst(log: ObservationLog, needle: string): LogEntry | undef
+   }
+   return undefined;
+ }
++
++/** The most recent entry whose message contains `needle`, or undefined if
++ *  none does - searched from the end, not the start. */
++export function mostRecentMatch(log: ObservationLog, needle: string): LogEntry | undefined {
++  for (const entry of log.reversed()) {
++    if (entry.message.includes(needle)) return entry;
++  }
++  return undefined;
++}
++
++/** The `count` most recent messages, most recent first, without walking the
++ *  log from the start. */
++export function recentMessages(log: ObservationLog, count: number): { messages: string[]; scanned: number } {
++  const messages: string[] = [];
++  let scanned = 0;
++  for (const entry of log.reversed()) {
++    scanned++;
++    messages.push(entry.message);
++    if (messages.length === count) break;
++  }
++  return { messages, scanned };
++}
++
++/** Up to `limit` entries whose message contains `needle`, in the order they
++ *  occurred, stopping as soon as `limit` is reached. */
++export function firstMatches(
++  log: ObservationLog,
++  needle: string,
++  limit: number,
++): { entries: LogEntry[]; scanned: number } {
++  const entries: LogEntry[] = [];
++  let scanned = 0;
++  for (const entry of log) {
++    scanned++;
++    if (entry.message.includes(needle)) {
++      entries.push(entry);
++      if (entries.length === limit) break;
++    }
++  }
++  return { entries, scanned };
++}
