@@ -1,0 +1,11 @@
+{
+  "name": "@dp/drill-observer",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-observer": "./solutions/observer/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}
