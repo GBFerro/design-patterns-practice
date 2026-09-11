@@ -35,6 +35,7 @@ git clone <seu fork> && cd design-patterns-practice
 | [`drill-command`](./exercises/drills/03-behavioral/command/) | Command | ●●● | ~40 min | `essential` | aligned |
 | [`drill-iterator`](./exercises/drills/03-behavioral/iterator/) | Iterator | ●●○ | ~30 min | `essential` | aligned |
 | [`drill-mediator`](./exercises/drills/03-behavioral/mediator/) | Mediator | ●●● | ~45 min | `situational` | aligned |
+| [`drill-memento`](./exercises/drills/03-behavioral/memento/) | Memento | ●●○ | ~30 min | `situational` | aligned |
 | [`drill-observer`](./exercises/drills/03-behavioral/observer/) | Observer | ●●○ | ~35 min | `essential` | aligned |
 | [`drill-state`](./exercises/drills/03-behavioral/state/) | State | ●●● | ~45 min | `essential` | aligned |
 | [`drill-strategy`](./exercises/drills/03-behavioral/strategy/) | Strategy | ●●○ | ~40 min | `essential` | aligned |
@@ -43,4 +44,4 @@ git clone <seu fork> && cd design-patterns-practice
 
 ---
 
-_9 de 36 exercícios escritos (23 drills · 8 choices · 5 katas)._
+_10 de 36 exercícios escritos (23 drills · 8 choices · 5 katas)._

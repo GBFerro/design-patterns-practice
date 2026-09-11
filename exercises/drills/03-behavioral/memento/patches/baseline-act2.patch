@@ -1,0 +1,49 @@
+diff --git a/src/history.ts b/src/history.ts
+index a387099..dd025e8 100644
+--- a/src/history.ts
++++ b/src/history.ts
+@@ -5,6 +5,7 @@ interface Checkpoint {
+   filterName: string;
+   exposureSeconds: number;
+   binning: string;
++  ditherPattern: string;
+ }
+ 
+ /** Lets an operator save the current setup and undo back to it later. */
+@@ -17,6 +18,7 @@ export class SetupHistory {
+       filterName: setup.filterName,
+       exposureSeconds: setup.exposureSeconds,
+       binning: setup.binning,
++      ditherPattern: setup.ditherPattern,
+     });
+   }
+ 
+@@ -29,6 +31,7 @@ export class SetupHistory {
+     setup.filterName = checkpoint.filterName;
+     setup.exposureSeconds = checkpoint.exposureSeconds;
+     setup.binning = checkpoint.binning;
++    setup.ditherPattern = checkpoint.ditherPattern;
+     return true;
+   }
+ 
+diff --git a/src/setup.ts b/src/setup.ts
+index 97aa7eb..1a33298 100644
+--- a/src/setup.ts
++++ b/src/setup.ts
+@@ -4,6 +4,7 @@ export class ExposureSetup {
+   filterName = "clear";
+   exposureSeconds = 60;
+   binning = "1x1";
++  ditherPattern = "none";
+ 
+   setInstrument(name: string): void {
+     this.instrumentName = name;
+@@ -20,4 +21,8 @@ export class ExposureSetup {
+   setBinning(binning: string): void {
+     this.binning = binning;
+   }
++
++  setDitherPattern(pattern: string): void {
++    this.ditherPattern = pattern;
++  }
+ }

@@ -1,0 +1,37 @@
+{
+  "id": "drill-memento",
+  "title": "Memento",
+  "type": "drill",
+  "category": "behavioral",
+  "patterns": ["Memento"],
+  "verdict": "situational",
+  "difficulty": 2,
+  "estimatedMinutes": 30,
+  "prerequisites": ["drill-strategy"],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Hollowell Observatory",
+  "subDomain": "exposure setup",
+  "act2": {
+    "axis": "aligned",
+    "summary": "a field added to the saved state, with zero edits to the caretaker",
+    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 9, "maxHunks": 4 }
+  },
+  "forbidden": ["setup\\.instrumentName\\s*=", "setup\\.filterName\\s*=", "setup\\.exposureSeconds\\s*=", "setup\\.binning\\s*="],
+  "solutions": [
+    {
+      "slug": "memento",
+      "title": "ExposureSetup hands out opaque mementos; the history never reads a field",
+      "absorbsAct2": true,
+      "tradeoff": "The caretaker cannot leak what it cannot see - it literally cannot compile code that reads a field off a memento. The price: every field the setup wants remembered has to be threaded through createMemento and restore by hand; the memento does not update itself."
+    }
+  ],
+  "reviewFocus": [
+    "Does SetupHistory reference any of ExposureSetup's field names anywhere, or only ExposureMemento as an opaque type?",
+    "Is ConcreteExposureMemento's constructor the only place a memento's fields are set, and setup.ts the only file that imports it by name?",
+    "Does adding ditherPattern touch history.ts at all, on the pattern route?",
+    "Is the `as ConcreteExposureMemento` cast in restore() actually safe, and does the walkthrough say why (only ExposureSetup ever constructs one)?",
+    "Would a WeakMap-backed opaque token (real runtime privacy, not just a type-level cast) have been worth the extra complexity here - and if not here, when?"
+  ]
+}

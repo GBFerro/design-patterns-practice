@@ -1,0 +1,44 @@
+diff --git a/solutions/memento/memento.ts b/solutions/memento/memento.ts
+index d73a140..4876a4c 100644
+--- a/solutions/memento/memento.ts
++++ b/solutions/memento/memento.ts
+@@ -10,5 +10,6 @@ export class ConcreteExposureMemento implements ExposureMemento {
+     readonly filterName: string,
+     readonly exposureSeconds: number,
+     readonly binning: string,
++    readonly ditherPattern: string,
+   ) {}
+ }
+diff --git a/solutions/memento/setup.ts b/solutions/memento/setup.ts
+index b30b91a..7af12ff 100644
+--- a/solutions/memento/setup.ts
++++ b/solutions/memento/setup.ts
+@@ -7,6 +7,7 @@ export class ExposureSetup {
+   filterName = "clear";
+   exposureSeconds = 60;
+   binning = "1x1";
++  ditherPattern = "none";
+ 
+   setInstrument(name: string): void {
+     this.instrumentName = name;
+@@ -24,8 +25,12 @@ export class ExposureSetup {
+     this.binning = binning;
+   }
+ 
++  setDitherPattern(pattern: string): void {
++    this.ditherPattern = pattern;
++  }
++
+   createMemento(): ExposureMemento {
+-    return new ConcreteExposureMemento(this.instrumentName, this.filterName, this.exposureSeconds, this.binning);
++    return new ConcreteExposureMemento(this.instrumentName, this.filterName, this.exposureSeconds, this.binning, this.ditherPattern);
+   }
+ 
+   restore(memento: ExposureMemento): void {
+@@ -34,5 +39,6 @@ export class ExposureSetup {
+     this.filterName = state.filterName;
+     this.exposureSeconds = state.exposureSeconds;
+     this.binning = state.binning;
++    this.ditherPattern = state.ditherPattern;
+   }
+ }

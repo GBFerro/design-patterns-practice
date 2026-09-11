@@ -1,0 +1,11 @@
+{
+  "name": "@dp/drill-memento",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-memento": "./solutions/memento/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

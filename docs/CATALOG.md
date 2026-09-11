@@ -54,7 +54,7 @@ alone, and is marked as a stretch exercise.
 | Interpreter | — | `—` | ⬜ |
 | Iterator | [`drill-iterator`](../exercises/drills/03-behavioral/iterator/) | `essential` | ✅ |
 | Mediator | [`drill-mediator`](../exercises/drills/03-behavioral/mediator/) | `situational` | ✅ |
-| Memento | — | `—` | ⬜ |
+| Memento | [`drill-memento`](../exercises/drills/03-behavioral/memento/) | `situational` | ✅ |
 | Observer | [`drill-observer`](../exercises/drills/03-behavioral/observer/) | `essential` | ✅ |
 | State | [`drill-state`](../exercises/drills/03-behavioral/state/) | `essential` | ✅ |
 | Strategy | [`drill-strategy`](../exercises/drills/03-behavioral/strategy/) | `essential` | ✅ |
@@ -63,6 +63,6 @@ alone, and is marked as a stretch exercise.
 
 ---
 
-_9 of 23 drills written._
+_10 of 23 drills written._
 
-_Verdicts so far — essential: 6 · situational: 3 · niche: 0 · avoid: 0._
+_Verdicts so far — essential: 6 · situational: 4 · niche: 0 · avoid: 0._
