@@ -1,0 +1,37 @@
+{
+  "id": "drill-visitor",
+  "title": "Visitor",
+  "type": "drill",
+  "category": "behavioral",
+  "patterns": ["Visitor"],
+  "verdict": "situational",
+  "difficulty": 4,
+  "estimatedMinutes": 45,
+  "prerequisites": ["drill-strategy"],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Hollowell Observatory",
+  "subDomain": "reduction reports",
+  "act2": {
+    "axis": "orthogonal",
+    "summary": "a fourth report (cheap, aligned with the pattern) and then a new record kind (expensive, the pattern's known price)",
+    "extensionBudget": { "maxFilesModified": 6, "maxLinesModified": 26, "maxHunks": 11 }
+  },
+  "forbidden": ["abstract toLine\\(\\)", "abstract costSeconds\\(\\)", "abstract isAnomaly\\("],
+  "solutions": [
+    {
+      "slug": "visitor",
+      "title": "Reports become visitor classes; records only know how to accept one",
+      "absorbsAct2": true,
+      "tradeoff": "A new report is one new file and zero edits to any record class. The price is symmetric and exact: a new record kind means every existing report class gains a method, and the interface every report implements changes too."
+    }
+  ],
+  "reviewFocus": [
+    "Does the fourth report (operatorNote) touch any existing record class, or only add one new visitor?",
+    "Does the new record kind (DomeRecord) touch every existing report visitor, or does something dodge the interface change?",
+    "Is the walkthrough honest that this act 2 is not a win for the pattern overall - it is a win on one half and a real cost on the other?",
+    "Does the walkthrough name what would have absorbed the new-record-kind half at zero cost (the very shape act 1 replaced)?",
+    "Is `LogRecordVisitor<R>` generic enough that a report returning something other than string/number/boolean (e.g. an array) doesn't need its own bespoke interface?"
+  ]
+}

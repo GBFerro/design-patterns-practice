@@ -39,7 +39,8 @@ git clone <your fork> && cd design-patterns-practice
 | [`drill-state`](./exercises/drills/03-behavioral/state/) | State | ●●● | ~45 min | `essential` | aligned |
 | [`drill-strategy`](./exercises/drills/03-behavioral/strategy/) | Strategy | ●●○ | ~40 min | `essential` | aligned |
 | [`drill-template-method`](./exercises/drills/03-behavioral/template-method/) | Template Method | ●●○ | ~35 min | `essential` | ⚠ orthogonal |
+| [`drill-visitor`](./exercises/drills/03-behavioral/visitor/) | Visitor | ●●● | ~45 min | `situational` | ⚠ orthogonal |
 
 ---
 
-_8 of 36 exercises written (23 drills · 8 choices · 5 katas)._
+_9 of 36 exercises written (23 drills · 8 choices · 5 katas)._

@@ -1,0 +1,109 @@
+diff --git a/src/index.ts b/src/index.ts
+index fe8314d..ab10fcb 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -1,5 +1,6 @@
+ export { LogRecord } from "./record.ts";
++export { DomeRecord } from "./records/dome.ts";
+ export { ExposureRecord } from "./records/exposure.ts";
+ export { SeeingRecord } from "./records/seeing.ts";
+ export { WeatherRecord } from "./records/weather.ts";
+-export { costSeconds, isAnomaly, toLine } from "./reports.ts";
++export { costSeconds, isAnomaly, operatorNote, toLine } from "./reports.ts";
+diff --git a/src/record.ts b/src/record.ts
+index 09cf31a..003b849 100644
+--- a/src/record.ts
++++ b/src/record.ts
+@@ -4,4 +4,5 @@ export abstract class LogRecord {
+   abstract toLine(): string;
+   abstract costSeconds(): number;
+   abstract isAnomaly(): boolean;
++  abstract operatorNote(): string | null;
+ }
+diff --git a/src/records/dome.ts b/src/records/dome.ts
+new file mode 100644
+index 0000000..adde65d
+--- /dev/null
++++ b/src/records/dome.ts
+@@ -0,0 +1,29 @@
++import { LogRecord } from "../record.ts";
++
++/** The dome opening or closing. Costs no telescope time, is never an
++ *  anomaly on its own, and has no operator note of its own - the event
++ *  that closed the dome already produced one. */
++export class DomeRecord extends LogRecord {
++  constructor(
++    readonly domeState: "opened" | "closed",
++    readonly reason: string,
++  ) {
++    super();
++  }
++
++  toLine(): string {
++    return `dome ${this.domeState}: ${this.reason}`;
++  }
++
++  costSeconds(): number {
++    return 0;
++  }
++
++  isAnomaly(): boolean {
++    return false;
++  }
++
++  operatorNote(): string | null {
++    return null;
++  }
++}
+diff --git a/src/records/exposure.ts b/src/records/exposure.ts
+index 4cab429..139d408 100644
+--- a/src/records/exposure.ts
++++ b/src/records/exposure.ts
+@@ -21,4 +21,8 @@ export class ExposureRecord extends LogRecord {
+   isAnomaly(): boolean {
+     return false;
+   }
++
++  operatorNote(): string | null {
++    return this.seconds > 1800 ? "long exposure - verify guiding" : null;
++  }
+ }
+diff --git a/src/records/seeing.ts b/src/records/seeing.ts
+index 2b4b38b..0a38e8a 100644
+--- a/src/records/seeing.ts
++++ b/src/records/seeing.ts
+@@ -18,4 +18,8 @@ export class SeeingRecord extends LogRecord {
+   isAnomaly(): boolean {
+     return this.fwhmArcsec > 3.0;
+   }
++
++  operatorNote(): string | null {
++    return null;
++  }
+ }
+diff --git a/src/records/weather.ts b/src/records/weather.ts
+index 2cf6cdd..5b92692 100644
+--- a/src/records/weather.ts
++++ b/src/records/weather.ts
+@@ -21,4 +21,8 @@ export class WeatherRecord extends LogRecord {
+   isAnomaly(): boolean {
+     return this.severity >= 8;
+   }
++
++  operatorNote(): string | null {
++    return this.severity >= 8 ? "consider closing the dome" : null;
++  }
+ }
+diff --git a/src/reports.ts b/src/reports.ts
+index aeda058..f5a7fce 100644
+--- a/src/reports.ts
++++ b/src/reports.ts
+@@ -14,3 +14,8 @@ export function costSeconds(record: LogRecord): number {
+ export function isAnomaly(record: LogRecord): boolean {
+   return record.isAnomaly();
+ }
++
++/** A note for whoever is on shift, or null if this record needs no attention. */
++export function operatorNote(record: LogRecord): string | null {
++  return record.operatorNote();
++}

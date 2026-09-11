@@ -1,0 +1,11 @@
+{
+  "name": "@dp/drill-visitor",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-visitor": "./solutions/visitor/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}
