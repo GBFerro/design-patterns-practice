@@ -1,0 +1,58 @@
+diff --git a/src/types.ts b/src/types.ts
+index 34e72f6..c4d240c 100644
+--- a/src/types.ts
++++ b/src/types.ts
+@@ -4,6 +4,7 @@ export interface ObservationRequest {
+   readonly instrumentName: string;
+   readonly exposureSeconds: number;
+   readonly cloudCoverPercent: number;
++  readonly instrumentWarmupComplete?: boolean;
+ }
+ 
+ export interface Telescope {
+diff --git a/src/validate.ts b/src/validate.ts
+index 73bed7b..32217c0 100644
+--- a/src/validate.ts
++++ b/src/validate.ts
+@@ -1,12 +1,41 @@
+ import type { ObservationRequest, Telescope } from "./types.ts";
+ 
+ export function validateRequest(request: ObservationRequest, telescope: Telescope): string | null {
++  // Ridgeline is remote and robotic: weather is the cheapest check, so it
++  // runs first there and nowhere else. The rest of the order below is
++  // duplicated rather than shared, because there is no single place left
++  // to reorder once one telescope needs its own sequence.
++  if (telescope.name === "Ridgeline") {
++    if (request.cloudCoverPercent > 50) {
++      return "cloud cover is too high";
++    }
++    if (request.altitudeDegrees < 20) {
++      return "target is below the minimum altitude";
++    }
++    if (request.moonSeparationDegrees < 15) {
++      return "target is too close to the moon";
++    }
++    if (request.instrumentWarmupComplete === false) {
++      return "instrument has not completed its warmup sequence";
++    }
++    if (!telescope.availableInstruments.includes(request.instrumentName)) {
++      return `${request.instrumentName} is not available on ${telescope.name}`;
++    }
++    if (request.exposureSeconds > telescope.nightlyExposureBudgetSeconds) {
++      return "exposure exceeds the nightly budget";
++    }
++    return null;
++  }
++
+   if (request.altitudeDegrees < 20) {
+     return "target is below the minimum altitude";
+   }
+   if (request.moonSeparationDegrees < 15) {
+     return "target is too close to the moon";
+   }
++  if (request.instrumentWarmupComplete === false) {
++    return "instrument has not completed its warmup sequence";
++  }
+   if (!telescope.availableInstruments.includes(request.instrumentName)) {
+     return `${request.instrumentName} is not available on ${telescope.name}`;
+   }

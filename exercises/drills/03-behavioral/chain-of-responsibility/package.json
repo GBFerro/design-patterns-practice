@@ -1,0 +1,11 @@
+{
+  "name": "@dp/drill-chain-of-responsibility",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-chain-of-responsibility": "./solutions/chain-of-responsibility/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

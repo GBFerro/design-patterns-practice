@@ -1,0 +1,40 @@
+{
+  "id": "drill-chain-of-responsibility",
+  "title": "Chain of Responsibility",
+  "type": "drill",
+  "category": "behavioral",
+  "patterns": ["Chain of Responsibility"],
+  "verdict": "situational",
+  "difficulty": 3,
+  "estimatedMinutes": 40,
+  "prerequisites": ["drill-strategy"],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Hollowell Observatory",
+  "subDomain": "request validation",
+  "act2": {
+    "axis": "aligned",
+    "summary": "a warmup check inserted in the middle of the order, and the whole order reversed for one telescope (weather first)",
+    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 12, "maxHunks": 3 }
+  },
+  "forbidden": [
+    "telescope\\.name === \"Ridgeline\"",
+    "if \\(telescope\\.hasMovableDome && request\\.altitudeDegrees"
+  ],
+  "solutions": [
+    {
+      "slug": "chain-of-responsibility",
+      "title": "Six checks as linked rule objects, ordered per telescope",
+      "absorbsAct2": true,
+      "tradeoff": "Inserting or reordering a check is a change to one function (the chain builder) instead of a change to the order of six if-statements in a row. The price: to know what a single check does, or whether a telescope even runs it, you can no longer just read one function top to bottom - you have to also open the chain builder to find out which rules apply and in what order."
+    }
+  ],
+  "reviewFocus": [
+    "Does inserting InstrumentWarmupRule touch any of the five existing rule classes, or only chain.ts and the new rule's own file?",
+    "Does Ridgeline's reordered chain reuse the same five rule instances/classes as every other telescope, or does it duplicate any check logic?",
+    "Is telescope.name === \"Ridgeline\" an honest way to special-case one telescope, or does it deserve a real field on Telescope (e.g. checkOrder) instead - and does the walkthrough take a position on that?",
+    "Does BaseRule's handle() still work correctly if a rule chain is built with only one rule in it (no setNext call at all)?",
+    "Is the walkthrough honest about where this act 2 wins (lines) and where it does not (hunks, where the no-pattern route's one big duplicated block actually lands in fewer hunks)?"
+  ]
+}
