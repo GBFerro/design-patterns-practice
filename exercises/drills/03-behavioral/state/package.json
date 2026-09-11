@@ -1,0 +1,11 @@
+{
+  "name": "@dp/drill-state",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-state": "./solutions/state/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

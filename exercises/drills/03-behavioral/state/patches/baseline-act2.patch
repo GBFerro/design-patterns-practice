@@ -1,0 +1,47 @@
+diff --git a/src/controller.ts b/src/controller.ts
+index ec7687b..e46bcc9 100644
+--- a/src/controller.ts
++++ b/src/controller.ts
+@@ -1,10 +1,11 @@
+ import type { TransitionLog } from "./types.ts";
+ 
+-type Status = "parked" | "slewing" | "tracking";
++type Status = "parked" | "slewing" | "tracking" | "fault";
+ 
+ export class TelescopeController {
+   private currentStatus: Status = "parked";
+   private slewTarget: string | undefined;
++  private faultReason: string | undefined;
+   private readonly log: TransitionLog[] = [];
+ 
+   get status(): string {
+@@ -23,10 +24,12 @@ export class TelescopeController {
+   }
+ 
+   slewTo(target: string): void {
+-    if (this.currentStatus === "slewing") {
+-      throw new Error(
+-        `Cannot slew to "${target}": a slew to "${this.slewTarget}" is already in progress.`,
+-      );
++    if (this.currentStatus === "slewing" || this.currentStatus === "fault") {
++      const reason =
++        this.currentStatus === "fault"
++          ? `the telescope is in fault (${this.faultReason})`
++          : `a slew to "${this.slewTarget}" is already in progress`;
++      throw new Error(`Cannot slew to "${target}": ${reason}.`);
+     }
+     this.record(`slewTo(${target})`);
+     this.currentStatus = "slewing";
+@@ -48,6 +51,12 @@ export class TelescopeController {
+     this.record(`nudge(${deltaArcsec})`);
+   }
+ 
++  raiseFault(reason: string): void {
++    this.record(`raiseFault(${reason})`);
++    this.currentStatus = "fault";
++    this.faultReason = reason;
++  }
++
+   private record(action: string): void {
+     this.log.push({ from: this.currentStatus, action });
+   }

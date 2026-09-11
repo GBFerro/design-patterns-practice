@@ -1,0 +1,55 @@
+diff --git a/solutions/state/controller.ts b/solutions/state/controller.ts
+index 7717da8..cd3625a 100644
+--- a/solutions/state/controller.ts
++++ b/solutions/state/controller.ts
+@@ -1,4 +1,5 @@
+ import type { TelescopeState } from "./state.ts";
++import { FaultState } from "./states/fault.ts";
+ import { parkedState } from "./states/parked.ts";
+ import type { TransitionLog } from "./types.ts";
+ 
+@@ -30,6 +31,12 @@ export class TelescopeController {
+     this.apply(this.current.nudge(deltaArcsec), `nudge(${deltaArcsec})`);
+   }
+ 
++  /** Unconditional: a hardware fault does not ask the current state's
++   *  permission, which is why this bypasses `apply`'s usual dispatch. */
++  raiseFault(reason: string): void {
++    this.apply(new FaultState(reason), `raiseFault(${reason})`);
++  }
++
+   /** The one place a transition is recorded, whatever state it came from. An
+    *  illegal call never reaches here: the state throws before returning. */
+   private apply(next: TelescopeState, action: string): void {
+diff --git a/solutions/state/states/fault.ts b/solutions/state/states/fault.ts
+new file mode 100644
+index 0000000..7ad4109
+--- /dev/null
++++ b/solutions/state/states/fault.ts
+@@ -0,0 +1,26 @@
++import type { TelescopeState } from "../state.ts";
++import { parkedState } from "./parked.ts";
++
++/** Reached only through Controller#raiseFault, never through a normal
++ *  transition - which is why no other state needs to know this one exists. */
++export class FaultState implements TelescopeState {
++  readonly name = "fault";
++
++  constructor(private readonly reason: string) {}
++
++  park(): TelescopeState {
++    return parkedState;
++  }
++
++  slewTo(): TelescopeState {
++    throw new Error(`Cannot slew: the telescope is in fault (${this.reason}). Park to recover.`);
++  }
++
++  arrive(): TelescopeState {
++    throw new Error(`Cannot arrive: the telescope is in fault (${this.reason}). Park to recover.`);
++  }
++
++  nudge(): TelescopeState {
++    throw new Error(`Cannot nudge: the telescope is in fault (${this.reason}). Park to recover.`);
++  }
++}

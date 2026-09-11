@@ -1,0 +1,40 @@
+{
+  "id": "drill-state",
+  "title": "State",
+  "type": "drill",
+  "category": "behavioral",
+  "patterns": ["State"],
+  "verdict": "essential",
+  "difficulty": 3,
+  "estimatedMinutes": 45,
+  "prerequisites": ["drill-strategy"],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Hollowell Observatory",
+  "subDomain": "telescope lifecycle",
+  "act2": {
+    "axis": "aligned",
+    "summary": "a fourth state, fault, reachable unconditionally, from which only park() is legal",
+    "extensionBudget": { "maxFilesModified": 1, "maxLinesModified": 7, "maxHunks": 2 }
+  },
+  "forbidden": [
+    "this\\.status\\s*===\\s*\"parked\"",
+    "if\\s*\\(\\s*this\\.status\\s*!==\\s*\"slewing\"\\s*\\)"
+  ],
+  "solutions": [
+    {
+      "slug": "state",
+      "title": "State objects behind a shared transition interface",
+      "absorbsAct2": true,
+      "tradeoff": "Every illegal transition becomes impossible to express rather than merely checked - the compiler enforces that every state answers every call. The price: five files to read instead of one, and a transition that genuinely needs to know about two states at once (not just 'from' and 'to') has nowhere obvious to live."
+    }
+  ],
+  "reviewFocus": [
+    "Is there still exactly one place that records a transition, or did logging creep back into each state?",
+    "Does SlewingState's constructor parameter earn its keep, or is it a sign the interface is missing something the other states also secretly need?",
+    "Would a plain discriminated union plus a switch have been safer here, given the compiler can check exhaustiveness either way?",
+    "Does the git log show the four guard methods being extracted one state at a time, or one big-bang rewrite?",
+    "Is 'park is always legal, even mid-slew' documented anywhere a reader would find it before being surprised by it?"
+  ]
+}
