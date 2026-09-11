@@ -1,0 +1,11 @@
+{
+  "name": "@dp/drill-interpreter",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-interpreter": "./solutions/interpreter/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

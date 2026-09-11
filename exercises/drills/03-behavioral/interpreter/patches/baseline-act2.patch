@@ -1,0 +1,36 @@
+diff --git a/src/evaluate.ts b/src/evaluate.ts
+index bf01ecd..25f4e8b 100644
+--- a/src/evaluate.ts
++++ b/src/evaluate.ts
+@@ -24,6 +24,21 @@ export function evaluateConstraint(expression: string, context: SkyContext): boo
+       if (!context.clear) return false;
+       continue;
+     }
++    if (clause === "moon_below_horizon") {
++      if (!context.moonBelowHorizon) return false;
++      continue;
++    }
++
++    if (clause.includes(">=")) {
++      const parts = clause.split(">=").map((part) => part.trim());
++      const field = parts[0];
++      const raw = parts[1];
++      if (field === undefined || raw === undefined) throw new Error(`unparseable clause: ${clause}`);
++      const getValue = FIELD_GETTERS[field];
++      if (getValue === undefined) throw new Error(`unknown field: ${field}`);
++      if (!(getValue(context) >= Number(raw))) return false;
++      continue;
++    }
+ 
+     if (clause.includes(">")) {
+       const parts = clause.split(">").map((part) => part.trim());
+diff --git a/src/types.ts b/src/types.ts
+index bfaa461..4063ffe 100644
+--- a/src/types.ts
++++ b/src/types.ts
+@@ -7,4 +7,5 @@ export interface SkyContext {
+   civilTwilightOver: boolean;
+   domeOpen: boolean;
+   clear: boolean;
++  moonBelowHorizon: boolean;
+ }

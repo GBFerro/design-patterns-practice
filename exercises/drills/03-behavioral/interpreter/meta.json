@@ -1,0 +1,37 @@
+{
+  "id": "drill-interpreter",
+  "title": "Interpreter",
+  "type": "drill",
+  "category": "behavioral",
+  "patterns": ["Interpreter"],
+  "verdict": "niche",
+  "difficulty": 3,
+  "estimatedMinutes": 40,
+  "prerequisites": ["drill-strategy"],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Hollowell Observatory",
+  "subDomain": "observation constraints",
+  "act2": {
+    "axis": "aligned",
+    "summary": "a new operator and a new term",
+    "extensionBudget": { "maxFilesModified": 3, "maxLinesModified": 3, "maxHunks": 3 }
+  },
+  "forbidden": ["clause\\.includes\\(", "clause\\s*===\\s*\"", "clause\\.split\\("],
+  "solutions": [
+    {
+      "slug": "interpreter",
+      "title": "Terminal and nonterminal expression objects, parsed once into a tree",
+      "absorbsAct2": true,
+      "tradeoff": "Every clause becomes an object with an evaluate method instead of a branch in one function - a new operator or term is one new lookup-table entry, not a new if-chain to get the substring matching right, but a one-clause constraint now allocates three objects (a comparison or flag, wrapped in an AndExpression) to do what a single string comparison did."
+    }
+  ],
+  "reviewFocus": [
+    "Does anything outside parse.ts know that a clause is a string before it becomes an expression object?",
+    "Is ComparisonExpression parameterized by operator and field, or does adding >= to OPERATORS require touching that class at all?",
+    "Does the operator lookup in parse.ts sort by length before matching - and what breaks if it doesn't, the moment <= exists alongside <?",
+    "Is AndExpression's evaluate() method the only place && is meaningful, or does anything else assume clauses are joined that way?",
+    "Given how rarely a real interpreter needs a full grammar like this, what would have to be true about the constraint language for this route to earn its keep over the string-matching baseline?"
+  ]
+}

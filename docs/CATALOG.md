@@ -51,7 +51,7 @@ alone, and is marked as a stretch exercise.
 | --- | --- | --- | --- |
 | Chain of Responsibility | [`drill-chain-of-responsibility`](../exercises/drills/03-behavioral/chain-of-responsibility/) | `situational` | ✅ |
 | Command | [`drill-command`](../exercises/drills/03-behavioral/command/) | `essential` | ✅ |
-| Interpreter | — | `—` | ⬜ |
+| Interpreter | [`drill-interpreter`](../exercises/drills/03-behavioral/interpreter/) | `niche` | ✅ |
 | Iterator | [`drill-iterator`](../exercises/drills/03-behavioral/iterator/) | `essential` | ✅ |
 | Mediator | [`drill-mediator`](../exercises/drills/03-behavioral/mediator/) | `situational` | ✅ |
 | Memento | [`drill-memento`](../exercises/drills/03-behavioral/memento/) | `situational` | ✅ |
@@ -63,6 +63,6 @@ alone, and is marked as a stretch exercise.
 
 ---
 
-_10 of 23 drills written._
+_11 of 23 drills written._
 
-_Verdicts so far — essential: 6 · situational: 4 · niche: 0 · avoid: 0._
+_Verdicts so far — essential: 6 · situational: 4 · niche: 1 · avoid: 0._

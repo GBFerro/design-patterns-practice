@@ -1,0 +1,34 @@
+diff --git a/solutions/interpreter/comparison-expression.ts b/solutions/interpreter/comparison-expression.ts
+index 11f87d5..08bfe91 100644
+--- a/solutions/interpreter/comparison-expression.ts
++++ b/solutions/interpreter/comparison-expression.ts
+@@ -6,6 +6,7 @@ import type { SkyContext } from "./types.ts";
+ export const OPERATORS: Record<string, (value: number, threshold: number) => boolean> = {
+   ">": (value, threshold) => value > threshold,
+   "<": (value, threshold) => value < threshold,
++  ">=": (value, threshold) => value >= threshold,
+ };
+ 
+ /** GoF's `TerminalExpression` for a numeric fact about the sky right now,
+diff --git a/solutions/interpreter/parse.ts b/solutions/interpreter/parse.ts
+index 7f99509..8778d8e 100644
+--- a/solutions/interpreter/parse.ts
++++ b/solutions/interpreter/parse.ts
+@@ -14,6 +14,7 @@ const FLAG_GETTERS: Record<string, (context: SkyContext) => boolean> = {
+   civil_twilight_over: (context) => context.civilTwilightOver,
+   dome_open: (context) => context.domeOpen,
+   clear: (context) => context.clear,
++  moon_below_horizon: (context) => context.moonBelowHorizon,
+ };
+ 
+ /** Longest operator first, so `>=` is found before `>` the moment both are
+diff --git a/solutions/interpreter/types.ts b/solutions/interpreter/types.ts
+index bfaa461..4063ffe 100644
+--- a/solutions/interpreter/types.ts
++++ b/solutions/interpreter/types.ts
+@@ -7,4 +7,5 @@ export interface SkyContext {
+   civilTwilightOver: boolean;
+   domeOpen: boolean;
+   clear: boolean;
++  moonBelowHorizon: boolean;
+ }
