@@ -1,0 +1,11 @@
+{
+  "name": "@dp/drill-mediator",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-mediator": "./solutions/mediator/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}
