@@ -1,0 +1,95 @@
+diff --git a/solutions/mediator/panel-mediator.ts b/solutions/mediator/panel-mediator.ts
+index fcf69dc..c5d2f18 100644
+--- a/solutions/mediator/panel-mediator.ts
++++ b/solutions/mediator/panel-mediator.ts
+@@ -7,7 +7,7 @@ export class PanelMediator {
+   private locked = false;
+   private selected: string | null = null;
+   private seconds = 0;
+-  private severe = false;
++  private domeOpen = false;
+ 
+   constructor(
+     private readonly readyLamp: ReadyLamp,
+@@ -29,13 +29,18 @@ export class PanelMediator {
+     this.refresh();
+   }
+ 
+-  weatherChanged(severe: boolean): void {
+-    this.severe = severe;
++  weatherChanged(_severe: boolean): void {
++    // No longer a factor in readiness: the dome only opens when the weather
++    // permits it, so checking domeOpen already covers this.
++  }
++
++  domeChanged(open: boolean): void {
++    this.domeOpen = open;
+     this.refresh();
+   }
+ 
+   private refresh(): void {
+-    const ready = this.locked && this.selected !== null && this.seconds > 0 && !this.severe;
++    const ready = this.locked && this.selected !== null && this.seconds > 0 && this.domeOpen;
+     this.readyLamp.setLit(ready);
+     this.startButton.setEnabled(ready);
+   }
+diff --git a/solutions/mediator/panel.ts b/solutions/mediator/panel.ts
+index bf9a825..7b9e841 100644
+--- a/solutions/mediator/panel.ts
++++ b/solutions/mediator/panel.ts
+@@ -1,5 +1,6 @@
+ import { PanelMediator } from "./panel-mediator.ts";
+ import type { ControlPanel } from "./types.ts";
++import { DomeStatus } from "./widgets/dome-status.ts";
+ import { ExposureTimer } from "./widgets/exposure-timer.ts";
+ import { FilterWheel } from "./widgets/filter-wheel.ts";
+ import { FocusDial } from "./widgets/focus-dial.ts";
+@@ -15,6 +16,7 @@ class ConcreteControlPanel implements ControlPanel {
+   private readonly filterWheel = new FilterWheel(this.mediator);
+   private readonly exposureTimer = new ExposureTimer(this.mediator);
+   private readonly weatherBanner = new WeatherBanner(this.mediator);
++  private readonly domeStatus = new DomeStatus(this.mediator);
+ 
+   setFocusLocked(locked: boolean): void {
+     this.focusDial.setLocked(locked);
+@@ -32,6 +34,10 @@ class ConcreteControlPanel implements ControlPanel {
+     this.weatherBanner.setSevere(severe);
+   }
+ 
++  setDomeOpen(open: boolean): void {
++    this.domeStatus.setOpen(open);
++  }
++
+   get readyLampLit(): boolean {
+     return this.readyLamp.lit;
+   }
+diff --git a/solutions/mediator/types.ts b/solutions/mediator/types.ts
+index 8bbbfae..603ff96 100644
+--- a/solutions/mediator/types.ts
++++ b/solutions/mediator/types.ts
+@@ -3,6 +3,7 @@ export interface ControlPanel {
+   setFilter(selected: string | null): void;
+   setExposureSeconds(seconds: number): void;
+   setWeatherSevere(severe: boolean): void;
++  setDomeOpen(open: boolean): void;
+   readonly readyLampLit: boolean;
+   readonly startButtonEnabled: boolean;
+ }
+diff --git a/solutions/mediator/widgets/dome-status.ts b/solutions/mediator/widgets/dome-status.ts
+new file mode 100644
+index 0000000..86cbf47
+--- /dev/null
++++ b/solutions/mediator/widgets/dome-status.ts
+@@ -0,0 +1,12 @@
++import type { PanelMediator } from "../panel-mediator.ts";
++
++export class DomeStatus {
++  open = false;
++
++  constructor(private readonly mediator: PanelMediator) {}
++
++  setOpen(open: boolean): void {
++    this.open = open;
++    this.mediator.domeChanged(open);
++  }
++}

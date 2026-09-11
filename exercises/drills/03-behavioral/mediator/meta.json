@@ -1,0 +1,40 @@
+{
+  "id": "drill-mediator",
+  "title": "Mediator",
+  "type": "drill",
+  "category": "behavioral",
+  "patterns": ["Mediator"],
+  "verdict": "situational",
+  "difficulty": 3,
+  "estimatedMinutes": 45,
+  "prerequisites": ["drill-strategy"],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Hollowell Observatory",
+  "subDomain": "control-room panel",
+  "act2": {
+    "axis": "aligned",
+    "summary": "a seventh widget (dome status) that gates readiness, and the removal of weather's now-redundant direct effect on readiness",
+    "extensionBudget": { "maxFilesModified": 3, "maxLinesModified": 20, "maxHunks": 6 }
+  },
+  "forbidden": [
+    "connect\\(readyLamp",
+    "this\\.readyLamp\\.refresh\\(\\)"
+  ],
+  "solutions": [
+    {
+      "slug": "mediator",
+      "title": "Six widgets stop talking to each other and report to one mediator instead",
+      "absorbsAct2": true,
+      "tradeoff": "No widget holds a reference to any other widget - only to the mediator, or to nothing at all. The price: the mediator itself grows a field and a method for every input widget it tracks, and it is the one file that must be read to answer 'what makes this panel ready,' where before that answer was reconstructable (if repetitively) from the two output widgets alone."
+    }
+  ],
+  "reviewFocus": [
+    "Do ReadyLamp and StartButton still compute anything themselves, or are they purely told what to display?",
+    "Does adding DomeStatus touch FocusDial, FilterWheel, ExposureTimer or WeatherBanner at all - or only the mediator and the panel's wiring?",
+    "Is removing weather's effect on readiness a one-line change in one place, or did it require touching every widget that used to read weatherSevere?",
+    "Is the walkthrough honest that act 2 deliberately retires three act-1 tests (and leaves a fourth passing vacuously, for the wrong reason), and does it explain why that is this drill's point rather than a mistake?",
+    "Would a generic string-keyed mediator (`notify(event: string, ...)`) have been a reasonable alternative to the named-method mediator this solution uses?"
+  ]
+}

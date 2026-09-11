@@ -53,7 +53,7 @@ alone, and is marked as a stretch exercise.
 | Command | [`drill-command`](../exercises/drills/03-behavioral/command/) | `essential` | ✅ |
 | Interpreter | — | `—` | ⬜ |
 | Iterator | — | `—` | ⬜ |
-| Mediator | — | `—` | ⬜ |
+| Mediator | [`drill-mediator`](../exercises/drills/03-behavioral/mediator/) | `situational` | ✅ |
 | Memento | — | `—` | ⬜ |
 | Observer | [`drill-observer`](../exercises/drills/03-behavioral/observer/) | `essential` | ✅ |
 | State | [`drill-state`](../exercises/drills/03-behavioral/state/) | `essential` | ✅ |
@@ -63,6 +63,6 @@ alone, and is marked as a stretch exercise.
 
 ---
 
-_5 of 23 drills written._
+_6 of 23 drills written._
 
-_Verdicts so far — essential: 5 · situational: 0 · niche: 0 · avoid: 0._
+_Verdicts so far — essential: 5 · situational: 1 · niche: 0 · avoid: 0._

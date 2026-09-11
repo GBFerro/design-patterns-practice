@@ -1,0 +1,148 @@
+diff --git a/src/panel.ts b/src/panel.ts
+index bc73b40..13d769d 100644
+--- a/src/panel.ts
++++ b/src/panel.ts
+@@ -1,3 +1,4 @@
++import { DomeStatus } from "./widgets/dome-status.ts";
+ import { ExposureTimer } from "./widgets/exposure-timer.ts";
+ import { FilterWheel } from "./widgets/filter-wheel.ts";
+ import { FocusDial } from "./widgets/focus-dial.ts";
+@@ -11,17 +12,18 @@ class ConcreteControlPanel implements ControlPanel {
+   private readonly filterWheel = new FilterWheel();
+   private readonly exposureTimer = new ExposureTimer();
+   private readonly weatherBanner = new WeatherBanner();
++  private readonly domeStatus = new DomeStatus();
+   private readonly readyLamp = new ReadyLamp(
+     this.focusDial,
+     this.filterWheel,
+     this.exposureTimer,
+-    this.weatherBanner,
++    this.domeStatus,
+   );
+   private readonly startButton = new StartButton(
+     this.focusDial,
+     this.filterWheel,
+     this.exposureTimer,
+-    this.weatherBanner,
++    this.domeStatus,
+   );
+ 
+   constructor() {
+@@ -29,6 +31,7 @@ class ConcreteControlPanel implements ControlPanel {
+     this.filterWheel.connect(this.readyLamp, this.startButton);
+     this.exposureTimer.connect(this.readyLamp, this.startButton);
+     this.weatherBanner.connect(this.readyLamp, this.startButton);
++    this.domeStatus.connect(this.readyLamp, this.startButton);
+   }
+ 
+   setFocusLocked(locked: boolean): void {
+@@ -47,6 +50,10 @@ class ConcreteControlPanel implements ControlPanel {
+     this.weatherBanner.setSevere(severe);
+   }
+ 
++  setDomeOpen(open: boolean): void {
++    this.domeStatus.setOpen(open);
++  }
++
+   get readyLampLit(): boolean {
+     return this.readyLamp.lit;
+   }
+diff --git a/src/types.ts b/src/types.ts
+index 8bbbfae..603ff96 100644
+--- a/src/types.ts
++++ b/src/types.ts
+@@ -3,6 +3,7 @@ export interface ControlPanel {
+   setFilter(selected: string | null): void;
+   setExposureSeconds(seconds: number): void;
+   setWeatherSevere(severe: boolean): void;
++  setDomeOpen(open: boolean): void;
+   readonly readyLampLit: boolean;
+   readonly startButtonEnabled: boolean;
+ }
+diff --git a/src/widgets/dome-status.ts b/src/widgets/dome-status.ts
+new file mode 100644
+index 0000000..ed2b131
+--- /dev/null
++++ b/src/widgets/dome-status.ts
+@@ -0,0 +1,19 @@
++import type { ReadyLamp } from "./ready-lamp.ts";
++import type { StartButton } from "./start-button.ts";
++
++export class DomeStatus {
++  open = false;
++  private readyLamp!: ReadyLamp;
++  private startButton!: StartButton;
++
++  connect(readyLamp: ReadyLamp, startButton: StartButton): void {
++    this.readyLamp = readyLamp;
++    this.startButton = startButton;
++  }
++
++  setOpen(open: boolean): void {
++    this.open = open;
++    this.readyLamp.refresh();
++    this.startButton.refresh();
++  }
++}
+diff --git a/src/widgets/ready-lamp.ts b/src/widgets/ready-lamp.ts
+index 2d6e1d9..84e3a4b 100644
+--- a/src/widgets/ready-lamp.ts
++++ b/src/widgets/ready-lamp.ts
+@@ -1,7 +1,7 @@
++import type { DomeStatus } from "./dome-status.ts";
+ import type { ExposureTimer } from "./exposure-timer.ts";
+ import type { FilterWheel } from "./filter-wheel.ts";
+ import type { FocusDial } from "./focus-dial.ts";
+-import type { WeatherBanner } from "./weather-banner.ts";
+ 
+ export class ReadyLamp {
+   private _lit = false;
+@@ -10,7 +10,7 @@ export class ReadyLamp {
+     private readonly focusDial: FocusDial,
+     private readonly filterWheel: FilterWheel,
+     private readonly exposureTimer: ExposureTimer,
+-    private readonly weatherBanner: WeatherBanner,
++    private readonly domeStatus: DomeStatus,
+   ) {}
+ 
+   refresh(): void {
+@@ -18,7 +18,7 @@ export class ReadyLamp {
+       this.focusDial.locked &&
+       this.filterWheel.selected !== null &&
+       this.exposureTimer.seconds > 0 &&
+-      !this.weatherBanner.severe;
++      this.domeStatus.open;
+   }
+ 
+   get lit(): boolean {
+diff --git a/src/widgets/start-button.ts b/src/widgets/start-button.ts
+index b96d084..9453204 100644
+--- a/src/widgets/start-button.ts
++++ b/src/widgets/start-button.ts
+@@ -1,7 +1,7 @@
++import type { DomeStatus } from "./dome-status.ts";
+ import type { ExposureTimer } from "./exposure-timer.ts";
+ import type { FilterWheel } from "./filter-wheel.ts";
+ import type { FocusDial } from "./focus-dial.ts";
+-import type { WeatherBanner } from "./weather-banner.ts";
+ 
+ export class StartButton {
+   private _enabled = false;
+@@ -10,7 +10,7 @@ export class StartButton {
+     private readonly focusDial: FocusDial,
+     private readonly filterWheel: FilterWheel,
+     private readonly exposureTimer: ExposureTimer,
+-    private readonly weatherBanner: WeatherBanner,
++    private readonly domeStatus: DomeStatus,
+   ) {}
+ 
+   refresh(): void {
+@@ -18,7 +18,7 @@ export class StartButton {
+       this.focusDial.locked &&
+       this.filterWheel.selected !== null &&
+       this.exposureTimer.seconds > 0 &&
+-      !this.weatherBanner.severe;
++      this.domeStatus.open;
+   }
+ 
+   get enabled(): boolean {
