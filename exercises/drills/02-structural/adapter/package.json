@@ -1,0 +1,11 @@
+{
+  "name": "@dp/drill-adapter",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-adapter": "./solutions/adapter/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

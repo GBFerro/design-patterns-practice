@@ -1,0 +1,36 @@
+{
+  "id": "drill-adapter",
+  "title": "Adapter",
+  "type": "drill",
+  "category": "structural",
+  "patterns": ["Adapter"],
+  "verdict": "essential",
+  "difficulty": 2,
+  "estimatedMinutes": 30,
+  "prerequisites": [],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Caldermoor Transit Authority",
+  "subDomain": "fare-card readers",
+  "act2": {
+    "axis": "aligned",
+    "summary": "a third reader, with a third shape",
+    "extensionBudget": { "maxFilesModified": 3, "maxLinesModified": 17, "maxHunks": 4 }
+  },
+  "forbidden": ["Math\\.round\\(result\\.balanceDollars"],
+  "solutions": [
+    {
+      "slug": "adapter",
+      "title": "one FareReader, adapters for everything that doesn't speak it",
+      "absorbsAct2": true,
+      "tradeoff": "A third reader shape costs one small adapter class and a one-line delegate - the admission rule itself is written exactly once. The price: every reader shape now has to be wrapped before it can be used, which is one more file to open when tracing how a single station actually admits someone."
+    }
+  ],
+  "reviewFocus": [
+    "Does admitPassenger's body mention anything about dollars, legacy status strings, or the contactless wire format?",
+    "If a fourth reader shape arrived tomorrow, would it cost a new adapter file, or would it also touch admit.ts on the solution route?",
+    "Is the duplicated logic in src/admit.ts actually three copies of the same rule, or have they already drifted (rounding, comparison, refusal reason strings)?",
+    "Would a single FareReader adapter that took a 'kind' parameter and branched internally be better or worse than three small adapter classes?"
+  ]
+}

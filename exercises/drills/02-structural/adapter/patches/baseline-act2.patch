@@ -1,0 +1,57 @@
+diff --git a/src/admit.ts b/src/admit.ts
+index b2281ec..ab3304b 100644
+--- a/src/admit.ts
++++ b/src/admit.ts
+@@ -1,4 +1,4 @@
+-import type { AdmissionResult, FareReader, LegacyCardScanner } from "./types.ts";
++import type { AdmissionResult, ContactlessReader, FareReader, LegacyCardScanner } from "./types.ts";
+ 
+ const FARE_CENTS = 275;
+ 
+@@ -29,3 +29,19 @@ export function admitLegacyPassenger(scanner: LegacyCardScanner): AdmissionResul
+   }
+   return { admitted: true, remainingBalanceCents: balanceCents - FARE_CENTS };
+ }
++
++/** The same admission rule, written a third time, for the contactless
++ *  pilot reader - parsing its raw wire string right here, because
++ *  nothing else in this file knows how to. */
++export function admitContactlessPassenger(reader: ContactlessReader): AdmissionResult {
++  const polled = reader.poll();
++  if (polled === undefined) {
++    return { admitted: false, reason: "no card presented" };
++  }
++  const [, balanceText] = polled.split(",");
++  const balanceCents = Number(balanceText);
++  if (balanceCents < FARE_CENTS) {
++    return { admitted: false, reason: "insufficient balance" };
++  }
++  return { admitted: true, remainingBalanceCents: balanceCents - FARE_CENTS };
++}
+diff --git a/src/index.ts b/src/index.ts
+index af5522b..cc2f345 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -1,6 +1,7 @@
+-export { admitLegacyPassenger, admitPassenger } from "./admit.ts";
++export { admitContactlessPassenger, admitLegacyPassenger, admitPassenger } from "./admit.ts";
+ export type {
+   AdmissionResult,
++  ContactlessReader,
+   FareRead,
+   FareReader,
+   LegacyCardScanner,
+diff --git a/src/types.ts b/src/types.ts
+index 36595dd..544c821 100644
+--- a/src/types.ts
++++ b/src/types.ts
+@@ -27,3 +27,9 @@ export interface LegacyScanResult {
+ export interface LegacyCardScanner {
+   scanCard(): LegacyScanResult;
+ }
++
++/** The pilot contactless reader at one station - a raw comma-separated
++ *  string when a card is presented, `undefined` when nothing is. */
++export interface ContactlessReader {
++  poll(): string | undefined;
++}
