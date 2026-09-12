@@ -1,0 +1,36 @@
+{
+  "id": "drill-abstract-factory",
+  "title": "Abstract Factory",
+  "type": "drill",
+  "category": "creational",
+  "patterns": ["Abstract Factory"],
+  "verdict": "situational",
+  "difficulty": 3,
+  "estimatedMinutes": 35,
+  "prerequisites": ["drill-factory-method"],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Thornbury Print Works",
+  "subDomain": "press configuration",
+  "act2": {
+    "axis": "aligned",
+    "summary": "a third family, wide-format, whose parts overlap in name with offset",
+    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 16, "maxHunks": 3 }
+  },
+  "forbidden": ["case\\s*\"wide-format\""],
+  "solutions": [
+    {
+      "slug": "abstract-factory",
+      "title": "One PressFactory interface, one concrete factory per family",
+      "absorbsAct2": true,
+      "tradeoff": "A new family is one new class implementing PressFactory - the compiler refuses to build it until all three parts are provided. The price: three independent, easy-to-read switch functions became a table of factory objects, and a caller now needs to hold a factory reference in scope instead of just a family string."
+    }
+  ],
+  "reviewFocus": [
+    "Does buildPress ever hold two different PressFactory instances in scope at once?",
+    "Would TypeScript refuse to compile a WideFormatPressFactory that forgot createFeeder?",
+    "Does assemblePress's mismatch check ever actually fire on the pattern route - and if it can't, why does it still exist?",
+    "Do createPlate/createInkSystem/createFeeder still exist as independently-callable functions on the pattern route, and if so, can they still be used to build a mismatched set?"
+  ]
+}

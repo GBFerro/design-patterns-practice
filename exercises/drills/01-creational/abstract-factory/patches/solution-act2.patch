@@ -1,0 +1,72 @@
+diff --git a/solutions/abstract-factory/factory.ts b/solutions/abstract-factory/factory.ts
+index 6e29e01..ac6f606 100644
+--- a/solutions/abstract-factory/factory.ts
++++ b/solutions/abstract-factory/factory.ts
+@@ -1,5 +1,6 @@
+ import { DigitalFeeder, DigitalInkSystem, DigitalPlate } from "./parts/digital.ts";
+ import { OffsetFeeder, OffsetInkSystem, OffsetPlate } from "./parts/offset.ts";
++import { WideFormatFeeder, WideFormatInkSystem, WideFormatPlate } from "./parts/wide-format.ts";
+ import type { Feeder, InkSystem, Plate, PressFamily } from "./types.ts";
+ 
+ /** GoF's `AbstractFactory`. Implementing this interface means providing
+@@ -35,9 +36,22 @@ class OffsetPressFactory implements PressFactory {
+   }
+ }
+ 
++class WideFormatPressFactory implements PressFactory {
++  createPlate(): Plate {
++    return new WideFormatPlate();
++  }
++  createInkSystem(): InkSystem {
++    return new WideFormatInkSystem();
++  }
++  createFeeder(): Feeder {
++    return new WideFormatFeeder();
++  }
++}
++
+ const PRESS_FACTORIES: Record<PressFamily, PressFactory> = {
+   digital: new DigitalPressFactory(),
+   offset: new OffsetPressFactory(),
++  "wide-format": new WideFormatPressFactory(),
+ };
+ 
+ export function getPressFactory(family: PressFamily): PressFactory {
+diff --git a/solutions/abstract-factory/parts/wide-format.ts b/solutions/abstract-factory/parts/wide-format.ts
+new file mode 100644
+index 0000000..a7bb0ee
+--- /dev/null
++++ b/solutions/abstract-factory/parts/wide-format.ts
+@@ -0,0 +1,22 @@
++import type { Feeder, InkSystem, Plate } from "../types.ts";
++
++export class WideFormatPlate implements Plate {
++  readonly family = "wide-format" as const;
++  describe(): string {
++    return "wide-format vinyl plate";
++  }
++}
++
++export class WideFormatInkSystem implements InkSystem {
++  readonly family = "wide-format" as const;
++  describe(): string {
++    return "wide-format solvent-ink fountain";
++  }
++}
++
++export class WideFormatFeeder implements Feeder {
++  readonly family = "wide-format" as const;
++  describe(): string {
++    return "wide-format roll feeder";
++  }
++}
+diff --git a/solutions/abstract-factory/types.ts b/solutions/abstract-factory/types.ts
+index 8e8d673..d9867f0 100644
+--- a/solutions/abstract-factory/types.ts
++++ b/solutions/abstract-factory/types.ts
+@@ -1,4 +1,4 @@
+-export type PressFamily = "digital" | "offset";
++export type PressFamily = "digital" | "offset" | "wide-format";
+ 
+ export interface Plate {
+   readonly family: PressFamily;

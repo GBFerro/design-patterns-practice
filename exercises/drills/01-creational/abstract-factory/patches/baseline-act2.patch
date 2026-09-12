@@ -1,0 +1,85 @@
+diff --git a/src/feeder.ts b/src/feeder.ts
+index 8c48d0a..9dd0abd 100644
+--- a/src/feeder.ts
++++ b/src/feeder.ts
+@@ -14,11 +14,20 @@ class OffsetFeeder implements Feeder {
+   }
+ }
+ 
++class WideFormatFeeder implements Feeder {
++  readonly family = "wide-format" as const;
++  describe(): string {
++    return "wide-format roll feeder";
++  }
++}
++
+ export function createFeeder(family: PressFamily): Feeder {
+   switch (family) {
+     case "digital":
+       return new DigitalFeeder();
+     case "offset":
+       return new OffsetFeeder();
++    case "wide-format":
++      return new WideFormatFeeder();
+   }
+ }
+diff --git a/src/ink-system.ts b/src/ink-system.ts
+index c078bdb..b40c563 100644
+--- a/src/ink-system.ts
++++ b/src/ink-system.ts
+@@ -14,11 +14,20 @@ class OffsetInkSystem implements InkSystem {
+   }
+ }
+ 
++class WideFormatInkSystem implements InkSystem {
++  readonly family = "wide-format" as const;
++  describe(): string {
++    return "wide-format solvent-ink fountain";
++  }
++}
++
+ export function createInkSystem(family: PressFamily): InkSystem {
+   switch (family) {
+     case "digital":
+       return new DigitalInkSystem();
+     case "offset":
+       return new OffsetInkSystem();
++    case "wide-format":
++      return new WideFormatInkSystem();
+   }
+ }
+diff --git a/src/plate.ts b/src/plate.ts
+index c488c3b..d68d43c 100644
+--- a/src/plate.ts
++++ b/src/plate.ts
+@@ -14,11 +14,20 @@ class OffsetPlate implements Plate {
+   }
+ }
+ 
++class WideFormatPlate implements Plate {
++  readonly family = "wide-format" as const;
++  describe(): string {
++    return "wide-format vinyl plate";
++  }
++}
++
+ export function createPlate(family: PressFamily): Plate {
+   switch (family) {
+     case "digital":
+       return new DigitalPlate();
+     case "offset":
+       return new OffsetPlate();
++    case "wide-format":
++      return new WideFormatPlate();
+   }
+ }
+diff --git a/src/types.ts b/src/types.ts
+index 8e8d673..d9867f0 100644
+--- a/src/types.ts
++++ b/src/types.ts
+@@ -1,4 +1,4 @@
+-export type PressFamily = "digital" | "offset";
++export type PressFamily = "digital" | "offset" | "wide-format";
+ 
+ export interface Plate {
+   readonly family: PressFamily;

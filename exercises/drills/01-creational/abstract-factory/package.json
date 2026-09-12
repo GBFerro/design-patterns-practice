@@ -1,0 +1,11 @@
+{
+  "name": "@dp/drill-abstract-factory",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-abstract-factory": "./solutions/abstract-factory/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}
