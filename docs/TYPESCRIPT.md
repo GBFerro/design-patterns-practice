@@ -15,16 +15,16 @@ today is engineering or cosplay.
 | Pattern | In TypeScript | When the classic form earns its keep again |
 | --- | --- | --- |
 | **Strategy** ✅ | A function type, plus a `Record` to look it up | When the strategy needs a second member, carries state, or must be discovered by name. See below. |
-| **Command** 🚧 | A closure | `undo`, serialisation, a name, or composition into a macro |
-| **Template Method** 🚧 | A higher-order function taking hooks | Many hooks and a stable family: inheritance documents the contract better than six optional callbacks |
-| **Iterator** 🚧 | `Symbol.iterator` and generators | **Never write `hasNext()/next()`.** Implement the language's protocol; the drill asks for exactly that |
-| **Observer** 🚧 | `EventTarget`, an emitter, signals | When ordering, unsubscription and error isolation matter — at which point you are writing the pattern anyway |
-| **State** 🚧 | Objects, same as the book | Barely changes. A discriminated union covers the data; the transitions still want objects |
-| **Visitor** 🚧 | A discriminated union and an exhaustive `switch`, with the compiler as the net | When the node set is open, or nodes come from outside your code |
-| **Chain of Responsibility** 🚧 | An array of predicates you reduce over | When a link must be able to stop the chain *and* the chain is configured per caller |
-| **Mediator** 🚧 | Unchanged | Unchanged — and still one bad day away from a god object |
-| **Memento** 🚧 | `#private` fields and a branded type for the opaque token | The intent ("the caretaker must not read it") is the hard part in TS, not the mechanics |
-| **Interpreter** 🚧 | A discriminated union plus a recursive `evaluate` | Unchanged in spirit; the union replaces the class hierarchy |
+| **Command** ✅ | A closure | `undo`, serialisation, a name, or composition into a macro |
+| **Template Method** ✅ | A higher-order function taking hooks | Many hooks and a stable family: inheritance documents the contract better than six optional callbacks |
+| **Iterator** ✅ | `Symbol.iterator` and generators | **Never write `hasNext()/next()`.** Implement the language's protocol; the drill asks for exactly that |
+| **Observer** ✅ | `EventTarget`, an emitter, signals | When ordering, unsubscription and error isolation matter — at which point you are writing the pattern anyway |
+| **State** ✅ | Objects, same as the book | Barely changes. A discriminated union covers the data; the transitions still want objects |
+| **Visitor** ✅ | A discriminated union and an exhaustive `switch`, with the compiler as the net | When the node set is open, or nodes come from outside your code |
+| **Chain of Responsibility** ✅ | An array of predicates you reduce over | When a link must be able to stop the chain *and* the chain is configured per caller |
+| **Mediator** ✅ | Unchanged | Unchanged — and still one bad day away from a god object |
+| **Memento** ✅ | `#private` fields and a branded type for the opaque token | The intent ("the caretaker must not read it") is the hard part in TS, not the mechanics |
+| **Interpreter** ✅ | A discriminated union plus a recursive `evaluate` | Unchanged in spirit; the union replaces the class hierarchy |
 | **Adapter** 🚧 | Structural typing: no `implements`, an object literal is enough | When the adapter holds state or must be swapped at runtime |
 | **Decorator** 🚧 | Function composition for one-method interfaces | More than one method, or the wrapper needs state |
 | **Facade** 🚧 | A module | A module *is* the pattern. The only real rule: a facade that leaks its subsystems is not one |
