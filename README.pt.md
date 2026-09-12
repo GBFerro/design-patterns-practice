@@ -32,6 +32,7 @@ git clone <seu fork> && cd design-patterns-practice
 | Id | Pattern | Dificuldade | Tempo | Veredito | Eixo do ato 2 |
 | --- | --- | --- | --- | --- | --- |
 | [`drill-abstract-factory`](./exercises/drills/01-creational/abstract-factory/) | Abstract Factory | ●●● | ~35 min | `situational` | aligned |
+| [`drill-builder`](./exercises/drills/01-creational/builder/) | Builder | ●●○ | ~35 min | `essential` | ⚠ orthogonal |
 | [`drill-factory-method`](./exercises/drills/01-creational/factory-method/) | Factory Method | ●●○ | ~30 min | `essential` | aligned |
 | [`drill-chain-of-responsibility`](./exercises/drills/03-behavioral/chain-of-responsibility/) | Chain of Responsibility | ●●● | ~40 min | `situational` | aligned |
 | [`drill-command`](./exercises/drills/03-behavioral/command/) | Command | ●●● | ~40 min | `essential` | aligned |
@@ -47,4 +48,4 @@ git clone <seu fork> && cd design-patterns-practice
 
 ---
 
-_13 de 36 exercícios escritos (23 drills · 8 choices · 5 katas)._
+_14 de 36 exercícios escritos (23 drills · 8 choices · 5 katas)._

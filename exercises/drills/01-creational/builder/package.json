@@ -1,0 +1,11 @@
+{
+  "name": "@dp/drill-builder",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-builder": "./solutions/builder/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

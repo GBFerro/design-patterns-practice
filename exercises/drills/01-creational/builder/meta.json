@@ -1,0 +1,37 @@
+{
+  "id": "drill-builder",
+  "title": "Builder",
+  "type": "drill",
+  "category": "creational",
+  "patterns": ["Builder"],
+  "verdict": "essential",
+  "difficulty": 2,
+  "estimatedMinutes": 35,
+  "prerequisites": [],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Thornbury Print Works",
+  "subDomain": "quote assembly",
+  "act2": {
+    "axis": "orthogonal",
+    "summary": "a new optional stage, and a rule spanning it and an existing one",
+    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 17, "maxHunks": 8 }
+  },
+  "forbidden": ["draftFrom\\("],
+  "solutions": [
+    {
+      "slug": "builder",
+      "title": "QuoteBuilder: mutable stages over one state object, one validation pass in build()",
+      "absorbsAct2": true,
+      "tradeoff": "Every business rule lives in exactly one method, checked after every field has its final value, regardless of what order the chain called its stages in - a new rule spanning two fields is one line in build(), not a line duplicated into each field's own stage. The price: a class holding mutable state instead of a chain of small immutable drafts, and two callers holding the same draft reference can now surprise each other, since a stage mutates in place rather than handing back a fresh value."
+    }
+  ],
+  "reviewFocus": [
+    "Does build() check every business rule after all fields are set, or does any stage still validate before every field has its final value?",
+    "Does any rule in build() depend on which order the chain's stages were called in - and if not, why not?",
+    "Is startQuote's job now just opening a builder over the required fields, with no business logic of its own?",
+    "What happens if a caller keeps an earlier draft reference around and calls a stage on it after already calling build() once - does the pattern route behave the same as a persistent, immutable draft would? See WALKTHROUGH.md's 'What it cost'.",
+    "Is the walkthrough honest that act 2 measured a tie, not a win - same files, same lines, same hunks - and that this is evidence for a different argument than 'the pattern is cheaper to extend'?"
+  ]
+}

@@ -1,0 +1,75 @@
+diff --git a/src/quote-draft.ts b/src/quote-draft.ts
+index 33f6387..1d3e2c4 100644
+--- a/src/quote-draft.ts
++++ b/src/quote-draft.ts
+@@ -1,4 +1,4 @@
+-import type { DeliveryMethod, JobKind, Quote, QuoteDraft } from "./types.ts";
++import type { DeliveryMethod, JobKind, Packaging, Quote, QuoteDraft } from "./types.ts";
+ 
+ /** Everything a draft needs to know before it can price itself. */
+ interface DraftState {
+@@ -11,6 +11,7 @@ interface DraftState {
+   discountPercent: number;
+   proofRequired: boolean;
+   deliveryMethod: DeliveryMethod;
++  packaging: Packaging;
+ }
+ 
+ /** Each stage returns a fresh draft closed over the next state, so nothing
+@@ -23,6 +24,9 @@ function draftFrom(state: DraftState): QuoteDraft {
+       if (state.discountPercent > 0) {
+         throw new Error("a rush job cannot also receive a discount");
+       }
++      if (rushFee > 0 && state.packaging === "gift-wrap") {
++        throw new Error("gift-wrap packaging is not available for rush jobs");
++      }
+       return draftFrom({ ...state, rushFee });
+     },
+ 
+@@ -37,6 +41,13 @@ function draftFrom(state: DraftState): QuoteDraft {
+       return draftFrom({ ...state, proofRequired });
+     },
+ 
++    applyPackaging(packaging: Packaging): QuoteDraft {
++      if (packaging === "gift-wrap" && state.rushFee > 0) {
++        throw new Error("gift-wrap packaging is not available for rush jobs");
++      }
++      return draftFrom({ ...state, packaging });
++    },
++
+     setDeliveryMethod(deliveryMethod: DeliveryMethod): QuoteDraft {
+       if (deliveryMethod === "courier" && state.quantity < 50) {
+         throw new Error("courier delivery is not available for orders under 50 units");
+@@ -70,5 +81,6 @@ export function startQuote(
+     discountPercent: 0,
+     proofRequired: false,
+     deliveryMethod: "pickup",
++    packaging: "standard",
+   });
+ }
+diff --git a/src/types.ts b/src/types.ts
+index 242293c..4c1eb7c 100644
+--- a/src/types.ts
++++ b/src/types.ts
+@@ -1,5 +1,6 @@
+ export type JobKind = "business-cards" | "brochure" | "banner";
+ export type DeliveryMethod = "pickup" | "courier";
++export type Packaging = "standard" | "gift-wrap";
+ 
+ /** A quote under construction. Every optional stage returns the next draft
+  *  to keep chaining from, so nothing about the chain's length or order is
+@@ -9,6 +10,7 @@ export interface QuoteDraft {
+   applyDiscount(discountPercent: number): QuoteDraft;
+   setProofRequired(proofRequired: boolean): QuoteDraft;
+   setDeliveryMethod(deliveryMethod: DeliveryMethod): QuoteDraft;
++  applyPackaging(packaging: Packaging): QuoteDraft;
+   build(): Quote;
+ }
+ 
+@@ -24,5 +26,6 @@ export interface Quote {
+   discountPercent: number;
+   proofRequired: boolean;
+   deliveryMethod: DeliveryMethod;
++  packaging: Packaging;
+   totalCost: number;
+ }

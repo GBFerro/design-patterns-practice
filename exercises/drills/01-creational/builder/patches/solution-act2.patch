@@ -1,0 +1,76 @@
+diff --git a/solutions/builder/quote-builder.ts b/solutions/builder/quote-builder.ts
+index e3d3734..0ecf74b 100644
+--- a/solutions/builder/quote-builder.ts
++++ b/solutions/builder/quote-builder.ts
+@@ -1,4 +1,4 @@
+-import type { DeliveryMethod, JobKind, Quote, QuoteDraft } from "./types.ts";
++import type { DeliveryMethod, JobKind, Packaging, Quote, QuoteDraft } from "./types.ts";
+ 
+ /** Everything a quote needs, held in one object so build() can spread it
+  *  wholesale into the result - a new field is one more property here, not
+@@ -13,6 +13,7 @@ interface QuoteState {
+   discountPercent: number;
+   proofRequired: boolean;
+   deliveryMethod: DeliveryMethod;
++  packaging: Packaging;
+ }
+ 
+ /** Fluent stages mutate one internal state object and hand back `this` - no
+@@ -42,8 +43,13 @@ class QuoteBuilder implements QuoteDraft {
+     return this;
+   }
+ 
++  applyPackaging(packaging: Packaging): QuoteDraft {
++    this.state.packaging = packaging;
++    return this;
++  }
++
+   build(): Quote {
+-    const { discountPercent, rushFee, deliveryMethod, quantity, baseUnitCost } = this.state;
++    const { discountPercent, rushFee, deliveryMethod, quantity, baseUnitCost, packaging } = this.state;
+ 
+     if (discountPercent > 0 && rushFee > 0) {
+       throw new Error("a rush job cannot also receive a discount");
+@@ -51,6 +57,9 @@ class QuoteBuilder implements QuoteDraft {
+     if (deliveryMethod === "courier" && quantity < 50) {
+       throw new Error("courier delivery is not available for orders under 50 units");
+     }
++    if (packaging === "gift-wrap" && rushFee > 0) {
++      throw new Error("gift-wrap packaging is not available for rush jobs");
++    }
+ 
+     const totalCost = baseUnitCost * quantity * (1 - discountPercent / 100) + rushFee;
+     return { ...this.state, totalCost };
+@@ -76,5 +85,6 @@ export function startQuote(
+     discountPercent: 0,
+     proofRequired: false,
+     deliveryMethod: "pickup",
++    packaging: "standard",
+   });
+ }
+diff --git a/solutions/builder/types.ts b/solutions/builder/types.ts
+index 242293c..4c1eb7c 100644
+--- a/solutions/builder/types.ts
++++ b/solutions/builder/types.ts
+@@ -1,5 +1,6 @@
+ export type JobKind = "business-cards" | "brochure" | "banner";
+ export type DeliveryMethod = "pickup" | "courier";
++export type Packaging = "standard" | "gift-wrap";
+ 
+ /** A quote under construction. Every optional stage returns the next draft
+  *  to keep chaining from, so nothing about the chain's length or order is
+@@ -9,6 +10,7 @@ export interface QuoteDraft {
+   applyDiscount(discountPercent: number): QuoteDraft;
+   setProofRequired(proofRequired: boolean): QuoteDraft;
+   setDeliveryMethod(deliveryMethod: DeliveryMethod): QuoteDraft;
++  applyPackaging(packaging: Packaging): QuoteDraft;
+   build(): Quote;
+ }
+ 
+@@ -24,5 +26,6 @@ export interface Quote {
+   discountPercent: number;
+   proofRequired: boolean;
+   deliveryMethod: DeliveryMethod;
++  packaging: Packaging;
+   totalCost: number;
+ }
