@@ -1,0 +1,47 @@
+diff --git a/src/clone.ts b/src/clone.ts
+index 6efac97..cd3ee93 100644
+--- a/src/clone.ts
++++ b/src/clone.ts
+@@ -13,5 +13,6 @@ export function cloneTemplate(name: TemplateName): JobTemplate {
+     basePrice: template.basePrice,
+     defaultQuantity: template.defaultQuantity,
+     finishingOptions: [...template.finishingOptions],
++    colorMode: template.colorMode,
+   };
+ }
+diff --git a/src/templates.ts b/src/templates.ts
+index b208ed4..c74c321 100644
+--- a/src/templates.ts
++++ b/src/templates.ts
+@@ -10,6 +10,7 @@ export const TEMPLATES: Record<TemplateName, JobTemplate> = {
+     basePrice: 45,
+     defaultQuantity: 1,
+     finishingOptions: ["grommets", "waterproof-coating"],
++    colorMode: "cmyk",
+   },
+   "letterhead-standard": {
+     name: "Standard letterhead",
+@@ -17,5 +18,6 @@ export const TEMPLATES: Record<TemplateName, JobTemplate> = {
+     basePrice: 12,
+     defaultQuantity: 250,
+     finishingOptions: ["watermark"],
++    colorMode: "spot",
+   },
+ };
+diff --git a/src/types.ts b/src/types.ts
+index a5cbc5d..f3245a9 100644
+--- a/src/types.ts
++++ b/src/types.ts
+@@ -1,5 +1,6 @@
+ export type JobKind = "business-cards" | "brochure" | "banner";
+ export type TemplateName = "rush-banner" | "letterhead-standard";
++export type ColorMode = "cmyk" | "spot";
+ 
+ /** A saved starter for a print job - cloned fresh for every new order,
+  *  never handed out or edited directly. */
+@@ -9,4 +10,5 @@ export interface JobTemplate {
+   basePrice: number;
+   defaultQuantity: number;
+   finishingOptions: string[];
++  colorMode: ColorMode;
+ }

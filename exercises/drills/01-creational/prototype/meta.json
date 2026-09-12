@@ -1,0 +1,36 @@
+{
+  "id": "drill-prototype",
+  "title": "Prototype",
+  "type": "drill",
+  "category": "creational",
+  "patterns": ["Prototype"],
+  "verdict": "situational",
+  "difficulty": 2,
+  "estimatedMinutes": 30,
+  "prerequisites": [],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Thornbury Print Works",
+  "subDomain": "job templates",
+  "act2": {
+    "axis": "aligned",
+    "summary": "a field is added to the template",
+    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 4, "maxHunks": 4 }
+  },
+  "forbidden": ["name:\\s*template\\.name"],
+  "solutions": [
+    {
+      "slug": "prototype",
+      "title": "structuredClone over a small prototype registry",
+      "absorbsAct2": true,
+      "tradeoff": "A new field on JobTemplate needs no change anywhere near the clone - structuredClone copies whatever fields the object has, by construction. The price: cloning is opaque. There is no line of code that says what gets copied, which means a field that should NOT be copied as-is (an identity, a resource handle) gets copied anyway, silently, exactly like every other field."
+    }
+  ],
+  "reviewFocus": [
+    "Does cloneTemplate's solution-route body mention any single field of JobTemplate by name?",
+    "If JobTemplate grew a field holding something that should NOT be deep-copied (an open file handle, a database connection), would structuredClone even compile, let alone behave correctly?",
+    "Is the manual field-by-field version in src/ actually wrong today, or just one forgotten field away from wrong - and where does the regression test in tests/ draw that line?",
+    "Would a `clone()` method on JobTemplate itself, rather than a free function, better fit GoF's own Prototype interface - and what would that cost callers who just want a plain object?"
+  ]
+}

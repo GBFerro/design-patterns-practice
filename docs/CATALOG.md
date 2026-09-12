@@ -30,7 +30,7 @@ alone, and is marked as a stretch exercise.
 | Factory Method | [`drill-factory-method`](../exercises/drills/01-creational/factory-method/) | `essential` | ✅ |
 | Abstract Factory | [`drill-abstract-factory`](../exercises/drills/01-creational/abstract-factory/) | `situational` | ✅ |
 | Builder | [`drill-builder`](../exercises/drills/01-creational/builder/) | `essential` | ✅ |
-| Prototype | — | `—` | ⬜ |
+| Prototype | [`drill-prototype`](../exercises/drills/01-creational/prototype/) | `situational` | ✅ |
 | Singleton | — | `—` | ⬜ |
 
 ## Structural
@@ -63,6 +63,6 @@ alone, and is marked as a stretch exercise.
 
 ---
 
-_14 of 23 drills written._
+_15 of 23 drills written._
 
-_Verdicts so far — essential: 8 · situational: 5 · niche: 1 · avoid: 0._
+_Verdicts so far — essential: 8 · situational: 6 · niche: 1 · avoid: 0._

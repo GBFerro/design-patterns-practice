@@ -1,0 +1,11 @@
+{
+  "name": "@dp/drill-prototype",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-prototype": "./solutions/prototype/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}
