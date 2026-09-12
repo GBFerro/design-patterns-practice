@@ -1,0 +1,11 @@
+{
+  "name": "@dp/drill-singleton",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-module-and-injection": "./solutions/module-and-injection/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

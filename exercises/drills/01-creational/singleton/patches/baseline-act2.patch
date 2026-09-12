@@ -1,0 +1,55 @@
+diff --git a/src/index.ts b/src/index.ts
+index 2b65b8b..231d1ff 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -2,5 +2,6 @@ export { canAcceptAnotherRushJob } from "./daily-capacity.ts";
+ export { canAcceptNewJob } from "./intake-gate.ts";
+ export { setMaintenanceMode } from "./maintenance-admin.ts";
+ export { rushQuoteTotal } from "./rush-quote.ts";
++export { createPressRoom } from "./settings.ts";
+ export { describePressRoom } from "./status-report.ts";
+ export type { PressRoomSettings } from "./types.ts";
+diff --git a/src/settings.ts b/src/settings.ts
+index fd43bc3..7023af6 100644
+--- a/src/settings.ts
++++ b/src/settings.ts
+@@ -14,3 +14,39 @@ export function getSettings(): PressRoomSettings {
+   }
+   return instance;
+ }
++
++/** Everything the app can do with one press room's configuration. A second,
++ *  independent implementation of the five functions above - `rush-quote.ts`
++ *  and friends only know how to read the one shared instance above, so
++ *  there is no way to point them at a different settings value. */
++interface PressRoom {
++  rushQuoteTotal(baseCost: number): number;
++  canAcceptAnotherRushJob(rushJobsToday: number): boolean;
++  canAcceptNewJob(): boolean;
++  describePressRoom(): string;
++  setMaintenanceMode(maintenanceMode: boolean): void;
++}
++
++/** Builds one independent press room from an explicit configuration -
++ *  the only way to get a press room that is not the one shared instance
++ *  every other module in this folder reads from. */
++export function createPressRoom(settings: PressRoomSettings): PressRoom {
++  return {
++    rushQuoteTotal(baseCost) {
++      return baseCost * (1 + settings.rushSurchargePercent / 100);
++    },
++    canAcceptAnotherRushJob(rushJobsToday) {
++      return rushJobsToday < settings.maxDailyRushJobs;
++    },
++    canAcceptNewJob() {
++      return !settings.maintenanceMode;
++    },
++    describePressRoom() {
++      const maintenanceNote = settings.maintenanceMode ? " (in maintenance)" : "";
++      return `rush surcharge ${settings.rushSurchargePercent}%, up to ${settings.maxDailyRushJobs} rush jobs/day${maintenanceNote}`;
++    },
++    setMaintenanceMode(maintenanceMode) {
++      settings.maintenanceMode = maintenanceMode;
++    },
++  };
++}

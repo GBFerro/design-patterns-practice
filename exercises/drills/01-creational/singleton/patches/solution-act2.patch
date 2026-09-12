@@ -1,0 +1,11 @@
+diff --git a/solutions/module-and-injection/index.ts b/solutions/module-and-injection/index.ts
+index 2b37fe7..f322e16 100644
+--- a/solutions/module-and-injection/index.ts
++++ b/solutions/module-and-injection/index.ts
+@@ -1,5 +1,6 @@
+ import { mainFloor } from "./press-room.ts";
+ 
++export { createPressRoom } from "./press-room.ts";
+ export const rushQuoteTotal = mainFloor.rushQuoteTotal;
+ export const canAcceptAnotherRushJob = mainFloor.canAcceptAnotherRushJob;
+ export const canAcceptNewJob = mainFloor.canAcceptNewJob;

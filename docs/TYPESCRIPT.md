@@ -36,7 +36,7 @@ today is engineering or cosplay.
 | **Abstract Factory** ✅ | An object of factory functions | When mismatching two families is the bug you are preventing — that, not "creating objects", is the point |
 | **Builder** ✅ | An object literal and a validating constructor | Ordered steps, or an immutable product validated once at the end |
 | **Prototype** ✅ | `structuredClone` | Polymorphic copying, or objects with identity and resources |
-| **Singleton** 🚧 | A module-level `const` | Verdict `avoid`. See below — the pattern solved two problems and TS splits them |
+| **Singleton** ✅ | A module-level `const` | Verdict `avoid`. See below — the pattern solved two problems and TS splits them |
 
 ## The three notes that cause real confusion
 

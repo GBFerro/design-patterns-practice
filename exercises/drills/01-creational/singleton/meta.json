@@ -1,0 +1,36 @@
+{
+  "id": "drill-singleton",
+  "title": "Singleton",
+  "type": "drill",
+  "category": "creational",
+  "patterns": ["Singleton"],
+  "verdict": "avoid",
+  "difficulty": 2,
+  "estimatedMinutes": 30,
+  "prerequisites": [],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Thornbury Print Works",
+  "subDomain": "press-room settings",
+  "act2": {
+    "axis": "aligned",
+    "summary": "the suite needs two configurations live in the same run",
+    "extensionBudget": { "maxFilesModified": 1, "maxLinesModified": 3, "maxHunks": 1 }
+  },
+  "forbidden": ["let instance", "instance === undefined"],
+  "solutions": [
+    {
+      "slug": "module-and-injection",
+      "title": "An explicit createPressRoom(settings) factory, no shared instance",
+      "absorbsAct2": true,
+      "tradeoff": "Any number of independent press rooms can exist at once, each built from its own explicit settings - the thing a singleton is specifically built to make impossible. The price: there is no longer a single, well-known place every part of the app is guaranteed to agree with; two press rooms built from two different settings will happily disagree, and nothing stops a caller from building an unwanted second one by accident."
+    }
+  ],
+  "reviewFocus": [
+    "Does anything in solutions/module-and-injection/ still read from a shared, module-level mutable variable the way src/settings.ts's `instance` does?",
+    "Could two independently-built press rooms ever accidentally end up sharing the same settings object by reference, defeating the isolation this route exists to provide?",
+    "Is `mainFloor` itself still a singleton in every sense that matters - and if so, what did this refactor actually change?",
+    "Read WALKTHROUGH.md's DESIGN.md §9.2 paragraph before deciding this verdict is settled: is there a real case, in THIS codebase, where the shared instance was the right call?"
+  ]
+}
