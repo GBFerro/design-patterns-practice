@@ -1,0 +1,75 @@
+diff --git a/solutions/factory-method/factory.ts b/solutions/factory-method/factory.ts
+index c9094c1..950b21b 100644
+--- a/solutions/factory-method/factory.ts
++++ b/solutions/factory-method/factory.ts
+@@ -1,6 +1,7 @@
+ import { BannerJob } from "./jobs/banner.ts";
+ import { BrochureJob } from "./jobs/brochure.ts";
+ import { BusinessCardJob } from "./jobs/business-card.ts";
++import { FoilStampingJob } from "./jobs/foil-stamping.ts";
+ import type { JobKind, OrderRequest, PrintJob } from "./types.ts";
+ 
+ /** GoF's `Creator`. Every call site defers "which class to instantiate" to
+@@ -27,12 +28,19 @@ class BannerJobFactory extends JobFactory {
+   }
+ }
+ 
++class FoilStampingJobFactory extends JobFactory {
++  createJob(request: OrderRequest): PrintJob {
++    return new FoilStampingJob(request.customerName, request.quantity, request.foilColor ?? "gold");
++  }
++}
++
+ /** The one place a `jobKind` string becomes a concrete factory. Every call
+  *  site goes through this table instead of its own `switch`. */
+ const JOB_FACTORIES: Record<JobKind, JobFactory> = {
+   "business-cards": new BusinessCardJobFactory(),
+   brochure: new BrochureJobFactory(),
+   banner: new BannerJobFactory(),
++  "foil-stamping": new FoilStampingJobFactory(),
+ };
+ 
+ export function createJob(request: OrderRequest): PrintJob {
+diff --git a/solutions/factory-method/jobs/foil-stamping.ts b/solutions/factory-method/jobs/foil-stamping.ts
+new file mode 100644
+index 0000000..91cb848
+--- /dev/null
++++ b/solutions/factory-method/jobs/foil-stamping.ts
+@@ -0,0 +1,19 @@
++import type { PrintJob } from "../types.ts";
++
++export class FoilStampingJob implements PrintJob {
++  readonly jobKind = "foil-stamping" as const;
++
++  constructor(
++    readonly customerName: string,
++    readonly quantity: number,
++    readonly foilColor: "gold" | "silver" | "copper",
++  ) {}
++
++  describe(): string {
++    return `${this.quantity} foil-stamped pieces for ${this.customerName} (${this.foilColor} foil)`;
++  }
++
++  estimatedMinutes(): number {
++    return 20 + Math.ceil(this.quantity / 50);
++  }
++}
+diff --git a/solutions/factory-method/types.ts b/solutions/factory-method/types.ts
+index 3f87747..9673935 100644
+--- a/solutions/factory-method/types.ts
++++ b/solutions/factory-method/types.ts
+@@ -1,4 +1,4 @@
+-export type JobKind = "business-cards" | "brochure" | "banner";
++export type JobKind = "business-cards" | "brochure" | "banner" | "foil-stamping";
+ 
+ /** What comes in from a customer, over the counter, as a reprint, or as one
+  *  row of a batch import - the same shape every time. */
+@@ -9,6 +9,7 @@ export interface OrderRequest {
+   doubleSided?: boolean; // business-cards only
+   foldType?: "tri" | "bi"; // brochure only
+   widthCm?: number; // banner only
++  foilColor?: "gold" | "silver" | "copper"; // foil-stamping only
+ }
+ 
+ /** What every job becomes, regardless of which of the three counters took

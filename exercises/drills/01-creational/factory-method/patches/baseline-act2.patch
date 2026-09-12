@@ -1,0 +1,103 @@
+diff --git a/src/batch-import.ts b/src/batch-import.ts
+index fda44f4..2ae0a01 100644
+--- a/src/batch-import.ts
++++ b/src/batch-import.ts
+@@ -1,6 +1,7 @@
+ import { BannerJob } from "./jobs/banner.ts";
+ import { BrochureJob } from "./jobs/brochure.ts";
+ import { BusinessCardJob } from "./jobs/business-card.ts";
++import { FoilStampingJob } from "./jobs/foil-stamping.ts";
+ import type { OrderRequest, PrintJob } from "./types.ts";
+ 
+ /** One row of a bulk order sheet, imported from a spreadsheet. */
+@@ -12,5 +13,7 @@ export function createJobFromBatchImport(request: OrderRequest): PrintJob {
+       return new BrochureJob(request.customerName, request.quantity, request.foldType ?? "bi");
+     case "banner":
+       return new BannerJob(request.customerName, request.quantity, request.widthCm ?? 90);
++    case "foil-stamping":
++      return new FoilStampingJob(request.customerName, request.quantity, request.foilColor ?? "gold");
+   }
+ }
+diff --git a/src/counter.ts b/src/counter.ts
+index 390180c..6ffd746 100644
+--- a/src/counter.ts
++++ b/src/counter.ts
+@@ -1,6 +1,7 @@
+ import { BannerJob } from "./jobs/banner.ts";
+ import { BrochureJob } from "./jobs/brochure.ts";
+ import { BusinessCardJob } from "./jobs/business-card.ts";
++import { FoilStampingJob } from "./jobs/foil-stamping.ts";
+ import type { OrderRequest, PrintJob } from "./types.ts";
+ 
+ /** A customer standing at the counter, ordering a job right now. */
+@@ -12,5 +13,7 @@ export function createJobFromCounter(request: OrderRequest): PrintJob {
+       return new BrochureJob(request.customerName, request.quantity, request.foldType ?? "bi");
+     case "banner":
+       return new BannerJob(request.customerName, request.quantity, request.widthCm ?? 90);
++    case "foil-stamping":
++      return new FoilStampingJob(request.customerName, request.quantity, request.foilColor ?? "gold");
+   }
+ }
+diff --git a/src/jobs/foil-stamping.ts b/src/jobs/foil-stamping.ts
+new file mode 100644
+index 0000000..91cb848
+--- /dev/null
++++ b/src/jobs/foil-stamping.ts
+@@ -0,0 +1,19 @@
++import type { PrintJob } from "../types.ts";
++
++export class FoilStampingJob implements PrintJob {
++  readonly jobKind = "foil-stamping" as const;
++
++  constructor(
++    readonly customerName: string,
++    readonly quantity: number,
++    readonly foilColor: "gold" | "silver" | "copper",
++  ) {}
++
++  describe(): string {
++    return `${this.quantity} foil-stamped pieces for ${this.customerName} (${this.foilColor} foil)`;
++  }
++
++  estimatedMinutes(): number {
++    return 20 + Math.ceil(this.quantity / 50);
++  }
++}
+diff --git a/src/reprint.ts b/src/reprint.ts
+index c0ac9e5..a89ae46 100644
+--- a/src/reprint.ts
++++ b/src/reprint.ts
+@@ -1,6 +1,7 @@
+ import { BannerJob } from "./jobs/banner.ts";
+ import { BrochureJob } from "./jobs/brochure.ts";
+ import { BusinessCardJob } from "./jobs/business-card.ts";
++import { FoilStampingJob } from "./jobs/foil-stamping.ts";
+ import type { OrderRequest, PrintJob } from "./types.ts";
+ 
+ /** A previous job, run again from the same order details. */
+@@ -12,5 +13,7 @@ export function createJobFromReprint(request: OrderRequest): PrintJob {
+       return new BrochureJob(request.customerName, request.quantity, request.foldType ?? "bi");
+     case "banner":
+       return new BannerJob(request.customerName, request.quantity, request.widthCm ?? 90);
++    case "foil-stamping":
++      return new FoilStampingJob(request.customerName, request.quantity, request.foilColor ?? "gold");
+   }
+ }
+diff --git a/src/types.ts b/src/types.ts
+index 3f87747..9673935 100644
+--- a/src/types.ts
++++ b/src/types.ts
+@@ -1,4 +1,4 @@
+-export type JobKind = "business-cards" | "brochure" | "banner";
++export type JobKind = "business-cards" | "brochure" | "banner" | "foil-stamping";
+ 
+ /** What comes in from a customer, over the counter, as a reprint, or as one
+  *  row of a batch import - the same shape every time. */
+@@ -9,6 +9,7 @@ export interface OrderRequest {
+   doubleSided?: boolean; // business-cards only
+   foldType?: "tri" | "bi"; // brochure only
+   widthCm?: number; // banner only
++  foilColor?: "gold" | "silver" | "copper"; // foil-stamping only
+ }
+ 
+ /** What every job becomes, regardless of which of the three counters took

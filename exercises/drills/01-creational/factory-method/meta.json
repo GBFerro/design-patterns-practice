@@ -1,0 +1,36 @@
+{
+  "id": "drill-factory-method",
+  "title": "Factory Method",
+  "type": "drill",
+  "category": "creational",
+  "patterns": ["Factory Method"],
+  "verdict": "essential",
+  "difficulty": 2,
+  "estimatedMinutes": 30,
+  "prerequisites": [],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Thornbury Print Works",
+  "subDomain": "order intake",
+  "act2": {
+    "axis": "aligned",
+    "summary": "a fourth job kind arrives",
+    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 11, "maxHunks": 4 }
+  },
+  "forbidden": ["switch\\s*\\(\\s*request\\.jobKind"],
+  "solutions": [
+    {
+      "slug": "factory-method",
+      "title": "One factory per job kind, looked up by kind, called from three thin wrappers",
+      "absorbsAct2": true,
+      "tradeoff": "Adding a job kind is one new product class, one new factory subclass, and one registry entry - and zero edits to any of the three call sites. The price: a one-clause switch became four small files and an indirection a reader has to follow to see which class actually gets built for a given kind."
+    }
+  ],
+  "reviewFocus": [
+    "Do counter.ts, reprint.ts and batch-import.ts still know about BusinessCardJob, BrochureJob or BannerJob by name, or only about createJob?",
+    "Is JOB_FACTORIES the only place a JobKind string is mapped to a class?",
+    "Does adding foil-stamping touch any of the three call-site files?",
+    "Is JobFactory doing real dispatch work, or would a plain Record<JobKind, (request) => PrintJob> of functions do the same job with one fewer layer?"
+  ]
+}

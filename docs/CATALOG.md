@@ -27,7 +27,7 @@ alone, and is marked as a stretch exercise.
 
 | Pattern | Drill | Verdict | Status |
 | --- | --- | --- | --- |
-| Factory Method | — | `—` | ⬜ |
+| Factory Method | [`drill-factory-method`](../exercises/drills/01-creational/factory-method/) | `essential` | ✅ |
 | Abstract Factory | — | `—` | ⬜ |
 | Builder | — | `—` | ⬜ |
 | Prototype | — | `—` | ⬜ |
@@ -63,6 +63,6 @@ alone, and is marked as a stretch exercise.
 
 ---
 
-_11 of 23 drills written._
+_12 of 23 drills written._
 
-_Verdicts so far — essential: 6 · situational: 4 · niche: 1 · avoid: 0._
+_Verdicts so far — essential: 7 · situational: 4 · niche: 1 · avoid: 0._

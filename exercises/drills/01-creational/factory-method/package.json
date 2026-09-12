@@ -1,0 +1,11 @@
+{
+  "name": "@dp/drill-factory-method",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-factory-method": "./solutions/factory-method/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}
