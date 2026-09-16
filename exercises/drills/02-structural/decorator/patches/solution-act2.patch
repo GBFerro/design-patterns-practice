@@ -1,0 +1,65 @@
+diff --git a/solutions/decorator/calculate-fare.ts b/solutions/decorator/calculate-fare.ts
+index 0f190cc..40e58f8 100644
+--- a/solutions/decorator/calculate-fare.ts
++++ b/solutions/decorator/calculate-fare.ts
+@@ -1,13 +1,18 @@
+ import { BaseFare, type Fare } from "./fare.ts";
+ import { GroupCap } from "./group-cap.ts";
+ import { OffPeakDiscount } from "./off-peak-discount.ts";
++import { SeniorDiscount } from "./senior-discount.ts";
+ import { StudentDiscount } from "./student-discount.ts";
+ import type { FareOptions } from "./types.ts";
+ 
+ /** The only place that decides which modifiers apply, and in what order
+- *  they wrap - each modifier's own math lives in its own class. */
++ *  they wrap - each modifier's own math lives in its own class. Senior
++ *  has to wrap before student, and here that's just where its line
++ *  sits, exactly like the no-pattern route: nothing about being
++ *  decorators makes this any more or less trivial to get right. */
+ export function calculateFare(options: FareOptions): number {
+   let fare: Fare = new BaseFare();
++  if (options.isSenior) fare = new SeniorDiscount(fare);
+   if (options.isStudent) fare = new StudentDiscount(fare);
+   if (options.isOffPeak) fare = new OffPeakDiscount(fare);
+   if (options.isGroupCapped) fare = new GroupCap(fare);
+diff --git a/solutions/decorator/index.ts b/solutions/decorator/index.ts
+index 04984d0..d38ca92 100644
+--- a/solutions/decorator/index.ts
++++ b/solutions/decorator/index.ts
+@@ -2,5 +2,6 @@ export { calculateFare } from "./calculate-fare.ts";
+ export { BaseFare, type Fare } from "./fare.ts";
+ export { GroupCap } from "./group-cap.ts";
+ export { OffPeakDiscount } from "./off-peak-discount.ts";
++export { SeniorDiscount } from "./senior-discount.ts";
+ export { StudentDiscount } from "./student-discount.ts";
+ export type { FareOptions } from "./types.ts";
+diff --git a/solutions/decorator/senior-discount.ts b/solutions/decorator/senior-discount.ts
+new file mode 100644
+index 0000000..ea9f1ec
+--- /dev/null
++++ b/solutions/decorator/senior-discount.ts
+@@ -0,0 +1,14 @@
++import type { Fare } from "./fare.ts";
++
++const SENIOR_DISCOUNT_CENTS = 50;
++
++/** Decorator: a flat discount off whatever fare it wraps - unlike the
++ *  percentage decorators, this one is not commutative with them, and
++ *  nothing in its type says so. */
++export class SeniorDiscount implements Fare {
++  constructor(private readonly inner: Fare) {}
++
++  priceCents(): number {
++    return this.inner.priceCents() - SENIOR_DISCOUNT_CENTS;
++  }
++}
+diff --git a/solutions/decorator/types.ts b/solutions/decorator/types.ts
+index 4531525..81b8944 100644
+--- a/solutions/decorator/types.ts
++++ b/solutions/decorator/types.ts
+@@ -2,4 +2,5 @@ export interface FareOptions {
+   isStudent: boolean;
+   isOffPeak: boolean;
+   isGroupCapped: boolean;
++  isSenior: boolean;
+ }

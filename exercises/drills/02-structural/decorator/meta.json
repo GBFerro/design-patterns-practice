@@ -1,0 +1,36 @@
+{
+  "id": "drill-decorator",
+  "title": "Decorator",
+  "type": "drill",
+  "category": "structural",
+  "patterns": ["Decorator"],
+  "verdict": "essential",
+  "difficulty": 3,
+  "estimatedMinutes": 30,
+  "prerequisites": [],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Caldermoor Transit Authority",
+  "subDomain": "fare modifiers",
+  "act2": {
+    "axis": "orthogonal",
+    "summary": "a new modifier, plus a required ordering constraint between two of them",
+    "extensionBudget": { "maxFilesModified": 3, "maxLinesModified": 9, "maxHunks": 3 }
+  },
+  "forbidden": ["if \\(options\\.isStudent\\) price", "if \\(options\\.isOffPeak\\) price"],
+  "solutions": [
+    {
+      "slug": "decorator",
+      "title": "One Fare interface, one small decorator class per modifier",
+      "absorbsAct2": true,
+      "tradeoff": "A new modifier is one new class, composed by adding one line to calculateFare - the same one line the no-pattern route also needed. The price: each modifier's math is isolated and independently testable, but nothing in any decorator's type says it must wrap before or after another - the order that matters lives only in calculateFare's own sequence of ifs, exactly as fragile as the no-pattern function it replaced."
+    }
+  ],
+  "reviewFocus": [
+    "Is calculateFare's ordering of the four `if`s the ONLY thing in the entire solution route that encodes the senior-before-student requirement?",
+    "If a second call site composed StudentDiscount(SeniorDiscount(fare)) instead of the order calculateFare uses, would anything - the compiler, a runtime check, a test outside act2 - catch it?",
+    "Is the walkthrough honest that Decorator did not make this requirement any easier than the no-pattern function did?",
+    "Would an ordered pipeline of named stages (see docs/DESIGN patterns discussion) have made the required order an explicit, checkable property instead of an implicit one?"
+  ]
+}

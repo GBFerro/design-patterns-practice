@@ -1,0 +1,11 @@
+{
+  "name": "@dp/drill-decorator",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-decorator": "./solutions/decorator/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

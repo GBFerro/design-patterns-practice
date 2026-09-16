@@ -1,0 +1,34 @@
+diff --git a/src/calculate-fare.ts b/src/calculate-fare.ts
+index cccbc21..1ad9aa1 100644
+--- a/src/calculate-fare.ts
++++ b/src/calculate-fare.ts
+@@ -1,15 +1,18 @@
+ import type { FareOptions } from "./types.ts";
+ 
+ const BASE_FARE_CENTS = 275;
++const SENIOR_DISCOUNT_CENTS = 50;
+ const STUDENT_DISCOUNT_FACTOR = 0.5;
+ const OFF_PEAK_DISCOUNT_FACTOR = 0.8;
+ const GROUP_CAP_CENTS = 200;
+ 
+ /** Every modifier, threaded through one function as a boolean - in a
+  *  fixed order that only exists because this is the order the `if`s
+- *  happen to be written in. */
++ *  happen to be written in. The senior discount has to come before the
++ *  student discount, and here that's just where its line sits. */
+ export function calculateFare(options: FareOptions): number {
+   let price = BASE_FARE_CENTS;
++  if (options.isSenior) price = price - SENIOR_DISCOUNT_CENTS;
+   if (options.isStudent) price = Math.round(price * STUDENT_DISCOUNT_FACTOR);
+   if (options.isOffPeak) price = Math.round(price * OFF_PEAK_DISCOUNT_FACTOR);
+   if (options.isGroupCapped) price = Math.min(price, GROUP_CAP_CENTS);
+diff --git a/src/types.ts b/src/types.ts
+index 4531525..81b8944 100644
+--- a/src/types.ts
++++ b/src/types.ts
+@@ -2,4 +2,5 @@ export interface FareOptions {
+   isStudent: boolean;
+   isOffPeak: boolean;
+   isGroupCapped: boolean;
++  isSenior: boolean;
+ }
