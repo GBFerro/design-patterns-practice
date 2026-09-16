@@ -1,0 +1,36 @@
+{
+  "id": "drill-bridge",
+  "title": "Bridge",
+  "type": "drill",
+  "category": "structural",
+  "patterns": ["Bridge"],
+  "verdict": "situational",
+  "difficulty": 3,
+  "estimatedMinutes": 35,
+  "prerequisites": [],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Caldermoor Transit Authority",
+  "subDomain": "fare calculation",
+  "act2": {
+    "axis": "aligned",
+    "summary": "one new value on each axis, at the same time",
+    "extensionBudget": { "maxFilesModified": 5, "maxLinesModified": 29, "maxHunks": 6 }
+  },
+  "forbidden": ["class FlatCashFare", "class DistanceCashFare"],
+  "solutions": [
+    {
+      "slug": "bridge",
+      "title": "one FarePolicy hierarchy, one PaymentMedium hierarchy, bridged by composition",
+      "absorbsAct2": true,
+      "tradeoff": "A new policy or a new medium is one new class and one new table entry - calculateFare itself never changes. The price: tracing a single combination now means opening three files (the policy, the medium, and the table that wires them together) instead of one class that did the whole thing."
+    }
+  ],
+  "reviewFocus": [
+    "Does calculateFare's own body change at all between act 1 and act 2 on the solution route?",
+    "If a fourth payment medium arrived, would any existing FarePolicy subclass need to change?",
+    "Is the baseline's class explosion actually N×M, or does some sharing already claw part of it back - and where exactly does that sharing break down?",
+    "Would two enums plus a single class with a (policy, medium) => number lookup table be simpler than two class hierarchies, for a domain this size?"
+  ]
+}

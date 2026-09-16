@@ -1,0 +1,85 @@
+diff --git a/src/fare.ts b/src/fare.ts
+index cd3a1dc..44a808a 100644
+--- a/src/fare.ts
++++ b/src/fare.ts
+@@ -3,6 +3,9 @@ import type { FarePolicyKind, FareResult, PaymentMediumKind } from "./types.ts";
+ const FLAT_BASE_CENTS = 275;
+ const DISTANCE_RATE_CENTS_PER_KM = 35;
+ const DISTANCE_MIN_CENTS = 150;
++const ZONE_RATE_CENTS = 90;
++const ZONE_MIN_CENTS = 200;
++const PASS_DISCOUNT_FACTOR = 0.9;
+ 
+ /** Cash machines only accept quarters - round up to the nearest 25 cents. */
+ function roundUpToQuarter(cents: number): number {
+@@ -35,7 +38,41 @@ class DistanceCardFare {
+   }
+ }
+ 
+-/** One fare policy, one payment medium: four combinations today, each its
++class ZoneCashFare {
++  calculate(measure: number): FareResult {
++    const base = Math.max(ZONE_MIN_CENTS, Math.round(measure * ZONE_RATE_CENTS));
++    return { chargedCents: roundUpToQuarter(base) };
++  }
++}
++
++class ZoneCardFare {
++  calculate(measure: number): FareResult {
++    const base = Math.max(ZONE_MIN_CENTS, Math.round(measure * ZONE_RATE_CENTS));
++    return { chargedCents: base + 10 };
++  }
++}
++
++class FlatPassFare {
++  calculate(): FareResult {
++    return { chargedCents: Math.round(FLAT_BASE_CENTS * PASS_DISCOUNT_FACTOR) };
++  }
++}
++
++class DistancePassFare {
++  calculate(measure: number): FareResult {
++    const base = Math.max(DISTANCE_MIN_CENTS, Math.round(measure * DISTANCE_RATE_CENTS_PER_KM));
++    return { chargedCents: Math.round(base * PASS_DISCOUNT_FACTOR) };
++  }
++}
++
++class ZonePassFare {
++  calculate(measure: number): FareResult {
++    const base = Math.max(ZONE_MIN_CENTS, Math.round(measure * ZONE_RATE_CENTS));
++    return { chargedCents: Math.round(base * PASS_DISCOUNT_FACTOR) };
++  }
++}
++
++/** One fare policy, one payment medium: nine combinations now, each its
+  *  own class, because nothing in this file lets a policy and a medium mix
+  *  and match on their own. */
+ export function calculateFare(
+@@ -45,7 +82,12 @@ export function calculateFare(
+ ): FareResult {
+   if (policyKind === "flat" && mediumKind === "cash") return new FlatCashFare().calculate();
+   if (policyKind === "flat" && mediumKind === "card") return new FlatCardFare().calculate();
++  if (policyKind === "flat" && mediumKind === "pass") return new FlatPassFare().calculate();
+   if (policyKind === "distance" && mediumKind === "cash") return new DistanceCashFare().calculate(measure);
+   if (policyKind === "distance" && mediumKind === "card") return new DistanceCardFare().calculate(measure);
++  if (policyKind === "distance" && mediumKind === "pass") return new DistancePassFare().calculate(measure);
++  if (policyKind === "zone" && mediumKind === "cash") return new ZoneCashFare().calculate(measure);
++  if (policyKind === "zone" && mediumKind === "card") return new ZoneCardFare().calculate(measure);
++  if (policyKind === "zone" && mediumKind === "pass") return new ZonePassFare().calculate(measure);
+   throw new Error(`no fare rule for ${policyKind}/${mediumKind}`);
+ }
+diff --git a/src/types.ts b/src/types.ts
+index 28c3d04..a4ce011 100644
+--- a/src/types.ts
++++ b/src/types.ts
+@@ -1,8 +1,8 @@
+ /** How the base fare is computed before any payment medium touches it. */
+-export type FarePolicyKind = "flat" | "distance";
++export type FarePolicyKind = "flat" | "distance" | "zone";
+ 
+ /** How a computed base fare turns into an actual charge. */
+-export type PaymentMediumKind = "cash" | "card";
++export type PaymentMediumKind = "cash" | "card" | "pass";
+ 
+ export interface FareResult {
+   chargedCents: number;

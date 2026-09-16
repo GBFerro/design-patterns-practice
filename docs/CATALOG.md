@@ -38,7 +38,7 @@ alone, and is marked as a stretch exercise.
 | Pattern | Drill | Verdict | Status |
 | --- | --- | --- | --- |
 | Adapter | [`drill-adapter`](../exercises/drills/02-structural/adapter/) | `essential` | ✅ |
-| Bridge | — | `—` | ⬜ |
+| Bridge | [`drill-bridge`](../exercises/drills/02-structural/bridge/) | `situational` | ✅ |
 | Composite | — | `—` | ⬜ |
 | Decorator | — | `—` | ⬜ |
 | Facade | — | `—` | ⬜ |
@@ -63,6 +63,6 @@ alone, and is marked as a stretch exercise.
 
 ---
 
-_17 of 23 drills written._
+_18 of 23 drills written._
 
-_Verdicts so far — essential: 9 · situational: 6 · niche: 1 · avoid: 1._
+_Verdicts so far — essential: 9 · situational: 7 · niche: 1 · avoid: 1._

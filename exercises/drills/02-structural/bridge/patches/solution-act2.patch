@@ -1,0 +1,89 @@
+diff --git a/solutions/bridge/fare-policy.ts b/solutions/bridge/fare-policy.ts
+index 11ac679..a22b405 100644
+--- a/solutions/bridge/fare-policy.ts
++++ b/solutions/bridge/fare-policy.ts
+@@ -4,6 +4,8 @@ import type { FareResult } from "./types.ts";
+ const FLAT_BASE_CENTS = 275;
+ const DISTANCE_RATE_CENTS_PER_KM = 35;
+ const DISTANCE_MIN_CENTS = 150;
++const ZONE_RATE_CENTS = 90;
++const ZONE_MIN_CENTS = 200;
+ 
+ /** Abstraction: how a base fare is computed, bridged to whichever
+  *  PaymentMedium it was built with. A policy never names a medium by
+@@ -29,3 +31,9 @@ export class DistanceFarePolicy extends FarePolicy {
+     return Math.max(DISTANCE_MIN_CENTS, Math.round(measure * DISTANCE_RATE_CENTS_PER_KM));
+   }
+ }
++
++export class ZoneFarePolicy extends FarePolicy {
++  baseFareCents(measure: number): number {
++    return Math.max(ZONE_MIN_CENTS, Math.round(measure * ZONE_RATE_CENTS));
++  }
++}
+diff --git a/solutions/bridge/fare.ts b/solutions/bridge/fare.ts
+index 7348ebe..5e0b42b 100644
+--- a/solutions/bridge/fare.ts
++++ b/solutions/bridge/fare.ts
+@@ -1,15 +1,17 @@
+-import { DistanceFarePolicy, FlatFarePolicy, type FarePolicy } from "./fare-policy.ts";
+-import { CardPayment, CashPayment, type PaymentMedium } from "./payment-medium.ts";
++import { DistanceFarePolicy, FlatFarePolicy, ZoneFarePolicy, type FarePolicy } from "./fare-policy.ts";
++import { CardPayment, CashPayment, PassPayment, type PaymentMedium } from "./payment-medium.ts";
+ import type { FarePolicyKind, FareResult, PaymentMediumKind } from "./types.ts";
+ 
+ const MEDIA: Record<PaymentMediumKind, () => PaymentMedium> = {
+   cash: () => new CashPayment(),
+   card: () => new CardPayment(),
++  pass: () => new PassPayment(),
+ };
+ 
+ const POLICIES: Record<FarePolicyKind, (medium: PaymentMedium) => FarePolicy> = {
+   flat: (medium) => new FlatFarePolicy(medium),
+   distance: (medium) => new DistanceFarePolicy(medium),
++  zone: (medium) => new ZoneFarePolicy(medium),
+ };
+ 
+ /** Any fare policy works with any payment medium - nothing here is
+diff --git a/solutions/bridge/index.ts b/solutions/bridge/index.ts
+index 030c875..3aece5e 100644
+--- a/solutions/bridge/index.ts
++++ b/solutions/bridge/index.ts
+@@ -1,5 +1,5 @@
+ export { calculateFare } from "./fare.ts";
+-export { DistanceFarePolicy, FarePolicy, FlatFarePolicy } from "./fare-policy.ts";
+-export { CardPayment, CashPayment } from "./payment-medium.ts";
++export { DistanceFarePolicy, FarePolicy, FlatFarePolicy, ZoneFarePolicy } from "./fare-policy.ts";
++export { CardPayment, CashPayment, PassPayment } from "./payment-medium.ts";
+ export type { PaymentMedium } from "./payment-medium.ts";
+ export type { FarePolicyKind, FareResult, PaymentMediumKind } from "./types.ts";
+diff --git a/solutions/bridge/payment-medium.ts b/solutions/bridge/payment-medium.ts
+index 2f8f110..9593881 100644
+--- a/solutions/bridge/payment-medium.ts
++++ b/solutions/bridge/payment-medium.ts
+@@ -17,3 +17,10 @@ export class CardPayment implements PaymentMedium {
+     return baseFareCents + 10;
+   }
+ }
++
++/** A transit pass discounts the base fare by 10%, rounded to the nearest cent. */
++export class PassPayment implements PaymentMedium {
++  chargeFor(baseFareCents: number): number {
++    return Math.round(baseFareCents * 0.9);
++  }
++}
+diff --git a/solutions/bridge/types.ts b/solutions/bridge/types.ts
+index 28c3d04..a4ce011 100644
+--- a/solutions/bridge/types.ts
++++ b/solutions/bridge/types.ts
+@@ -1,8 +1,8 @@
+ /** How the base fare is computed before any payment medium touches it. */
+-export type FarePolicyKind = "flat" | "distance";
++export type FarePolicyKind = "flat" | "distance" | "zone";
+ 
+ /** How a computed base fare turns into an actual charge. */
+-export type PaymentMediumKind = "cash" | "card";
++export type PaymentMediumKind = "cash" | "card" | "pass";
+ 
+ export interface FareResult {
+   chargedCents: number;

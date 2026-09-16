@@ -1,0 +1,11 @@
+{
+  "name": "@dp/drill-bridge",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-bridge": "./solutions/bridge/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}
