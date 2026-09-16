@@ -278,3 +278,22 @@ between two existing ones, touched two files and twelve lines with no
 existing rule class changed. The honest part is in ACT2.md's hunk count,
 not its line count — read that section before deciding hunk count is a
 reliable proxy for change size.
+
+## What would change my mind
+
+This drill's verdict is `situational`, and the case for that is honest
+about what act 2 actually showed: for *this* exercise's act 2, the array
+alternative discussed above would have cost about the same as the chain
+did, because six known checks reordered for one telescope is still a
+small, closed problem either form handles. What would change my mind
+toward `essential` is a domain where the chain's membership and order are
+not knowable ahead of time at all - HTTP middleware, where each request
+picks up a different stack assembled from plugins registered by code the
+core framework never sees, or a link that must decide, on its own, whether
+to swallow a request entirely rather than just pass or fail it (GoF's
+`handleRequest` supports that directly; a `array.find` does not without
+extra plumbing bolted on). What would change my mind toward not reaching
+for a pattern at all is the opposite: a check list that never reorders and
+never grows past what fits in one function - at that size, six sequential
+`if` statements are more honest about the fact that nothing here is
+actually being composed at runtime.

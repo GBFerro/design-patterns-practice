@@ -228,3 +228,22 @@ See [ACT2.md](./ACT2.md) for the numbers, and for the one thing every other
 drill's `ACT2.md` in this module did not have to address: this act 2 retired
 part of act 1, on purpose, and the walkthrough there says why that is this
 drill's actual lesson, not a defect in the exercise.
+
+## What would change my mind
+
+This drill's verdict is `situational`, and the case for that is the panel's
+own size: six widgets, one coordination rule, changing rarely enough that
+act 2 is the first change this exercise has ever asked of it. What would
+change my mind toward `essential` is a colleague count that keeps growing -
+ten widgets, then twenty, each added by a different contributor who would
+otherwise reach for a direct reference to whichever other widget seems
+closest at hand. That is the situation Mediator was built for: not six
+widgets with one rule, but a graph of pairwise dependencies that nobody
+can draw anymore. What would change my mind the other way, toward
+`avoid`, is the failure mode this exercise's own `TYPESCRIPT.md` entry
+names directly - a mediator that has quietly absorbed logging, validation,
+persistence and coordination all at once, because "the one place that
+already knows about everything" is a standing invitation to put anything
+there. `PanelMediator` stays honest here because it does exactly one job -
+compute readiness from six inputs - and the moment it does two unrelated
+jobs, the right fix is splitting it, not defending the pattern.

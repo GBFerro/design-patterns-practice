@@ -252,3 +252,24 @@ act 1 replaced. Virtual methods on each record class make a new record
 kind free (one new class, done) at the price of making a new report
 expensive (touch every class) - which is not a hypothetical alternative,
 it is the receipt for the bet this solution made, read backwards.
+
+## What would change my mind
+
+This drill's verdict is `situational`, and act 2's own two halves are the
+case for it: the pattern wins cleanly when a fourth report arrives
+(one new file, zero edits to any record) and loses just as cleanly when a
+fourth record kind arrives (every report visitor gains a method, and the
+interface every report implements changes too) - a symmetric trade, not a
+win. What would change my mind toward `essential` is a domain where that
+symmetry breaks in the pattern's favor for real: a closed, stable set of
+record kinds - genuinely closed, not just closed so far - paired with
+reports that keep arriving from places this codebase doesn't control (a
+plugin system, a reporting library other teams write against). That is
+exactly the condition `TYPESCRIPT.md`'s Visitor row names for when the
+classic form earns its keep again, and it is a stronger claim than this
+exercise's four record kinds and four reports actually demonstrate. What
+would change my mind toward not reaching for Visitor at all is the
+discriminated-union alternative discussed above turning out to be true
+for this domain over the long run - record kinds and operations both
+staying small enough that one `switch` per report, with a `never` check
+holding the line, never becomes harder to read than a class hierarchy.

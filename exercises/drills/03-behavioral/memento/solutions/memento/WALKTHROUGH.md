@@ -246,3 +246,21 @@ at all - the one file the target explicitly promised would not need to
 change for a new field, did not change. Read ACT2.md's hunk-count section
 before deciding raw lines-touched is the number that matters here; on
 this exercise it very nearly is not.
+
+## What would change my mind
+
+This drill's verdict is `situational`, and the case for that is how little
+`SetupHistory` actually does: hold a stack, push, pop, nothing that reads
+a field. A plain array of snapshots would have gotten a caretaker this
+simple almost as far, with discipline standing in for the type checker.
+What would change my mind toward `essential` is a caretaker that earns
+its keep independently of the encapsulation guarantee - a full undo/redo
+stack with branching history, checkpoint labeling, or persistence to disk,
+where "the caretaker manages mementos without understanding them" stops
+being a nice-to-have and becomes the only way the caretaker's own code
+stays simple as the history features grow. It would also move toward
+`essential` the moment a memento needs to cross a real trust boundary -
+serialized, sent to a plugin, written somewhere outside this codebase -
+where a same-file cast is not a promise anyone else has reason to honor,
+and the `#private`-plus-branded-token route considered above stops being
+overkill and starts being the actual requirement.
