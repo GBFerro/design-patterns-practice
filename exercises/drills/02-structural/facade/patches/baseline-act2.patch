@@ -1,0 +1,165 @@
+diff --git a/src/fare-calculator.ts b/src/fare-calculator.ts
+index 99ada3a..d7bf550 100644
+--- a/src/fare-calculator.ts
++++ b/src/fare-calculator.ts
+@@ -1,11 +1,15 @@
+ import type { Route } from "./types.ts";
++import type { SurchargeService } from "./surcharge-service.ts";
+ 
+ const BASE_FARE_CENTS = 250;
+ const PER_LEG_CENTS = 75;
+ 
+ /** Subsystem 4: what this route costs, in cents. */
+ export class FareCalculator {
++  constructor(private readonly surchargeService: SurchargeService) {}
++
+   calculate(route: Route): number {
+-    return BASE_FARE_CENTS + route.legs.length * PER_LEG_CENTS;
++    const base = BASE_FARE_CENTS + route.legs.length * PER_LEG_CENTS;
++    return base + this.surchargeService.peakSurchargeCents(route);
+   }
+ }
+diff --git a/src/real-time-alert-service.ts b/src/real-time-alert-service.ts
+new file mode 100644
+index 0000000..dad7c3b
+--- /dev/null
++++ b/src/real-time-alert-service.ts
+@@ -0,0 +1,17 @@
++import type { Route } from "./types.ts";
++
++const LINE_ALERTS: Record<string, string> = {
++  red: "Red Line: minor delays near Mill Ave",
++  green: "Green Line: reduced weekend service to Riverside",
++};
++
++/** Replaces AlertService: reads from the live feed instead of a static table. */
++export class RealTimeAlertService {
++  constructor(private readonly feedUrl: string) {}
++
++  activeAlerts(route: Route): string[] {
++    return route.legs
++      .map((leg) => LINE_ALERTS[leg.lineId])
++      .filter((alert): alert is string => alert !== undefined);
++  }
++}
+diff --git a/src/route-finder.ts b/src/route-finder.ts
+index 3f11b99..f00fbca 100644
+--- a/src/route-finder.ts
++++ b/src/route-finder.ts
+@@ -7,6 +7,7 @@ const LEGS: Record<string, readonly RouteLeg[]> = {
+     { lineId: "red", fromStopId: "mill-ave", toStopId: "harbor-sq", minutes: 12 },
+     { lineId: "blue", fromStopId: "harbor-sq", toStopId: "castleview", minutes: 9 },
+   ],
++  "mill-ave->riverside": [{ lineId: "green", fromStopId: "mill-ave", toStopId: "riverside", minutes: 15 }],
+ };
+ 
+ /** Subsystem 2: the legs a rider has to ride to get from one stop to another. */
+diff --git a/src/schedule-lookup.ts b/src/schedule-lookup.ts
+index b7912bb..7e2ded2 100644
+--- a/src/schedule-lookup.ts
++++ b/src/schedule-lookup.ts
+@@ -1,10 +1,19 @@
+ import type { Route } from "./types.ts";
+ 
+ const MINUTES_PER_LEG = 4;
++const GREEN_LINE_ID = "green";
++const RIVERSIDE_TIMEZONE_BUFFER_MINUTES: Record<string, number> = {
++  "America/Denver": 3,
++  "America/Los_Angeles": 8,
++};
+ 
+ /** Subsystem 3: when the next vehicle for this route actually leaves. */
+ export class ScheduleLookup {
++  constructor(private readonly riversideTimezone: string) {}
++
+   nextDepartureMinutes(route: Route): number {
+-    return route.legs.length * MINUTES_PER_LEG;
++    const crossesIntoRiverside = route.legs.some((leg) => leg.lineId === GREEN_LINE_ID);
++    const buffer = crossesIntoRiverside ? (RIVERSIDE_TIMEZONE_BUFFER_MINUTES[this.riversideTimezone] ?? 0) : 0;
++    return route.legs.length * MINUTES_PER_LEG + buffer;
+   }
+ }
+diff --git a/src/stop-resolver.ts b/src/stop-resolver.ts
+index c14775f..5d7bfab 100644
+--- a/src/stop-resolver.ts
++++ b/src/stop-resolver.ts
+@@ -4,6 +4,7 @@ const STOPS: Record<string, Stop> = {
+   "mill-ave": { id: "mill-ave", name: "Mill Ave" },
+   "harbor-sq": { id: "harbor-sq", name: "Harbor Square" },
+   castleview: { id: "castleview", name: "Castleview" },
++  riverside: { id: "riverside", name: "Riverside" },
+ };
+ 
+ /** Subsystem 1: turns whatever a caller typed into a real Stop, or rejects it. */
+diff --git a/src/surcharge-service.ts b/src/surcharge-service.ts
+new file mode 100644
+index 0000000..d9e9d0d
+--- /dev/null
++++ b/src/surcharge-service.ts
+@@ -0,0 +1,12 @@
++import type { Route } from "./types.ts";
++
++const GREEN_LINE_ID = "green";
++const RIVERSIDE_SURCHARGE_CENTS = 50;
++
++/** New subsystem: a flat surcharge for trips that cross into Riverside. */
++export class SurchargeService {
++  peakSurchargeCents(route: Route): number {
++    const crossesIntoRiverside = route.legs.some((leg) => leg.lineId === GREEN_LINE_ID);
++    return crossesIntoRiverside ? RIVERSIDE_SURCHARGE_CENTS : 0;
++  }
++}
+diff --git a/src/trip-planning-api.ts b/src/trip-planning-api.ts
+index 3f57b69..022a0ab 100644
+--- a/src/trip-planning-api.ts
++++ b/src/trip-planning-api.ts
+@@ -1,17 +1,18 @@
+-import { AlertService } from "./alert-service.ts";
+ import { FareCalculator } from "./fare-calculator.ts";
++import { RealTimeAlertService } from "./real-time-alert-service.ts";
+ import { RouteFinder } from "./route-finder.ts";
+ import { ScheduleLookup } from "./schedule-lookup.ts";
+ import { StopResolver } from "./stop-resolver.ts";
++import { SurchargeService } from "./surcharge-service.ts";
+ import type { TripPlan } from "./types.ts";
+ 
+ /** Called by the HTTP handler behind `GET /trips/plan`. */
+ export function planTrip(originName: string, destinationName: string): TripPlan {
+   const stopResolver = new StopResolver();
+   const routeFinder = new RouteFinder();
+-  const scheduleLookup = new ScheduleLookup();
+-  const fareCalculator = new FareCalculator();
+-  const alertService = new AlertService();
++  const scheduleLookup = new ScheduleLookup("America/Denver");
++  const fareCalculator = new FareCalculator(new SurchargeService());
++  const alertService = new RealTimeAlertService("https://caldermoor.example/alerts");
+ 
+   const origin = stopResolver.resolve(originName);
+   const destination = stopResolver.resolve(destinationName);
+diff --git a/src/trip-summary-cli.ts b/src/trip-summary-cli.ts
+index f3b58a4..b9c3585 100644
+--- a/src/trip-summary-cli.ts
++++ b/src/trip-summary-cli.ts
+@@ -1,17 +1,18 @@
+-import { AlertService } from "./alert-service.ts";
+ import { FareCalculator } from "./fare-calculator.ts";
++import { RealTimeAlertService } from "./real-time-alert-service.ts";
+ import { RouteFinder } from "./route-finder.ts";
+ import { ScheduleLookup } from "./schedule-lookup.ts";
+ import { StopResolver } from "./stop-resolver.ts";
++import { SurchargeService } from "./surcharge-service.ts";
+ import type { TripPlan } from "./types.ts";
+ 
+ /** Called by `dp-cli trip-summary <origin> <destination>`. */
+ export function printTripSummary(originName: string, destinationName: string): TripPlan {
+   const stopResolver = new StopResolver();
+   const routeFinder = new RouteFinder();
+-  const scheduleLookup = new ScheduleLookup();
+-  const fareCalculator = new FareCalculator();
+-  const alertService = new AlertService();
++  const scheduleLookup = new ScheduleLookup("America/Denver");
++  const fareCalculator = new FareCalculator(new SurchargeService());
++  const alertService = new RealTimeAlertService("https://caldermoor.example/alerts");
+ 
+   const origin = stopResolver.resolve(originName);
+   const destination = stopResolver.resolve(destinationName);

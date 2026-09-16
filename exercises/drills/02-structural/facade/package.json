@@ -1,0 +1,11 @@
+{
+  "name": "@dp/drill-facade",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-facade": "./solutions/facade/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

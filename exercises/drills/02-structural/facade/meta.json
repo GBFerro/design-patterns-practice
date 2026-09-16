@@ -1,0 +1,36 @@
+{
+  "id": "drill-facade",
+  "title": "Facade",
+  "type": "drill",
+  "category": "structural",
+  "patterns": ["Facade"],
+  "verdict": "essential",
+  "difficulty": 2,
+  "estimatedMinutes": 30,
+  "prerequisites": [],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Caldermoor Transit Authority",
+  "subDomain": "trip planning",
+  "act2": {
+    "axis": "aligned",
+    "summary": "two subsystems change their internals and one is replaced",
+    "extensionBudget": { "maxFilesModified": 5, "maxLinesModified": 28, "maxHunks": 5 }
+  },
+  "forbidden": ["const stopResolver = new StopResolver\\(\\);", "const alertService = new AlertService\\(\\);"],
+  "solutions": [
+    {
+      "slug": "facade",
+      "title": "One TripPlanner facade, two thin call sites",
+      "absorbsAct2": true,
+      "tradeoff": "planTrip and printTripSummary each shrink to one line, delegating to a shared TripPlanner - a subsystem change or replacement gets edited once instead of once per caller. The price: neither caller can skip a subsystem or reorder the five calls anymore, and reading what a trip plan actually does now means opening one more file."
+    }
+  ],
+  "reviewFocus": [
+    "Do trip-planning-api.ts and trip-summary-cli.ts import any of the five subsystems directly, or only TripPlanner?",
+    "If a third caller needed a fare estimate without checking alerts, could it get one without either bypassing TripPlanner or making every caller pay for all five subsystems?",
+    "Is ACT2.md honest that four of the five changed files are the same tax on both routes, and only trip-planner.ts is where the pattern's argument actually lives?",
+    "Would a plain module of functions - no TripPlanner class - have made the same argument, given the subsystems are built once and never reconfigured per call?"
+  ]
+}

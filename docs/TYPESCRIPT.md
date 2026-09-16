@@ -27,7 +27,7 @@ today is engineering or cosplay.
 | **Interpreter** ✅ | A discriminated union plus a recursive `evaluate` | Unchanged in spirit; the union replaces the class hierarchy |
 | **Adapter** ✅ | Structural typing: no `implements`, an object literal is enough | When the adapter holds state or must be swapped at runtime |
 | **Decorator** ✅ | Function composition for one-method interfaces | More than one method, or the wrapper needs state |
-| **Facade** 🚧 | A module | A module *is* the pattern. The only real rule: a facade that leaks its subsystems is not one |
+| **Facade** ✅ | A module | A module *is* the pattern. The only real rule: a facade that leaks its subsystems is not one |
 | **Proxy** 🚧 | `Proxy` (the built-in) for the general case; a hand-written wrapper for one interface | Unchanged. Note the built-in and the pattern share a name and little else |
 | **Composite** ✅ | Unchanged | Unchanged. A discriminated union of node types is the TS-flavoured variant |
 | **Bridge** ✅ | Generics cover part of it | When both axes are genuinely open. Otherwise you have one axis and a long name |

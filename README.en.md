@@ -40,6 +40,7 @@ git clone <your fork> && cd design-patterns-practice
 | [`drill-bridge`](./exercises/drills/02-structural/bridge/) | Bridge | ●●● | ~35 min | `situational` | aligned |
 | [`drill-composite`](./exercises/drills/02-structural/composite/) | Composite | ●●○ | ~30 min | `essential` | aligned |
 | [`drill-decorator`](./exercises/drills/02-structural/decorator/) | Decorator | ●●● | ~30 min | `essential` | ⚠ orthogonal |
+| [`drill-facade`](./exercises/drills/02-structural/facade/) | Facade | ●●○ | ~30 min | `essential` | aligned |
 | [`drill-chain-of-responsibility`](./exercises/drills/03-behavioral/chain-of-responsibility/) | Chain of Responsibility | ●●● | ~40 min | `situational` | aligned |
 | [`drill-command`](./exercises/drills/03-behavioral/command/) | Command | ●●● | ~40 min | `essential` | aligned |
 | [`drill-interpreter`](./exercises/drills/03-behavioral/interpreter/) | Interpreter | ●●● | ~40 min | `niche` | aligned |
@@ -54,4 +55,4 @@ git clone <your fork> && cd design-patterns-practice
 
 ---
 
-_20 of 36 exercises written (23 drills · 8 choices · 5 katas)._
+_21 of 36 exercises written (23 drills · 8 choices · 5 katas)._

@@ -41,7 +41,7 @@ alone, and is marked as a stretch exercise.
 | Bridge | [`drill-bridge`](../exercises/drills/02-structural/bridge/) | `situational` | ✅ |
 | Composite | [`drill-composite`](../exercises/drills/02-structural/composite/) | `essential` | ✅ |
 | Decorator | [`drill-decorator`](../exercises/drills/02-structural/decorator/) | `essential` | ✅ |
-| Facade | — | `—` | ⬜ |
+| Facade | [`drill-facade`](../exercises/drills/02-structural/facade/) | `essential` | ✅ |
 | Flyweight | — | `—` | ⬜ |
 | Proxy | — | `—` | ⬜ |
 
@@ -63,6 +63,6 @@ alone, and is marked as a stretch exercise.
 
 ---
 
-_20 of 23 drills written._
+_21 of 23 drills written._
 
-_Verdicts so far — essential: 11 · situational: 7 · niche: 1 · avoid: 1._
+_Verdicts so far — essential: 12 · situational: 7 · niche: 1 · avoid: 1._
