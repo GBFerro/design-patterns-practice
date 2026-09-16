@@ -1,0 +1,38 @@
+diff --git a/src/index.ts b/src/index.ts
+index d8ae66b..d9a78ce 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -1,3 +1,4 @@
++export { resetStopMetadataAllocations, stopMetadataAllocationCount } from "./allocation-tracker.ts";
+ export { renderStopTime } from "./render-stop-time.ts";
+ export { buildTimetable } from "./timetable.ts";
+ export type { StopMetadata, StopTime, TripStopEntry } from "./types.ts";
+diff --git a/src/timetable.ts b/src/timetable.ts
+index 30af1ca..e9f2bb3 100644
+--- a/src/timetable.ts
++++ b/src/timetable.ts
+@@ -2,11 +2,23 @@ import { recordStopMetadataAllocation } from "./allocation-tracker.ts";
+ import { STOP_DIRECTORY } from "./stop-directory.ts";
+ import type { StopMetadata, StopTime, TripStopEntry } from "./types.ts";
+ 
++const builtStops = new Map<string, StopMetadata>();
++
+ function buildStopMetadata(stopId: string): StopMetadata {
++  const cached = builtStops.get(stopId);
++  if (cached) return cached;
++
+   const entry = STOP_DIRECTORY[stopId];
+   if (!entry) throw new Error(`unknown stop: ${stopId}`);
+   recordStopMetadataAllocation();
+-  return { stopId, name: entry.name, zone: entry.zone, wheelchairAccessible: entry.wheelchairAccessible };
++  const metadata: StopMetadata = {
++    stopId,
++    name: entry.name,
++    zone: entry.zone,
++    wheelchairAccessible: entry.wheelchairAccessible,
++  };
++  builtStops.set(stopId, metadata);
++  return metadata;
+ }
+ 
+ /** One StopTime per trip-stop pair. Caldermoor's weekday timetable is 200,000 of these -

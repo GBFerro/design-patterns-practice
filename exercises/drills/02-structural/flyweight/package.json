@@ -1,0 +1,11 @@
+{
+  "name": "@dp/drill-flyweight",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-flyweight": "./solutions/flyweight/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

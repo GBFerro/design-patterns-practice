@@ -1,0 +1,36 @@
+{
+  "id": "drill-flyweight",
+  "title": "Flyweight",
+  "type": "drill",
+  "category": "structural",
+  "patterns": ["Flyweight"],
+  "verdict": "niche",
+  "difficulty": 2,
+  "estimatedMinutes": 30,
+  "prerequisites": [],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Caldermoor Transit Authority",
+  "subDomain": "timetable rendering",
+  "act2": {
+    "axis": "aligned",
+    "summary": "an allocation budget, measured - not a functional requirement",
+    "extensionBudget": { "maxFilesModified": 1, "maxLinesModified": 1, "maxHunks": 1 }
+  },
+  "forbidden": ["function buildStopMetadata\\("],
+  "solutions": [
+    {
+      "slug": "flyweight",
+      "title": "One StopMetadataFactory, shared by every StopTime",
+      "absorbsAct2": true,
+      "tradeoff": "A StopMetadataFactory caches one StopMetadata per stop id, so 200,000 StopTimes allocate exactly three. The price: nothing but discipline stops a caller from building a StopMetadata object literal directly and quietly opting out of the sharing, and the guarantee is worthless without a test that actually counts allocations - a Map nobody measures is ceremony, not a trade."
+    }
+  ],
+  "reviewFocus": [
+    "Does act2/tests/allocation-budget.test.ts actually assert a number, or does it just check that buildTimetable still runs?",
+    "Could any file other than StopMetadataFactory construct a StopMetadata object literal without the type system objecting?",
+    "Is ACT2.md honest that the baseline's fourteen extra lines are a Flyweight factory in every way but name?",
+    "Given STOP_DIRECTORY has three entries today, at what point would this drill's niche verdict flip - what has to be true about the shared data itself, not just the object count, for the factory to earn its keep?"
+  ]
+}

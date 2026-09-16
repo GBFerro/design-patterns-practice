@@ -31,7 +31,7 @@ today is engineering or cosplay.
 | **Proxy** 🚧 | `Proxy` (the built-in) for the general case; a hand-written wrapper for one interface | Unchanged. Note the built-in and the pattern share a name and little else |
 | **Composite** ✅ | Unchanged | Unchanged. A discriminated union of node types is the TS-flavoured variant |
 | **Bridge** ✅ | Generics cover part of it | When both axes are genuinely open. Otherwise you have one axis and a long name |
-| **Flyweight** 🚧 | A `Map` of interned values | Only with a measurement. Without numbers it is pure cost |
+| **Flyweight** ✅ | A `Map` of interned values | Only with a measurement. Without numbers it is pure cost |
 | **Factory Method** ✅ | A function | When the choice of product varies with a subtype you already have |
 | **Abstract Factory** ✅ | An object of factory functions | When mismatching two families is the bug you are preventing — that, not "creating objects", is the point |
 | **Builder** ✅ | An object literal and a validating constructor | Ordered steps, or an immutable product validated once at the end |
