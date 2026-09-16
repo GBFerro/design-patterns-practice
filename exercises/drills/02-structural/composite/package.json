@@ -1,0 +1,11 @@
+{
+  "name": "@dp/drill-composite",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-composite": "./solutions/composite/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

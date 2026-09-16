@@ -1,0 +1,27 @@
+diff --git a/solutions/composite/index.ts b/solutions/composite/index.ts
+index db60fd2..ba7095c 100644
+--- a/solutions/composite/index.ts
++++ b/solutions/composite/index.ts
+@@ -5,3 +5,4 @@ export type { RouteNode } from "./route-node.ts";
+ export { Segment } from "./segment.ts";
+ export { Stop } from "./stop.ts";
+ export { totalMinutes } from "./total-minutes.ts";
++export { WalkingTransfer } from "./walking-transfer.ts";
+diff --git a/solutions/composite/walking-transfer.ts b/solutions/composite/walking-transfer.ts
+new file mode 100644
+index 0000000..e99920d
+--- /dev/null
++++ b/solutions/composite/walking-transfer.ts
+@@ -0,0 +1,12 @@
++import type { RouteNode } from "./route-node.ts";
++
++/** Leaf: a walking transfer's only contribution is its own walking time -
++ *  nothing about Line, Journey, or the other leaves had to change for
++ *  this to be true. */
++export class WalkingTransfer implements RouteNode {
++  constructor(public readonly walkMinutes: number) {}
++
++  totalMinutes(): number {
++    return this.walkMinutes;
++  }
++}

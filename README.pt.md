@@ -38,6 +38,7 @@ git clone <seu fork> && cd design-patterns-practice
 | [`drill-singleton`](./exercises/drills/01-creational/singleton/) | Singleton | ●●○ | ~30 min | `avoid` | aligned |
 | [`drill-adapter`](./exercises/drills/02-structural/adapter/) | Adapter | ●●○ | ~30 min | `essential` | aligned |
 | [`drill-bridge`](./exercises/drills/02-structural/bridge/) | Bridge | ●●● | ~35 min | `situational` | aligned |
+| [`drill-composite`](./exercises/drills/02-structural/composite/) | Composite | ●●○ | ~30 min | `essential` | aligned |
 | [`drill-chain-of-responsibility`](./exercises/drills/03-behavioral/chain-of-responsibility/) | Chain of Responsibility | ●●● | ~40 min | `situational` | aligned |
 | [`drill-command`](./exercises/drills/03-behavioral/command/) | Command | ●●● | ~40 min | `essential` | aligned |
 | [`drill-interpreter`](./exercises/drills/03-behavioral/interpreter/) | Interpreter | ●●● | ~40 min | `niche` | aligned |
@@ -52,4 +53,4 @@ git clone <seu fork> && cd design-patterns-practice
 
 ---
 
-_18 de 36 exercícios escritos (23 drills · 8 choices · 5 katas)._
+_19 de 36 exercícios escritos (23 drills · 8 choices · 5 katas)._

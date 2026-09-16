@@ -29,7 +29,7 @@ today is engineering or cosplay.
 | **Decorator** 🚧 | Function composition for one-method interfaces | More than one method, or the wrapper needs state |
 | **Facade** 🚧 | A module | A module *is* the pattern. The only real rule: a facade that leaks its subsystems is not one |
 | **Proxy** 🚧 | `Proxy` (the built-in) for the general case; a hand-written wrapper for one interface | Unchanged. Note the built-in and the pattern share a name and little else |
-| **Composite** 🚧 | Unchanged | Unchanged. A discriminated union of node types is the TS-flavoured variant |
+| **Composite** ✅ | Unchanged | Unchanged. A discriminated union of node types is the TS-flavoured variant |
 | **Bridge** ✅ | Generics cover part of it | When both axes are genuinely open. Otherwise you have one axis and a long name |
 | **Flyweight** 🚧 | A `Map` of interned values | Only with a measurement. Without numbers it is pure cost |
 | **Factory Method** ✅ | A function | When the choice of product varies with a subtype you already have |

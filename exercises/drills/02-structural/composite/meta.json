@@ -1,0 +1,36 @@
+{
+  "id": "drill-composite",
+  "title": "Composite",
+  "type": "drill",
+  "category": "structural",
+  "patterns": ["Composite"],
+  "verdict": "essential",
+  "difficulty": 2,
+  "estimatedMinutes": 30,
+  "prerequisites": [],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Caldermoor Transit Authority",
+  "subDomain": "the network",
+  "act2": {
+    "axis": "aligned",
+    "summary": "a new node kind: a walking transfer",
+    "extensionBudget": { "maxFilesModified": 1, "maxLinesModified": 1, "maxHunks": 1 }
+  },
+  "forbidden": ["node instanceof Line", "node instanceof Journey"],
+  "solutions": [
+    {
+      "slug": "composite",
+      "title": "one RouteNode interface, one CompositeRouteNode base, no instanceof",
+      "absorbsAct2": true,
+      "tradeoff": "A new node kind is one new file implementing RouteNode - totalMinutes never changes, and neither does CompositeRouteNode. The price: the total for one specific node no longer has one obvious place to read it from - it's whatever totalMinutes() resolves to, spread across however many classes the tree actually uses."
+    }
+  ],
+  "reviewFocus": [
+    "Does totalMinutes' own body change at all between act 1 and act 2 on the solution route?",
+    "If a sixth node kind arrived, would CompositeRouteNode need to change?",
+    "Is Line and Journey both extending CompositeRouteNode the right call, or should Journey be allowed to do something a Line can't - and would that still fit one shared base class?",
+    "Would a plain recursive function over a discriminated union (a `kind` tag plus `children?`) be simpler than an interface and a class hierarchy, for a tree this shape?"
+  ]
+}
