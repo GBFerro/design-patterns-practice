@@ -1,0 +1,11 @@
+{
+  "name": "@dp/drill-proxy",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-proxy": "./solutions/proxy/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

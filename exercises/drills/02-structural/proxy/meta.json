@@ -1,0 +1,36 @@
+{
+  "id": "drill-proxy",
+  "title": "Proxy",
+  "type": "drill",
+  "category": "structural",
+  "patterns": ["Proxy"],
+  "verdict": "situational",
+  "difficulty": 2,
+  "estimatedMinutes": 30,
+  "prerequisites": [],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Caldermoor Transit Authority",
+  "subDomain": "vehicle positions",
+  "act2": {
+    "axis": "aligned",
+    "summary": "access control added, with zero edits to caller or subject",
+    "extensionBudget": { "maxFilesModified": 3, "maxLinesModified": 13, "maxHunks": 3 }
+  },
+  "forbidden": ["realService\\.currentPosition\\(vehicleId\\)"],
+  "solutions": [
+    {
+      "slug": "proxy",
+      "title": "One VehiclePositionProxy, shared by every caller",
+      "absorbsAct2": true,
+      "tradeoff": "VehiclePositionProxy implements the same VehiclePositionService interface the real service does, so neither caller can tell it's there - caching and, later, access control both land in this one file instead of in every caller. The price: nothing but discipline stops a caller from bypassing the proxy and talking to the real service directly, and for a cheap-to-call subject the indirection is pure cost until a second concern like act 2's shows up to justify it."
+    }
+  ],
+  "reviewFocus": [
+    "Do dashboard.ts and vehicle-position-cli.ts import RealVehiclePositionService at all, or only VehiclePositionService?",
+    "If a third caller constructed RealVehiclePositionService directly, would anything - the compiler, a test - catch that it bypassed the restriction?",
+    "Is WALKTHROUGH.md honest about which GoF proxy sub-pattern act 1 built (virtual/remote) versus which act 2 added (protection), and that both live in one class?",
+    "Given how cheap RealVehiclePositionService is to call, would this drill's situational verdict still hold if the real subject were actually slow or resource-limited?"
+  ]
+}

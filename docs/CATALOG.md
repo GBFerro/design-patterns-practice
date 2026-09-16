@@ -43,7 +43,7 @@ alone, and is marked as a stretch exercise.
 | Decorator | [`drill-decorator`](../exercises/drills/02-structural/decorator/) | `essential` | ✅ |
 | Facade | [`drill-facade`](../exercises/drills/02-structural/facade/) | `essential` | ✅ |
 | Flyweight | [`drill-flyweight`](../exercises/drills/02-structural/flyweight/) | `niche` | ✅ |
-| Proxy | — | `—` | ⬜ |
+| Proxy | [`drill-proxy`](../exercises/drills/02-structural/proxy/) | `situational` | ✅ |
 
 ## Behavioral
 
@@ -63,6 +63,6 @@ alone, and is marked as a stretch exercise.
 
 ---
 
-_22 of 23 drills written._
+_23 of 23 drills written._
 
-_Verdicts so far — essential: 12 · situational: 7 · niche: 2 · avoid: 1._
+_Verdicts so far — essential: 12 · situational: 8 · niche: 2 · avoid: 1._

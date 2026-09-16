@@ -1,0 +1,57 @@
+diff --git a/src/dashboard.ts b/src/dashboard.ts
+index 51c8e03..aa7f5b7 100644
+--- a/src/dashboard.ts
++++ b/src/dashboard.ts
+@@ -2,9 +2,13 @@ import { RealVehiclePositionService } from "./real-vehicle-position-service.ts";
+ import type { VehiclePosition } from "./types.ts";
+ 
+ const realService = new RealVehiclePositionService();
++const RESTRICTED_VEHICLE_IDS = new Set(["svc-9"]);
+ 
+ /** Renders a dashboard row for each requested vehicle id, in order - the same vehicle
+  *  can appear more than once, if more than one widget needs to show it. */
+ export function currentPositions(vehicleIds: readonly string[]): VehiclePosition[] {
+-  return vehicleIds.map((vehicleId) => realService.currentPosition(vehicleId));
++  return vehicleIds.map((vehicleId) => {
++    if (RESTRICTED_VEHICLE_IDS.has(vehicleId)) throw new Error(`access denied for vehicle: ${vehicleId}`);
++    return realService.currentPosition(vehicleId);
++  });
+ }
+diff --git a/src/index.ts b/src/index.ts
+index c8de6eb..e6a8810 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -1,3 +1,4 @@
+ export { currentPositions } from "./dashboard.ts";
++export { realLookupCount, resetRealLookupCount } from "./lookup-tracker.ts";
+ export type { VehiclePosition, VehiclePositionService } from "./types.ts";
+ export { printFleetPositions } from "./vehicle-position-cli.ts";
+diff --git a/src/vehicle-directory.ts b/src/vehicle-directory.ts
+index 34ce9fc..03a274b 100644
+--- a/src/vehicle-directory.ts
++++ b/src/vehicle-directory.ts
+@@ -8,4 +8,5 @@ export const VEHICLE_DIRECTORY: Record<string, VehicleDirectoryEntry> = {
+   "bus-14": { latitude: 41.234, longitude: -111.456 },
+   "bus-22": { latitude: 41.245, longitude: -111.47 },
+   "bus-31": { latitude: 41.251, longitude: -111.48 },
++  "svc-9": { latitude: 41.201, longitude: -111.43 },
+ };
+diff --git a/src/vehicle-position-cli.ts b/src/vehicle-position-cli.ts
+index b4a560f..33dfece 100644
+--- a/src/vehicle-position-cli.ts
++++ b/src/vehicle-position-cli.ts
+@@ -2,9 +2,13 @@ import { RealVehiclePositionService } from "./real-vehicle-position-service.ts";
+ import type { VehiclePosition } from "./types.ts";
+ 
+ const realService = new RealVehiclePositionService();
++const RESTRICTED_VEHICLE_IDS = new Set(["svc-9"]);
+ 
+ /** Called by `dp-cli fleet-positions <vehicleId...>` - the ops tool a dispatcher runs
+  *  by hand while investigating a specific vehicle. */
+ export function printFleetPositions(vehicleIds: readonly string[]): VehiclePosition[] {
+-  return vehicleIds.map((vehicleId) => realService.currentPosition(vehicleId));
++  return vehicleIds.map((vehicleId) => {
++    if (RESTRICTED_VEHICLE_IDS.has(vehicleId)) throw new Error(`access denied for vehicle: ${vehicleId}`);
++    return realService.currentPosition(vehicleId);
++  });
+ }
