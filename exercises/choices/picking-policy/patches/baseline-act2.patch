@@ -1,0 +1,81 @@
+diff --git a/src/picking-policy.ts b/src/picking-policy.ts
+index 5d967b3..6cdc066 100644
+--- a/src/picking-policy.ts
++++ b/src/picking-policy.ts
+@@ -1,9 +1,11 @@
+ import type { Order, PickInstruction } from "./types.ts";
+ 
+ const BATCH_THRESHOLD = 3;
++const SURGE_THRESHOLD = 3;
+ 
+-let mode: "individual" | "batch" = "individual";
++let mode: "individual" | "batch" | "surge" = "individual";
+ let batchOrderIds = new Set<string>();
++let surgeOrderIds = new Set<string>();
+ 
+ function oldest(orders: readonly Order[]): Order {
+   return [...orders].sort((a, b) => a.queuedAt - b.queuedAt)[0]!;
+@@ -22,11 +24,26 @@ export function planNextPick(queue: readonly Order[]): PickInstruction {
+     batchOrderIds = new Set(queue.map((order) => order.id));
+   }
+ 
++  if (mode === "batch") {
++    const waiting = queue.filter((order) => !batchOrderIds.has(order.id));
++    if (waiting.length >= SURGE_THRESHOLD) {
++      mode = "surge";
++      surgeOrderIds = new Set(waiting.map((order) => order.id));
++    }
++  }
++
+   if (mode === "individual") {
+     const target = oldest(queue);
+     return { mode: "individual", binId: target.binId, orderIds: [target.id] };
+   }
+ 
++  if (mode === "surge") {
++    const surviving = queue.filter((order) => surgeOrderIds.has(order.id));
++    const target = oldest(surviving);
++    const matching = surviving.filter((order) => order.binId === target.binId);
++    return { mode: "batch", binId: target.binId, orderIds: matching.map((order) => order.id), urgent: true };
++  }
++
+   const surviving = queue.filter((order) => batchOrderIds.has(order.id));
+   const target = oldest(surviving);
+   const matching = surviving.filter((order) => order.binId === target.binId);
+@@ -34,11 +51,19 @@ export function planNextPick(queue: readonly Order[]): PickInstruction {
+ }
+ 
+ export function recordPicked(orderId: string): void {
++  if (mode === "surge") {
++    surgeOrderIds.delete(orderId);
++    if (surgeOrderIds.size === 0) {
++      mode = batchOrderIds.size > 0 ? "batch" : "individual";
++      if (mode === "individual") batchOrderIds = new Set();
++    }
++    return;
++  }
+   batchOrderIds.delete(orderId);
+   if (mode === "batch" && batchOrderIds.size === 0) mode = "individual";
+ }
+ 
+-export function currentMode(): "individual" | "batch" {
++export function currentMode(): "individual" | "batch" | "surge" {
+   return mode;
+ }
+ 
+@@ -46,4 +71,5 @@ export function currentMode(): "individual" | "batch" {
+ export function resetPickingPolicy(): void {
+   mode = "individual";
+   batchOrderIds = new Set();
++  surgeOrderIds = new Set();
+ }
+diff --git a/src/types.ts b/src/types.ts
+index d5d6509..dacdcc1 100644
+--- a/src/types.ts
++++ b/src/types.ts
+@@ -8,4 +8,5 @@ export interface PickInstruction {
+   readonly mode: "individual" | "batch";
+   readonly binId: string;
+   readonly orderIds: readonly string[];
++  readonly urgent?: boolean;
+ }

@@ -6,4 +6,8 @@ This index is deliberately one-way: it tells you **which exercises consider a pa
 never which one wins. A choice exercise is named after its domain for the same reason —
 naming the answer in the path would answer it.
 
-_No choice exercises written yet. They arrive in phase 4._
+| Candidate | Considered in |
+| --- | --- |
+| State | `choice-picking-policy` |
+| Strategy | `choice-picking-policy` |
+| Template Method | `choice-picking-policy` |

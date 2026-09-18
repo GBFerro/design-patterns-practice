@@ -1,0 +1,45 @@
+{
+  "id": "choice-picking-policy",
+  "title": "Picking policy",
+  "type": "choice",
+  "patterns": ["State", "Strategy", "Template Method"],
+  "candidates": ["State", "Strategy", "Template Method"],
+  "difficulty": 3,
+  "estimatedMinutes": 40,
+  "prerequisites": ["drill-state", "drill-strategy", "drill-template-method"],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Ravensgate Fulfilment",
+  "subDomain": "how pickers are routed through the warehouse",
+  "act2": {
+    "axis": "aligned",
+    "summary": "a third mode, triggered while already inside the second one, that must fall back to the second mode and never straight to the first",
+    "extensionBudget": { "maxFilesModified": 3, "maxLinesModified": 12, "maxHunks": 4 }
+  },
+  "solutions": [
+    {
+      "slug": "state",
+      "title": "Each mode is its own object, and owns its own transitions",
+      "absorbsAct2": true,
+      "tradeoff": "Adding surge mode is one new file and a four-line check inside batch's own plan() - nothing outside states/ changes. The price: the state machine is now spread across four files, and the individual/batch/surge names have to be read together to see the whole picture."
+    },
+    {
+      "slug": "strategy",
+      "title": "Routing logic as swappable functions, mode tracked by the wrapper",
+      "tradeoff": "The strategies stay small and pure, but neither of them can own 'stay in batch mode until this exact set of orders is gone' - that guard, and the surge escalation on top of it, has nowhere to live but the wrapper class. Adding surge touches the wrapper's both methods, not a new isolated unit."
+    },
+    {
+      "slug": "template-method",
+      "title": "One algorithm skeleton, per-mode subclasses supply the step that differs",
+      "tradeoff": "The rounds look like State's per-mode classes, but they only compute an instruction - they don't decide when to become a different round. That decision, and surge's, still lives in the wrapper, at the same cost Strategy paid, and surge doesn't even earn a round of its own: it's a batch round pointed at a different id set."
+    }
+  ],
+  "reviewFocus": [
+    "Does the chosen candidate's WALKTHROUGH.md name what would change my mind about the choice, or does it just describe the code?",
+    "In the strategy and template-method routes, is the wrapper class the one place that grew when surge was added - or did the change leak further?",
+    "Does the state route's BatchState decide to escalate to surge on its own, without PickingPolicy needing to know surge exists?",
+    "Is 'the mode transitions, and the transition rule is itself part of what's being modelled' a fair reading of why state route wins here - and would a reader's CHOICE.md, written before act 2, have said the same thing?",
+    "Do all three routes agree, byte for byte, on what happens in act 1 - same instructions, same order, for the same input sequence?"
+  ]
+}

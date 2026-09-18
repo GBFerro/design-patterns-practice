@@ -1,0 +1,13 @@
+{
+  "name": "@dp/choice-picking-policy",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-state": "./solutions/state/index.ts",
+      "solution-strategy": "./solutions/strategy/index.ts",
+      "solution-template-method": "./solutions/template-method/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

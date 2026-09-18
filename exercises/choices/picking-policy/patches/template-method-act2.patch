@@ -1,0 +1,83 @@
+diff --git a/solutions/template-method/policy.ts b/solutions/template-method/policy.ts
+index 5eb74b9..f46097d 100644
+--- a/solutions/template-method/policy.ts
++++ b/solutions/template-method/policy.ts
+@@ -2,28 +2,54 @@ import { BatchRound, IndividualRound } from "./rounds.ts";
+ import type { Order, PickInstruction } from "./types.ts";
+ 
+ const BATCH_THRESHOLD = 3;
++const SURGE_THRESHOLD = 3;
+ 
+ export class PickingPolicy {
+-  private mode: "individual" | "batch" = "individual";
++  private mode: "individual" | "batch" | "surge" = "individual";
+   private batchOrderIds: Set<string> | undefined;
++  private surgeOrderIds: Set<string> | undefined;
+ 
+   planNextPick(queue: readonly Order[]): PickInstruction {
+     if (queue.length === 0) throw new Error("no orders queued");
+ 
+     // A round only knows how to compute ONE instruction; it doesn't decide when
+-    // to become a different round, or remember that a batch is already running.
+-    // That bookkeeping still has to live here, same as it would without any
+-    // round classes at all.
++    // to become a different round, remember that a batch is already running, or
++    // notice that a surge has started underneath it. That bookkeeping still has
++    // to live here, same as it would without any round classes at all - and a
++    // surge round is just a batch round pointed at a different id set, so it
++    // doesn't even earn a class of its own.
+     if (this.mode === "individual" && queue.length >= BATCH_THRESHOLD) {
+       this.mode = "batch";
+       this.batchOrderIds = new Set(queue.map((order) => order.id));
+     }
+ 
+-    const round = this.mode === "individual" ? new IndividualRound() : new BatchRound(this.batchOrderIds!);
++    if (this.mode === "batch") {
++      const waiting = queue.filter((order) => !this.batchOrderIds!.has(order.id));
++      if (waiting.length >= SURGE_THRESHOLD) {
++        this.mode = "surge";
++        this.surgeOrderIds = new Set(waiting.map((order) => order.id));
++      }
++    }
++
++    if (this.mode === "surge") {
++      return { ...new BatchRound(this.surgeOrderIds!).pick(queue), urgent: true };
++    }
++    const round = this.mode === "batch" ? new BatchRound(this.batchOrderIds!) : new IndividualRound();
+     return round.pick(queue);
+   }
+ 
+   recordPicked(orderId: string): void {
++    if (this.mode === "surge") {
++      this.surgeOrderIds?.delete(orderId);
++      if (this.surgeOrderIds?.size === 0) {
++        const resumesBatch = this.batchOrderIds !== undefined && this.batchOrderIds.size > 0;
++        this.mode = resumesBatch ? "batch" : "individual";
++        this.surgeOrderIds = undefined;
++        if (!resumesBatch) this.batchOrderIds = undefined;
++      }
++      return;
++    }
++
+     this.batchOrderIds?.delete(orderId);
+     if (this.mode === "batch" && this.batchOrderIds?.size === 0) {
+       this.mode = "individual";
+@@ -31,7 +57,7 @@ export class PickingPolicy {
+     }
+   }
+ 
+-  currentMode(): "individual" | "batch" {
++  currentMode(): "individual" | "batch" | "surge" {
+     return this.mode;
+   }
+ }
+diff --git a/solutions/template-method/types.ts b/solutions/template-method/types.ts
+index d5d6509..dacdcc1 100644
+--- a/solutions/template-method/types.ts
++++ b/solutions/template-method/types.ts
+@@ -8,4 +8,5 @@ export interface PickInstruction {
+   readonly mode: "individual" | "batch";
+   readonly binId: string;
+   readonly orderIds: readonly string[];
++  readonly urgent?: boolean;
+ }

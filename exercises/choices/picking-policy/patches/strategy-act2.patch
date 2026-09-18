@@ -1,0 +1,120 @@
+diff --git a/solutions/strategy/policy.ts b/solutions/strategy/policy.ts
+index 0db0378..1df095c 100644
+--- a/solutions/strategy/policy.ts
++++ b/solutions/strategy/policy.ts
+@@ -2,26 +2,50 @@ import { strategies } from "./strategies.ts";
+ import type { Order, PickInstruction } from "./types.ts";
+ 
+ const BATCH_THRESHOLD = 3;
++const SURGE_THRESHOLD = 3;
+ 
+ export class PickingPolicy {
+-  private mode: "individual" | "batch" = "individual";
++  private mode: "individual" | "batch" | "surge" = "individual";
+   private batchOrderIds: Set<string> | undefined;
++  private surgeOrderIds: Set<string> | undefined;
+ 
+   planNextPick(queue: readonly Order[]): PickInstruction {
+     if (queue.length === 0) throw new Error("no orders queued");
+ 
+     // The strategies are stateless functions - none of them can own "we already
+-    // started a batch, keep going even if the queue thins out." That guard has
+-    // to live somewhere, and this wrapper is the only place left for it.
++    // started a batch, keep going even if the queue thins out," or "a surge is
++    // running, and it takes priority over the batch underneath it." Both guards
++    // have to live somewhere, and this wrapper is the only place left for them.
+     if (this.mode === "individual" && queue.length >= BATCH_THRESHOLD) {
+       this.mode = "batch";
+       this.batchOrderIds = new Set(queue.map((order) => order.id));
+     }
+ 
+-    return strategies[this.mode](queue, this.batchOrderIds);
++    if (this.mode === "batch") {
++      const waiting = queue.filter((order) => !this.batchOrderIds!.has(order.id));
++      if (waiting.length >= SURGE_THRESHOLD) {
++        this.mode = "surge";
++        this.surgeOrderIds = new Set(waiting.map((order) => order.id));
++      }
++    }
++
++    if (this.mode === "surge") return strategies.surge(queue, this.surgeOrderIds, true);
++    if (this.mode === "batch") return strategies.batch(queue, this.batchOrderIds, false);
++    return strategies.individual(queue, undefined, false);
+   }
+ 
+   recordPicked(orderId: string): void {
++    if (this.mode === "surge") {
++      this.surgeOrderIds?.delete(orderId);
++      if (this.surgeOrderIds?.size === 0) {
++        const resumesBatch = this.batchOrderIds !== undefined && this.batchOrderIds.size > 0;
++        this.mode = resumesBatch ? "batch" : "individual";
++        this.surgeOrderIds = undefined;
++        if (!resumesBatch) this.batchOrderIds = undefined;
++      }
++      return;
++    }
++
+     this.batchOrderIds?.delete(orderId);
+     if (this.mode === "batch" && this.batchOrderIds?.size === 0) {
+       this.mode = "individual";
+@@ -29,7 +53,7 @@ export class PickingPolicy {
+     }
+   }
+ 
+-  currentMode(): "individual" | "batch" {
++  currentMode(): "individual" | "batch" | "surge" {
+     return this.mode;
+   }
+ }
+diff --git a/solutions/strategy/strategies.ts b/solutions/strategy/strategies.ts
+index 41df2c8..aaa8962 100644
+--- a/solutions/strategy/strategies.ts
++++ b/solutions/strategy/strategies.ts
+@@ -2,7 +2,8 @@ import type { Order, PickInstruction } from "./types.ts";
+ 
+ export type RoutingStrategy = (
+   queue: readonly Order[],
+-  batchOrderIds: ReadonlySet<string> | undefined,
++  orderIds: ReadonlySet<string> | undefined,
++  urgent: boolean,
+ ) => PickInstruction;
+ 
+ function oldest(orders: readonly Order[]): Order {
+@@ -14,11 +15,23 @@ const individual: RoutingStrategy = (queue) => {
+   return { mode: "individual", binId: target.binId, orderIds: [target.id] };
+ };
+ 
+-const batch: RoutingStrategy = (queue, batchOrderIds) => {
+-  const surviving = queue.filter((order) => batchOrderIds!.has(order.id));
++const grouped: RoutingStrategy = (queue, orderIds, urgent) => {
++  const surviving = queue.filter((order) => orderIds!.has(order.id));
+   const target = oldest(surviving);
+   const matching = surviving.filter((order) => order.binId === target.binId);
+-  return { mode: "batch", binId: target.binId, orderIds: matching.map((order) => order.id) };
++  return {
++    mode: "batch",
++    binId: target.binId,
++    orderIds: matching.map((order) => order.id),
++    ...(urgent ? { urgent: true } : {}),
++  };
+ };
+ 
+-export const strategies: Record<"individual" | "batch", RoutingStrategy> = { individual, batch };
++// surge reuses the exact same grouping logic batch already had - the only
++// thing that differs between them is which id set is active, and that
++// decision lives in the wrapper, not here.
++export const strategies: Record<"individual" | "batch" | "surge", RoutingStrategy> = {
++  individual,
++  batch: grouped,
++  surge: grouped,
++};
+diff --git a/solutions/strategy/types.ts b/solutions/strategy/types.ts
+index d5d6509..dacdcc1 100644
+--- a/solutions/strategy/types.ts
++++ b/solutions/strategy/types.ts
+@@ -8,4 +8,5 @@ export interface PickInstruction {
+   readonly mode: "individual" | "batch";
+   readonly binId: string;
+   readonly orderIds: readonly string[];
++  readonly urgent?: boolean;
+ }

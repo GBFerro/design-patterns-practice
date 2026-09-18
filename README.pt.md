@@ -55,6 +55,12 @@ git clone <seu fork> && cd design-patterns-practice
 | [`drill-template-method`](./exercises/drills/03-behavioral/template-method/) | Template Method | ●●○ | ~35 min | `essential` | ⚠ orthogonal |
 | [`drill-visitor`](./exercises/drills/03-behavioral/visitor/) | Visitor | ●●● | ~45 min | `situational` | ⚠ orthogonal |
 
+## Choices — você escolhe, e o ato 2 decide
+
+| Id | Pattern | Dificuldade | Tempo | Veredito | Eixo do ato 2 |
+| --- | --- | --- | --- | --- | --- |
+| [`choice-picking-policy`](./exercises/choices/picking-policy/) | Picking policy | ●●● | ~40 min | `-` | aligned |
+
 ---
 
-_23 de 36 exercícios escritos (23 drills · 8 choices · 5 katas)._
+_24 de 36 exercícios escritos (23 drills · 8 choices · 5 katas)._
