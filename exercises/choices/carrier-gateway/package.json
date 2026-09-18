@@ -1,0 +1,13 @@
+{
+  "name": "@dp/choice-carrier-gateway",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-adapter": "./solutions/adapter/index.ts",
+      "solution-proxy": "./solutions/proxy/index.ts",
+      "solution-facade": "./solutions/facade/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

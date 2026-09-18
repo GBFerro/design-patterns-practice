@@ -1,0 +1,35 @@
+diff --git a/solutions/proxy/carrier-gateway-proxy.ts b/solutions/proxy/carrier-gateway-proxy.ts
+index 7ebfe89..53fd77c 100644
+--- a/solutions/proxy/carrier-gateway-proxy.ts
++++ b/solutions/proxy/carrier-gateway-proxy.ts
+@@ -10,9 +10,21 @@ import type { CarrierGateway, CarrierId, CarrierRate } from "./types.ts";
+  * on the carrier this instance was built for.
+  */
+ export class CarrierGatewayProxy implements CarrierGateway {
++  private readonly cache = new Map<string, CarrierRate>();
++
+   constructor(private readonly carrierId: CarrierId) {}
+ 
+   rate(originZip: string, destZip: string, weightKg: number): CarrierRate {
++    const key = `${originZip}|${destZip}|${weightKg}`;
++    const cached = this.cache.get(key);
++    if (cached) return cached;
++
++    const rate = this.lookUp(originZip, destZip, weightKg);
++    this.cache.set(key, rate);
++    return rate;
++  }
++
++  private lookUp(originZip: string, destZip: string, weightKg: number): CarrierRate {
+     switch (this.carrierId) {
+       case "northbridge": {
+         const quote = northbridgeQuote(originZip, destZip, weightKg);
+diff --git a/solutions/proxy/index.ts b/solutions/proxy/index.ts
+index 02e6e57..7ee7566 100644
+--- a/solutions/proxy/index.ts
++++ b/solutions/proxy/index.ts
+@@ -1,3 +1,4 @@
++export { carrierCallCount, resetCarrierCalls } from "./call-tracker.ts";
+ export { checkoutRate } from "./checkout.ts";
+ export { compareRates } from "./rate-comparison.ts";
+ export type { CarrierGateway, CarrierId, CarrierRate } from "./types.ts";

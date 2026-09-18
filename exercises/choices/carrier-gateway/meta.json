@@ -1,0 +1,45 @@
+{
+  "id": "choice-carrier-gateway",
+  "title": "Carrier gateway",
+  "type": "choice",
+  "patterns": ["Adapter", "Proxy", "Facade"],
+  "candidates": ["Adapter", "Proxy", "Facade"],
+  "difficulty": 3,
+  "estimatedMinutes": 40,
+  "prerequisites": ["drill-adapter", "drill-proxy", "drill-facade"],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Ravensgate Fulfilment",
+  "subDomain": "talking to three carrier APIs",
+  "act2": {
+    "axis": "aligned",
+    "summary": "identical repeated rate requests must hit each carrier's native client at most once",
+    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 11, "maxHunks": 2 }
+  },
+  "solutions": [
+    {
+      "slug": "adapter",
+      "title": "One small adapter class per carrier, one registry",
+      "tradeoff": "One class per carrier makes act 1's translation problem disappear cleanly - each adapter owns exactly one native shape, and the registry doesn't care which. But 'at most once' has no single owner here: the cache has to be added three times, once per adapter class, and stays three places to keep in sync from here on."
+    },
+    {
+      "slug": "proxy",
+      "title": "One class, configured per carrier, switching on the shape internally",
+      "tradeoff": "The single parametrised class means the cache only has to be written once. But the branch inside lookUp() is still doing the same three-way translation Adapter split into separate files - now one class carries both the translation and the caching decision, and the two are stacked in the same rate() method."
+    },
+    {
+      "slug": "facade",
+      "title": "One validating entry point over the whole carrier subsystem",
+      "absorbsAct2": true,
+      "tradeoff": "The cache attaches to the one operation the subsystem exposes, in the one place that operation is defined - the cheapest possible landing spot for a rule about repeated calls. The price was paid earlier: the facade already has to know about all three carriers' shapes inside mappers.ts, which is exactly what Adapter's file-per-carrier split exists to avoid."
+    }
+  ],
+  "reviewFocus": [
+    "Does the chosen candidate's WALKTHROUGH.md name what would change my mind about the choice, or does it just describe the code?",
+    "In the adapter route, does the cache truly need to live three times - once per adapter class - or could a reader argue for a shared base class, and at what cost?",
+    "Does every route's cache key include carrierId as well as the three request fields, so two different carriers' calls can't collide?",
+    "Is 'the operation act 2's rule is about already has exactly one place to live' a fair reading of why facade wins here - and would a reader's CHOICE.md, written before act 2, have said the same thing?",
+    "Do all three routes agree, byte for byte, on what happens in act 1 - same cents, same etaDays, for the same input?"
+  ]
+}

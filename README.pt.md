@@ -59,8 +59,9 @@ git clone <seu fork> && cd design-patterns-practice
 
 | Id | Pattern | Dificuldade | Tempo | Veredito | Eixo do ato 2 |
 | --- | --- | --- | --- | --- | --- |
+| [`choice-carrier-gateway`](./exercises/choices/carrier-gateway/) | Carrier gateway | ●●● | ~40 min | `-` | aligned |
 | [`choice-picking-policy`](./exercises/choices/picking-policy/) | Picking policy | ●●● | ~40 min | `-` | aligned |
 
 ---
 
-_24 de 36 exercícios escritos (23 drills · 8 choices · 5 katas)._
+_25 de 36 exercícios escritos (23 drills · 8 choices · 5 katas)._

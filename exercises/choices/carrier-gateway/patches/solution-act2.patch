@@ -1,0 +1,32 @@
+diff --git a/solutions/facade/carrier-gateway-facade.ts b/solutions/facade/carrier-gateway-facade.ts
+index 06ab3e9..8bb4a6c 100644
+--- a/solutions/facade/carrier-gateway-facade.ts
++++ b/solutions/facade/carrier-gateway-facade.ts
+@@ -16,9 +16,17 @@ function validate(originZip: string, destZip: string, weightKg: number): void {
+  * `carrierId` as an argument instead of being built with one.
+  */
+ export class CarrierGatewayFacade {
++  private readonly cache = new Map<string, CarrierRate>();
++
+   rate(carrierId: CarrierId, originZip: string, destZip: string, weightKg: number): CarrierRate {
+     validate(originZip, destZip, weightKg);
+-    return mappers[carrierId](originZip, destZip, weightKg);
++    const key = `${carrierId}|${originZip}|${destZip}|${weightKg}`;
++    const cached = this.cache.get(key);
++    if (cached) return cached;
++
++    const rate = mappers[carrierId](originZip, destZip, weightKg);
++    this.cache.set(key, rate);
++    return rate;
+   }
+ }
+ 
+diff --git a/solutions/facade/index.ts b/solutions/facade/index.ts
+index 02e6e57..7ee7566 100644
+--- a/solutions/facade/index.ts
++++ b/solutions/facade/index.ts
+@@ -1,3 +1,4 @@
++export { carrierCallCount, resetCarrierCalls } from "./call-tracker.ts";
+ export { checkoutRate } from "./checkout.ts";
+ export { compareRates } from "./rate-comparison.ts";
+ export type { CarrierGateway, CarrierId, CarrierRate } from "./types.ts";

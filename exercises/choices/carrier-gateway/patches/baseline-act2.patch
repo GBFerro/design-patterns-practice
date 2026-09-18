@@ -1,0 +1,122 @@
+diff --git a/src/checkout.ts b/src/checkout.ts
+index 04b70a4..b5e12f4 100644
+--- a/src/checkout.ts
++++ b/src/checkout.ts
+@@ -1,18 +1,25 @@
+ import { aerolaneRate } from "./aerolane-client.ts";
+ import { coastalEstimate } from "./coastal-client.ts";
+ import { northbridgeQuote } from "./northbridge-client.ts";
++import { cachedRate, storeRate } from "./rate-cache.ts";
+ import type { CarrierId, CarrierRate } from "./types.ts";
+ 
+ export function checkoutRate(carrierId: CarrierId, originZip: string, destZip: string, weightKg: number): CarrierRate {
++  const cached = cachedRate(carrierId, originZip, destZip, weightKg);
++  if (cached) return cached;
++
++  let rate: CarrierRate;
+   if (carrierId === "northbridge") {
+     const quote = northbridgeQuote(originZip, destZip, weightKg);
+-    return { cents: quote.totalCents, etaDays: quote.transitDays };
+-  }
+-  if (carrierId === "aerolane") {
+-    const rate = aerolaneRate({ from: originZip, to: destZip, kg: weightKg });
+-    return { cents: rate.priceCents, etaDays: rate.days };
++    rate = { cents: quote.totalCents, etaDays: quote.transitDays };
++  } else if (carrierId === "aerolane") {
++    const aerolane = aerolaneRate({ from: originZip, to: destZip, kg: weightKg });
++    rate = { cents: aerolane.priceCents, etaDays: aerolane.days };
++  } else {
++    const raw = coastalEstimate(`${originZip}|${destZip}|${weightKg}`);
++    const [cents, etaDays] = raw.split("|").map(Number);
++    rate = { cents: cents!, etaDays: etaDays! };
+   }
+-  const raw = coastalEstimate(`${originZip}|${destZip}|${weightKg}`);
+-  const [cents, etaDays] = raw.split("|").map(Number);
+-  return { cents: cents!, etaDays: etaDays! };
++  storeRate(carrierId, originZip, destZip, weightKg, rate);
++  return rate;
+ }
+diff --git a/src/index.ts b/src/index.ts
+index 02e6e57..7ee7566 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -1,3 +1,4 @@
++export { carrierCallCount, resetCarrierCalls } from "./call-tracker.ts";
+ export { checkoutRate } from "./checkout.ts";
+ export { compareRates } from "./rate-comparison.ts";
+ export type { CarrierGateway, CarrierId, CarrierRate } from "./types.ts";
+diff --git a/src/rate-cache.ts b/src/rate-cache.ts
+new file mode 100644
+index 0000000..3597e55
+--- /dev/null
++++ b/src/rate-cache.ts
+@@ -0,0 +1,26 @@
++import type { CarrierId, CarrierRate } from "./types.ts";
++
++const cache = new Map<string, CarrierRate>();
++
++function key(carrierId: CarrierId, originZip: string, destZip: string, weightKg: number): string {
++  return `${carrierId}|${originZip}|${destZip}|${weightKg}`;
++}
++
++export function cachedRate(
++  carrierId: CarrierId,
++  originZip: string,
++  destZip: string,
++  weightKg: number,
++): CarrierRate | undefined {
++  return cache.get(key(carrierId, originZip, destZip, weightKg));
++}
++
++export function storeRate(
++  carrierId: CarrierId,
++  originZip: string,
++  destZip: string,
++  weightKg: number,
++  rate: CarrierRate,
++): void {
++  cache.set(key(carrierId, originZip, destZip, weightKg), rate);
++}
+diff --git a/src/rate-comparison.ts b/src/rate-comparison.ts
+index ba45ecd..0ed82a1 100644
+--- a/src/rate-comparison.ts
++++ b/src/rate-comparison.ts
+@@ -1,6 +1,7 @@
+ import { aerolaneRate } from "./aerolane-client.ts";
+ import { coastalEstimate } from "./coastal-client.ts";
+ import { northbridgeQuote } from "./northbridge-client.ts";
++import { cachedRate, storeRate } from "./rate-cache.ts";
+ import type { CarrierId, CarrierRate } from "./types.ts";
+ 
+ export function compareRates(
+@@ -10,16 +11,22 @@ export function compareRates(
+   weightKg: number,
+ ): CarrierRate[] {
+   return carrierIds.map((carrierId) => {
++    const cached = cachedRate(carrierId, originZip, destZip, weightKg);
++    if (cached) return cached;
++
++    let rate: CarrierRate;
+     if (carrierId === "northbridge") {
+       const quote = northbridgeQuote(originZip, destZip, weightKg);
+-      return { cents: quote.totalCents, etaDays: quote.transitDays };
+-    }
+-    if (carrierId === "aerolane") {
+-      const rate = aerolaneRate({ from: originZip, to: destZip, kg: weightKg });
+-      return { cents: rate.priceCents, etaDays: rate.days };
++      rate = { cents: quote.totalCents, etaDays: quote.transitDays };
++    } else if (carrierId === "aerolane") {
++      const aerolane = aerolaneRate({ from: originZip, to: destZip, kg: weightKg });
++      rate = { cents: aerolane.priceCents, etaDays: aerolane.days };
++    } else {
++      const raw = coastalEstimate(`${originZip}|${destZip}|${weightKg}`);
++      const [cents, etaDays] = raw.split("|").map(Number);
++      rate = { cents: cents!, etaDays: etaDays! };
+     }
+-    const raw = coastalEstimate(`${originZip}|${destZip}|${weightKg}`);
+-    const [cents, etaDays] = raw.split("|").map(Number);
+-    return { cents: cents!, etaDays: etaDays! };
++    storeRate(carrierId, originZip, destZip, weightKg, rate);
++    return rate;
+   });
+ }

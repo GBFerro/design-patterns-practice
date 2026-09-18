@@ -1,0 +1,77 @@
+diff --git a/solutions/adapter/adapters/aerolane-adapter.ts b/solutions/adapter/adapters/aerolane-adapter.ts
+index e2998a7..1c441ed 100644
+--- a/solutions/adapter/adapters/aerolane-adapter.ts
++++ b/solutions/adapter/adapters/aerolane-adapter.ts
+@@ -2,8 +2,16 @@ import { aerolaneRate } from "../aerolane-client.ts";
+ import type { CarrierGateway, CarrierRate } from "../types.ts";
+ 
+ export class AerolaneAdapter implements CarrierGateway {
++  private readonly cache = new Map<string, CarrierRate>();
++
+   rate(originZip: string, destZip: string, weightKg: number): CarrierRate {
+-    const rate = aerolaneRate({ from: originZip, to: destZip, kg: weightKg });
+-    return { cents: rate.priceCents, etaDays: rate.days };
++    const key = `${originZip}|${destZip}|${weightKg}`;
++    const cached = this.cache.get(key);
++    if (cached) return cached;
++
++    const aerolane = aerolaneRate({ from: originZip, to: destZip, kg: weightKg });
++    const rate = { cents: aerolane.priceCents, etaDays: aerolane.days };
++    this.cache.set(key, rate);
++    return rate;
+   }
+ }
+diff --git a/solutions/adapter/adapters/coastal-adapter.ts b/solutions/adapter/adapters/coastal-adapter.ts
+index 7be9edb..383747f 100644
+--- a/solutions/adapter/adapters/coastal-adapter.ts
++++ b/solutions/adapter/adapters/coastal-adapter.ts
+@@ -2,9 +2,17 @@ import { coastalEstimate } from "../coastal-client.ts";
+ import type { CarrierGateway, CarrierRate } from "../types.ts";
+ 
+ export class CoastalAdapter implements CarrierGateway {
++  private readonly cache = new Map<string, CarrierRate>();
++
+   rate(originZip: string, destZip: string, weightKg: number): CarrierRate {
++    const key = `${originZip}|${destZip}|${weightKg}`;
++    const cached = this.cache.get(key);
++    if (cached) return cached;
++
+     const raw = coastalEstimate(`${originZip}|${destZip}|${weightKg}`);
+     const [cents, etaDays] = raw.split("|").map(Number);
+-    return { cents: cents!, etaDays: etaDays! };
++    const rate = { cents: cents!, etaDays: etaDays! };
++    this.cache.set(key, rate);
++    return rate;
+   }
+ }
+diff --git a/solutions/adapter/adapters/northbridge-adapter.ts b/solutions/adapter/adapters/northbridge-adapter.ts
+index 81471f2..23fc3b2 100644
+--- a/solutions/adapter/adapters/northbridge-adapter.ts
++++ b/solutions/adapter/adapters/northbridge-adapter.ts
+@@ -2,8 +2,16 @@ import { northbridgeQuote } from "../northbridge-client.ts";
+ import type { CarrierGateway, CarrierRate } from "../types.ts";
+ 
+ export class NorthbridgeAdapter implements CarrierGateway {
++  private readonly cache = new Map<string, CarrierRate>();
++
+   rate(originZip: string, destZip: string, weightKg: number): CarrierRate {
++    const key = `${originZip}|${destZip}|${weightKg}`;
++    const cached = this.cache.get(key);
++    if (cached) return cached;
++
+     const quote = northbridgeQuote(originZip, destZip, weightKg);
+-    return { cents: quote.totalCents, etaDays: quote.transitDays };
++    const rate = { cents: quote.totalCents, etaDays: quote.transitDays };
++    this.cache.set(key, rate);
++    return rate;
+   }
+ }
+diff --git a/solutions/adapter/index.ts b/solutions/adapter/index.ts
+index 02e6e57..7ee7566 100644
+--- a/solutions/adapter/index.ts
++++ b/solutions/adapter/index.ts
+@@ -1,3 +1,4 @@
++export { carrierCallCount, resetCarrierCalls } from "./call-tracker.ts";
+ export { checkoutRate } from "./checkout.ts";
+ export { compareRates } from "./rate-comparison.ts";
+ export type { CarrierGateway, CarrierId, CarrierRate } from "./types.ts";
