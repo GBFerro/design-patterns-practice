@@ -1,0 +1,34 @@
+diff --git a/solutions/mediator/fraud-check.ts b/solutions/mediator/fraud-check.ts
+new file mode 100644
+index 0000000..198445d
+--- /dev/null
++++ b/solutions/mediator/fraud-check.ts
+@@ -0,0 +1,6 @@
++import type { Order } from "./types.ts";
++
++/** A pre-existing fraud-detection function. Its shape is not ours to change. */
++export function fraudCheck(order: Order): boolean {
++  return order.customerEmail.endsWith("@flagged.example");
++}
+diff --git a/solutions/mediator/order-events-mediator.ts b/solutions/mediator/order-events-mediator.ts
+index 4924758..7c970bb 100644
+--- a/solutions/mediator/order-events-mediator.ts
++++ b/solutions/mediator/order-events-mediator.ts
+@@ -1,4 +1,5 @@
+ import { recordAnalyticsEvent, sendConfirmationEmail, sendSmsNotification, updateInventoryCount } from "./consumers.ts";
++import { fraudCheck } from "./fraud-check.ts";
+ import type { Order } from "./types.ts";
+ 
+ /**
+@@ -9,7 +10,9 @@ export class OrderEventsMediator {
+   dispatch(order: Order): void {
+     updateInventoryCount(order);
+     recordAnalyticsEvent(order);
+-    sendConfirmationEmail(order);
+-    sendSmsNotification(order);
++    if (!fraudCheck(order)) {
++      sendConfirmationEmail(order);
++      sendSmsNotification(order);
++    }
+   }
+ }

@@ -9,8 +9,11 @@ naming the answer in the path would answer it.
 | Candidate | Considered in |
 | --- | --- |
 | Adapter | `choice-carrier-gateway` |
+| Chain of Responsibility | `choice-order-events` |
 | Decorator | `choice-label-pipeline` |
 | Facade | `choice-carrier-gateway` |
+| Mediator | `choice-order-events` |
+| Observer | `choice-order-events` |
 | Proxy | `choice-carrier-gateway` |
 | State | `choice-picking-policy` |
 | Strategy | `choice-picking-policy` |

@@ -1,0 +1,45 @@
+{
+  "id": "choice-order-events",
+  "title": "Order events",
+  "type": "choice",
+  "patterns": ["Observer", "Mediator", "Chain of Responsibility"],
+  "candidates": ["Observer", "Mediator", "Chain of Responsibility"],
+  "difficulty": 3,
+  "estimatedMinutes": 40,
+  "prerequisites": ["drill-observer", "drill-mediator", "drill-chain-of-responsibility"],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Ravensgate Fulfilment",
+  "subDomain": "who finds out when an order ships",
+  "act2": {
+    "axis": "aligned",
+    "summary": "a fraud hold must silence the customer-facing notifications (email, sms) while the internal bookkeeping (inventory, analytics) keeps firing exactly as before",
+    "extensionBudget": { "maxFilesModified": 1, "maxLinesModified": 7, "maxHunks": 2 }
+  },
+  "solutions": [
+    {
+      "slug": "observer",
+      "title": "Four independent observers, subscribed to one subject",
+      "tradeoff": "Each consumer becomes its own class, none aware the others exist - exactly the decoupling act 1 rewards. But act 2's rule isn't about any one observer, it's about splitting the whole set into two groups that get notified differently, and a flat list of equal subscribers has no way to say that: the subject itself had to grow a second list and a second subscribe method before the hold could be expressed at all."
+    },
+    {
+      "slug": "mediator",
+      "title": "One class, one method, that already sequences the whole fan-out",
+      "absorbsAct2": true,
+      "tradeoff": "dispatch() was already the one place that named the order consumers run in - wrapping the last two calls in a condition is a two-line change inside a method that already existed for exactly this reason. The price was paid in act 1: the mediator has to know all four consumers by name, which is the coupling Observer's independent classes exist to avoid."
+    },
+    {
+      "slug": "chain-of-responsibility",
+      "title": "A chain of links, any one of which can stop the rest",
+      "tradeoff": "Stopping the chain is this pattern's whole idea, so a fraud link that returns false to silence what follows reads as exactly what it is. It just isn't quite the cheapest way to get there: the new link is a fifth array entry plus its own file update, one file and one hunk more than the route that only had to touch a single existing method."
+    }
+  ],
+  "reviewFocus": [
+    "Does the chosen candidate's WALKTHROUGH.md name what would change my mind about the choice, or does it just describe the code?",
+    "In the observer route, was splitting one subscriber list into subscribeAlways/subscribeConditional actually the cheapest way to express 'these two groups differ', or could a single list with a per-observer flag have done it for less?",
+    "In the chain-of-responsibility route, does inserting fraudLink between analyticsLink and emailLink actually preserve act 1's order for a clean order - and would inserting it anywhere else have broken that?",
+    "Is 'dispatch() already named the one sequence, so guarding two lines of it is the cheapest possible change' a fair reading of why mediator wins here - and would a reader's CHOICE.md, written before act 2, have said the same thing?",
+    "Do all three routes - and the no-pattern baseline - agree, byte for byte, on which four consumers fire, in what order, for a clean order?"
+  ]
+}

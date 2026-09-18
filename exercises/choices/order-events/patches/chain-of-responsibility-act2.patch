@@ -1,0 +1,43 @@
+diff --git a/solutions/chain-of-responsibility/fraud-check.ts b/solutions/chain-of-responsibility/fraud-check.ts
+new file mode 100644
+index 0000000..198445d
+--- /dev/null
++++ b/solutions/chain-of-responsibility/fraud-check.ts
+@@ -0,0 +1,6 @@
++import type { Order } from "./types.ts";
++
++/** A pre-existing fraud-detection function. Its shape is not ours to change. */
++export function fraudCheck(order: Order): boolean {
++  return order.customerEmail.endsWith("@flagged.example");
++}
+diff --git a/solutions/chain-of-responsibility/links.ts b/solutions/chain-of-responsibility/links.ts
+index b8af8f9..2d8c5fe 100644
+--- a/solutions/chain-of-responsibility/links.ts
++++ b/solutions/chain-of-responsibility/links.ts
+@@ -1,4 +1,5 @@
+ import { recordAnalyticsEvent, sendConfirmationEmail, sendSmsNotification, updateInventoryCount } from "./consumers.ts";
++import { fraudCheck } from "./fraud-check.ts";
+ import type { Order } from "./types.ts";
+ 
+ /** A link runs its own side effect and returns whether the chain should continue. */
+@@ -23,3 +24,6 @@ export const smsLink: Link = (order) => {
+   sendSmsNotification(order);
+   return true;
+ };
++
++/** Stops the chain - and only the chain's remaining, customer-facing links - on a hold. */
++export const fraudLink: Link = (order) => !fraudCheck(order);
+diff --git a/solutions/chain-of-responsibility/order-events.ts b/solutions/chain-of-responsibility/order-events.ts
+index 84d1d40..9e62e2d 100644
+--- a/solutions/chain-of-responsibility/order-events.ts
++++ b/solutions/chain-of-responsibility/order-events.ts
+@@ -1,7 +1,7 @@
+-import { analyticsLink, emailLink, inventoryLink, smsLink, type Link } from "./links.ts";
++import { analyticsLink, emailLink, fraudLink, inventoryLink, smsLink, type Link } from "./links.ts";
+ import type { Order } from "./types.ts";
+ 
+-const links: readonly Link[] = [inventoryLink, analyticsLink, emailLink, smsLink];
++const links: readonly Link[] = [inventoryLink, analyticsLink, fraudLink, emailLink, smsLink];
+ 
+ function runChain(order: Order): void {
+   for (const link of links) {

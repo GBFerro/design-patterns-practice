@@ -1,0 +1,82 @@
+diff --git a/solutions/observer/fraud-check.ts b/solutions/observer/fraud-check.ts
+new file mode 100644
+index 0000000..198445d
+--- /dev/null
++++ b/solutions/observer/fraud-check.ts
+@@ -0,0 +1,6 @@
++import type { Order } from "./types.ts";
++
++/** A pre-existing fraud-detection function. Its shape is not ours to change. */
++export function fraudCheck(order: Order): boolean {
++  return order.customerEmail.endsWith("@flagged.example");
++}
+diff --git a/solutions/observer/order-events.ts b/solutions/observer/order-events.ts
+index 7658e20..8add547 100644
+--- a/solutions/observer/order-events.ts
++++ b/solutions/observer/order-events.ts
+@@ -1,17 +1,18 @@
+ import { AnalyticsObserver, EmailObserver, InventoryObserver, SmsObserver } from "./observers.ts";
++import { fraudCheck } from "./fraud-check.ts";
+ import { OrderShippedSubject } from "./subject.ts";
+ import type { Order } from "./types.ts";
+ 
+ const subject = new OrderShippedSubject();
+-subject.subscribe(new InventoryObserver());
+-subject.subscribe(new AnalyticsObserver());
+-subject.subscribe(new EmailObserver());
+-subject.subscribe(new SmsObserver());
++subject.subscribeAlways(new InventoryObserver());
++subject.subscribeAlways(new AnalyticsObserver());
++subject.subscribeConditional(new EmailObserver());
++subject.subscribeConditional(new SmsObserver());
+ 
+ export function orderShipped(order: Order): void {
+-  subject.notifyAll(order);
++  subject.notifyAll(order, fraudCheck(order));
+ }
+ 
+ export function resendOrderNotifications(order: Order): void {
+-  subject.notifyAll(order);
++  subject.notifyAll(order, fraudCheck(order));
+ }
+diff --git a/solutions/observer/subject.ts b/solutions/observer/subject.ts
+index 0ea5b94..810574c 100644
+--- a/solutions/observer/subject.ts
++++ b/solutions/observer/subject.ts
+@@ -1,17 +1,30 @@
+ import type { OrderObserver } from "./observers.ts";
+ import type { Order } from "./types.ts";
+ 
+-/** Every consumer is an equal, independent subscriber - none knows the others exist. */
++/**
++ * Two lists instead of one: act 2 needs to tell "always runs" observers apart from
++ * "skippable on a hold" ones, which a single flat list of equal peers had no way to express.
++ */
+ export class OrderShippedSubject {
+-  private readonly observers: OrderObserver[] = [];
++  private readonly always: OrderObserver[] = [];
++  private readonly conditional: OrderObserver[] = [];
+ 
+-  subscribe(observer: OrderObserver): void {
+-    this.observers.push(observer);
++  subscribeAlways(observer: OrderObserver): void {
++    this.always.push(observer);
+   }
+ 
+-  notifyAll(order: Order): void {
+-    for (const observer of this.observers) {
++  subscribeConditional(observer: OrderObserver): void {
++    this.conditional.push(observer);
++  }
++
++  notifyAll(order: Order, held: boolean): void {
++    for (const observer of this.always) {
+       observer.notify(order);
+     }
++    if (!held) {
++      for (const observer of this.conditional) {
++        observer.notify(order);
++      }
++    }
+   }
+ }

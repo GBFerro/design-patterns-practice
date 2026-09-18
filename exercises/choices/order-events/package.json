@@ -1,0 +1,13 @@
+{
+  "name": "@dp/choice-order-events",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-observer": "./solutions/observer/index.ts",
+      "solution-mediator": "./solutions/mediator/index.ts",
+      "solution-chain-of-responsibility": "./solutions/chain-of-responsibility/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

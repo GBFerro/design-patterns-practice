@@ -1,0 +1,43 @@
+diff --git a/src/fraud-check.ts b/src/fraud-check.ts
+new file mode 100644
+index 0000000..198445d
+--- /dev/null
++++ b/src/fraud-check.ts
+@@ -0,0 +1,6 @@
++import type { Order } from "./types.ts";
++
++/** A pre-existing fraud-detection function. Its shape is not ours to change. */
++export function fraudCheck(order: Order): boolean {
++  return order.customerEmail.endsWith("@flagged.example");
++}
+diff --git a/src/order-events.ts b/src/order-events.ts
+index 09c22cb..de5136a 100644
+--- a/src/order-events.ts
++++ b/src/order-events.ts
+@@ -1,17 +1,22 @@
+ import { recordAnalyticsEvent, sendConfirmationEmail, sendSmsNotification, updateInventoryCount } from "./consumers.ts";
++import { fraudCheck } from "./fraud-check.ts";
+ import type { Order } from "./types.ts";
+ 
+ export function orderShipped(order: Order): void {
+   updateInventoryCount(order);
+   recordAnalyticsEvent(order);
+-  sendConfirmationEmail(order);
+-  sendSmsNotification(order);
++  if (!fraudCheck(order)) {
++    sendConfirmationEmail(order);
++    sendSmsNotification(order);
++  }
+ }
+ 
+ /** A customer asking support to resend the notifications needs the exact same fan-out. */
+ export function resendOrderNotifications(order: Order): void {
+   updateInventoryCount(order);
+   recordAnalyticsEvent(order);
+-  sendConfirmationEmail(order);
+-  sendSmsNotification(order);
++  if (!fraudCheck(order)) {
++    sendConfirmationEmail(order);
++    sendSmsNotification(order);
++  }
+ }
