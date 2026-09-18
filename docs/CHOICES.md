@@ -9,8 +9,10 @@ naming the answer in the path would answer it.
 | Candidate | Considered in |
 | --- | --- |
 | Adapter | `choice-carrier-gateway` |
+| Decorator | `choice-label-pipeline` |
 | Facade | `choice-carrier-gateway` |
 | Proxy | `choice-carrier-gateway` |
 | State | `choice-picking-policy` |
 | Strategy | `choice-picking-policy` |
-| Template Method | `choice-picking-policy` |
+| Template Method | `choice-label-pipeline`, `choice-picking-policy` |
+| a pipeline of functions | `choice-label-pipeline` |

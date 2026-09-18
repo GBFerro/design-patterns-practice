@@ -1,0 +1,13 @@
+{
+  "name": "@dp/choice-label-pipeline",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-decorator": "./solutions/decorator/index.ts",
+      "solution-template-method": "./solutions/template-method/index.ts",
+      "solution-pipeline": "./solutions/pipeline/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

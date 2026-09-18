@@ -1,0 +1,80 @@
+diff --git a/solutions/decorator/label-content.ts b/solutions/decorator/label-content.ts
+index f33f7b4..1cea468 100644
+--- a/solutions/decorator/label-content.ts
++++ b/solutions/decorator/label-content.ts
+@@ -1,15 +1,27 @@
+ import {
+-  BaseLabelRenderer,
+   CustomsDeclarationDecorator,
+   FragileWarningDecorator,
+   HazmatWarningDecorator,
++  HeaderAddressRenderer,
++  SignatureRequiredDecorator,
++  WeightDecorator,
++  type LabelRenderer,
+ } from "./renderer.ts";
+ import type { Shipment } from "./types.ts";
+ 
++function withWarnings(base: LabelRenderer): LabelRenderer {
++  return new HazmatWarningDecorator(new FragileWarningDecorator(base));
++}
++
+ function sections(shipment: Shipment): string[] {
+-  const renderer = new CustomsDeclarationDecorator(
+-    new HazmatWarningDecorator(new FragileWarningDecorator(new BaseLabelRenderer())),
+-  );
++  const renderer =
++    shipment.destinationCountry === "US"
++      ? new CustomsDeclarationDecorator(
++          withWarnings(new WeightDecorator(new SignatureRequiredDecorator(new HeaderAddressRenderer()))),
++        )
++      : new SignatureRequiredDecorator(
++          new CustomsDeclarationDecorator(withWarnings(new WeightDecorator(new HeaderAddressRenderer()))),
++        );
+   return renderer.render(shipment);
+ }
+ 
+diff --git a/solutions/decorator/renderer.ts b/solutions/decorator/renderer.ts
+index 16d4ec3..9ec3111 100644
+--- a/solutions/decorator/renderer.ts
++++ b/solutions/decorator/renderer.ts
+@@ -4,10 +4,10 @@ export interface LabelRenderer {
+   render(shipment: Shipment): string[];
+ }
+ 
+-/** The mandatory content every label has: header, address, weight. */
+-export class BaseLabelRenderer implements LabelRenderer {
++/** The mandatory header and address - separated from weight so a decorator can land between them. */
++export class HeaderAddressRenderer implements LabelRenderer {
+   render(shipment: Shipment): string[] {
+-    return [`RG-${shipment.orderId}`, shipment.address, `${shipment.weightKg} kg`];
++    return [`RG-${shipment.orderId}`, shipment.address];
+   }
+ }
+ 
+@@ -16,6 +16,12 @@ abstract class LabelDecorator implements LabelRenderer {
+   abstract render(shipment: Shipment): string[];
+ }
+ 
++export class WeightDecorator extends LabelDecorator {
++  render(shipment: Shipment): string[] {
++    return [...this.wrapped.render(shipment), `${shipment.weightKg} kg`];
++  }
++}
++
+ export class FragileWarningDecorator extends LabelDecorator {
+   render(shipment: Shipment): string[] {
+     const lines = this.wrapped.render(shipment);
+@@ -36,3 +42,12 @@ export class CustomsDeclarationDecorator extends LabelDecorator {
+     return shipment.destinationCountry !== "US" ? [...lines, "CUSTOMS: contents declared, origin US"] : lines;
+   }
+ }
++
++const SIGNATURE_WEIGHT_THRESHOLD_KG = 20;
++
++export class SignatureRequiredDecorator extends LabelDecorator {
++  render(shipment: Shipment): string[] {
++    const lines = this.wrapped.render(shipment);
++    return shipment.weightKg > SIGNATURE_WEIGHT_THRESHOLD_KG ? [...lines, "SIGNATURE REQUIRED"] : lines;
++  }
++}

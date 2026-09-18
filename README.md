@@ -60,8 +60,9 @@ git clone <your fork> && cd design-patterns-practice
 | Id | Pattern | Difficulty | Time | Verdict | Act 2 axis |
 | --- | --- | --- | --- | --- | --- |
 | [`choice-carrier-gateway`](./exercises/choices/carrier-gateway/) | Carrier gateway | ●●● | ~40 min | `-` | aligned |
+| [`choice-label-pipeline`](./exercises/choices/label-pipeline/) | Label pipeline | ●●● | ~40 min | `-` | aligned |
 | [`choice-picking-policy`](./exercises/choices/picking-policy/) | Picking policy | ●●● | ~40 min | `-` | aligned |
 
 ---
 
-_25 of 36 exercises written (23 drills · 8 choices · 5 katas)._
+_26 of 36 exercises written (23 drills · 8 choices · 5 katas)._

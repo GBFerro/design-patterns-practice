@@ -1,0 +1,63 @@
+diff --git a/src/label-content.ts b/src/label-content.ts
+index 8162687..4bdb490 100644
+--- a/src/label-content.ts
++++ b/src/label-content.ts
+@@ -1,9 +1,17 @@
+ import type { Shipment } from "./types.ts";
+ 
++const SIGNATURE_WEIGHT_THRESHOLD_KG = 20;
++
+ export function buildLabel(shipment: Shipment): string {
++  const isDomestic = shipment.destinationCountry === "US";
++  const requiresSignature = shipment.weightKg > SIGNATURE_WEIGHT_THRESHOLD_KG;
++
+   const lines: string[] = [];
+   lines.push(`RG-${shipment.orderId}`);
+   lines.push(shipment.address);
++  if (requiresSignature && isDomestic) {
++    lines.push("SIGNATURE REQUIRED");
++  }
+   lines.push(`${shipment.weightKg} kg`);
+   if (shipment.fragile) {
+     lines.push("HANDLE WITH CARE - FRAGILE");
+@@ -11,17 +19,26 @@ export function buildLabel(shipment: Shipment): string {
+   if (shipment.hazmat) {
+     lines.push("HAZARDOUS MATERIALS - SEE MSDS");
+   }
+-  if (shipment.destinationCountry !== "US") {
++  if (!isDomestic) {
+     lines.push("CUSTOMS: contents declared, origin US");
+   }
++  if (requiresSignature && !isDomestic) {
++    lines.push("SIGNATURE REQUIRED");
++  }
+   return lines.join("\n");
+ }
+ 
+ /** The same content, one line per shipment, for the warehouse floor's printed manifest. */
+ export function buildManifestEntry(shipment: Shipment): string {
++  const isDomestic = shipment.destinationCountry === "US";
++  const requiresSignature = shipment.weightKg > SIGNATURE_WEIGHT_THRESHOLD_KG;
++
+   const parts: string[] = [];
+   parts.push(`RG-${shipment.orderId}`);
+   parts.push(shipment.address);
++  if (requiresSignature && isDomestic) {
++    parts.push("SIGNATURE REQUIRED");
++  }
+   parts.push(`${shipment.weightKg} kg`);
+   if (shipment.fragile) {
+     parts.push("HANDLE WITH CARE - FRAGILE");
+@@ -29,8 +46,11 @@ export function buildManifestEntry(shipment: Shipment): string {
+   if (shipment.hazmat) {
+     parts.push("HAZARDOUS MATERIALS - SEE MSDS");
+   }
+-  if (shipment.destinationCountry !== "US") {
++  if (!isDomestic) {
+     parts.push("CUSTOMS: contents declared, origin US");
+   }
++  if (requiresSignature && !isDomestic) {
++    parts.push("SIGNATURE REQUIRED");
++  }
+   return parts.join(" | ");
+ }

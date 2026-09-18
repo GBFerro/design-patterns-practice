@@ -1,0 +1,45 @@
+{
+  "id": "choice-label-pipeline",
+  "title": "Label pipeline",
+  "type": "choice",
+  "patterns": ["Decorator", "Template Method"],
+  "candidates": ["Decorator", "Template Method", "a pipeline of functions"],
+  "difficulty": 3,
+  "estimatedMinutes": 40,
+  "prerequisites": ["drill-decorator", "drill-template-method"],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Ravensgate Fulfilment",
+  "subDomain": "composing the content of a shipping label",
+  "act2": {
+    "axis": "aligned",
+    "summary": "a new section that must be conditional on weight, and positioned differently depending on destination - before the weight line domestically, after everything internationally",
+    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 23, "maxHunks": 2 }
+  },
+  "solutions": [
+    {
+      "slug": "decorator",
+      "title": "Each optional section is a decorator wrapping the one before it",
+      "tradeoff": "Adding a section at either end - the start or the end of the chain - is one new decorator class. Act 2 needs a section in the *middle*, between the address and the weight, and a decorator can only wrap what's already built: the base renderer had to be split into two pieces just to open a seam there, and the composition function ends up building two different chains instead of one."
+    },
+    {
+      "slug": "template-method",
+      "title": "One fixed skeleton, two subclasses for domestic and international",
+      "tradeoff": "The two subclasses were already the right shape for 'the same steps, one varies by destination' - but the skeleton itself had no seam before the weight step, so absorbing act 2 means changing the shared base class (a new hook) as well as both subclasses, not just the one that needed the new behaviour."
+    },
+    {
+      "slug": "pipeline",
+      "title": "The sections are a plain array of functions, built at call time",
+      "absorbsAct2": true,
+      "tradeoff": "A stage is just a value, so inserting one conditionally at a specific position is a two-line change to how the array gets built - no new type, no new class, no seam to open. The price was paid in act 1: nothing enforces that every stage in the array agrees on what a shipment needs, the way an interface or a base class would."
+    }
+  ],
+  "reviewFocus": [
+    "Does the chosen candidate's WALKTHROUGH.md name what would change my mind about the choice, or does it just describe the code?",
+    "In the decorator route, was splitting the base renderer into HeaderAddressRenderer and a separate WeightDecorator actually necessary, or could the signature line have been added another way?",
+    "In the template-method route, does the new beforeWeight hook change the base class's behaviour for BOTH subclasses, or only the one that needed it?",
+    "Is 'a stage is just a value, so its position is just where it sits in an array' a fair reading of why the pipeline route wins here - and would a reader's CHOICE.md, written before act 2, have said the same thing?",
+    "Do all three routes - and buildManifestEntry alongside buildLabel - agree, byte for byte, on which sections appear and in what order, for the same shipment?"
+  ]
+}

@@ -1,0 +1,51 @@
+diff --git a/solutions/template-method/label-template.ts b/solutions/template-method/label-template.ts
+index 6c34f4b..36be6c2 100644
+--- a/solutions/template-method/label-template.ts
++++ b/solutions/template-method/label-template.ts
+@@ -1,8 +1,16 @@
+ import type { Shipment } from "./types.ts";
+ 
++const SIGNATURE_WEIGHT_THRESHOLD_KG = 20;
++
+ export abstract class LabelTemplate {
+   sections(shipment: Shipment): string[] {
+-    return [this.header(shipment), this.address(shipment), this.weight(shipment), ...this.extras(shipment)];
++    return [
++      this.header(shipment),
++      this.address(shipment),
++      ...this.beforeWeight(shipment),
++      this.weight(shipment),
++      ...this.extras(shipment),
++    ];
+   }
+ 
+   private header(shipment: Shipment): string {
+@@ -17,6 +25,10 @@ export abstract class LabelTemplate {
+     return `${shipment.weightKg} kg`;
+   }
+ 
++  protected beforeWeight(shipment: Shipment): string[] {
++    return [];
++  }
++
+   protected extras(shipment: Shipment): string[] {
+     const extras: string[] = [];
+     if (shipment.fragile) extras.push("HANDLE WITH CARE - FRAGILE");
+@@ -25,10 +37,15 @@ export abstract class LabelTemplate {
+   }
+ }
+ 
+-export class DomesticLabel extends LabelTemplate {}
++export class DomesticLabel extends LabelTemplate {
++  protected override beforeWeight(shipment: Shipment): string[] {
++    return shipment.weightKg > SIGNATURE_WEIGHT_THRESHOLD_KG ? ["SIGNATURE REQUIRED"] : [];
++  }
++}
+ 
+ export class InternationalLabel extends LabelTemplate {
+   protected override extras(shipment: Shipment): string[] {
+-    return [...super.extras(shipment), "CUSTOMS: contents declared, origin US"];
++    const extras = [...super.extras(shipment), "CUSTOMS: contents declared, origin US"];
++    return shipment.weightKg > SIGNATURE_WEIGHT_THRESHOLD_KG ? [...extras, "SIGNATURE REQUIRED"] : extras;
+   }
+ }
