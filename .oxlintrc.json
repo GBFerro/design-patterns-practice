@@ -3,6 +3,18 @@
   "plugins": ["typescript", "oxc"],
   "categories": { "correctness": "error", "suspicious": "error", "pedantic": "warn" },
   "ignorePatterns": ["**/node_modules/**", "**/coverage/**"],
+  "rules": {
+    // eslint/no-underscore-dangle is off repo-wide: the leading-underscore convention
+    // for pseudo-private class fields and methods (`_fieldName`) is used deliberately
+    // and pervasively across this repository's exercises (the mediator, observer and
+    // command drills, and several of their solution variants) - a common, intentional
+    // TS/JS style choice predating this rule ever being run, not an oversight to fix
+    // file by file. This does not weaken the separate, correctly-flagged convention of
+    // prefixing a genuinely unused function *parameter* with `_` (eslint/no-unused-vars'
+    // own suggested fix): no-underscore-dangle's `allowFunctionParams` option defaults
+    // to true, so it never touched parameters in the first place.
+    "eslint/no-underscore-dangle": "off"
+  },
   "overrides": [
     {
       "files": ["exercises/**/src/**"],

@@ -107,7 +107,9 @@ export function replayBatch(state: RobotState, commands: readonly RobotCommand[]
           inverse = { kind: "dropOff" };
         } else {
           if (entry.priorHolding === null) {
-            throw new Error("cannot invert a dropOff that had nothing held before it");
+            throw new Error("cannot invert a dropOff that had nothing held before it", {
+              cause: err,
+            });
           }
           inverse = { kind: "pickUp", itemId: entry.priorHolding };
         }

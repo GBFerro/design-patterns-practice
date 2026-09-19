@@ -114,7 +114,7 @@ function checkExercise(exercise: Exercise, names: Set<string>, problems: Problem
 
   for (const pattern of meta.forbidden ?? []) {
     try {
-      new RegExp(pattern);
+      void new RegExp(pattern);
     } catch {
       problems.push({ where, what: `forbidden inválido: ${pattern}` });
     }
