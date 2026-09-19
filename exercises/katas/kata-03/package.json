@@ -1,0 +1,12 @@
+{
+  "name": "@dp/kata-03",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-command-effects": "./solutions/command-effects/index.ts",
+      "solution-command-rules": "./solutions/command-rules/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

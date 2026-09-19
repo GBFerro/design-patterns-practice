@@ -1,0 +1,24 @@
+diff --git a/src/robot.ts b/src/robot.ts
+index 15914e3..3effaa2 100644
+--- a/src/robot.ts
++++ b/src/robot.ts
+@@ -33,6 +33,9 @@ export function runCommand(state: RobotState, command: RobotCommand): RobotState
+     if (state.holding !== null) {
+       throw new Error(`already holding ${state.holding}, cannot pick up ${command.itemId}`);
+     }
++    if (command.itemId === "contraband" && !(state.x >= 8 && state.y >= 8)) {
++      throw new Error("contraband can only be picked up inside the inspection zone");
++    }
+   } else {
+     if (state.holding === null) {
+       throw new Error("not holding anything to drop off");
+@@ -77,6 +80,9 @@ export function replayBatch(state: RobotState, commands: readonly RobotCommand[]
+         if (current.holding !== null) {
+           throw new Error(`already holding ${current.holding}, cannot pick up ${command.itemId}`);
+         }
++        if (command.itemId === "contraband" && !(current.x >= 8 && current.y >= 8)) {
++          throw new Error("contraband can only be picked up inside the inspection zone");
++        }
+       } else {
+         if (current.holding === null) {
+           throw new Error("not holding anything to drop off");

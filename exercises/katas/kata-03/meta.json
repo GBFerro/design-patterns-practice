@@ -1,0 +1,39 @@
+{
+  "id": "kata-03",
+  "title": "Ravensgate warehouse robot command stream",
+  "type": "kata",
+  "patterns": [],
+  "difficulty": 3,
+  "estimatedMinutes": 45,
+  "prerequisites": [],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Ravensgate Fulfilment",
+  "subDomain": "warehouse robot command stream",
+  "act2": {
+    "axis": "aligned",
+    "summary": "compliance restricts contraband pickups to the inspection zone - a new legality rule, unaffected by how commands are applied or inverted",
+    "extensionBudget": { "maxFilesModified": 1, "maxLinesModified": 3, "maxHunks": 1 }
+  },
+  "solutions": [
+    {
+      "slug": "command-rules",
+      "title": "One shared function decides whether a command is even legal",
+      "absorbsAct2": true,
+      "tradeoff": "This route bet that command legality was the pressure most likely to grow a new business exception, and pulled it into one function shared by runCommand and replayBatch's forward pass. The inspection-zone rule arrives on exactly that axis: one new clause, in the one place a command's legality is decided, at 3 lines in a single hunk."
+    },
+    {
+      "slug": "command-effects",
+      "title": "One shared function decides what a command does to the robot's state",
+      "tradeoff": "This route bet that how a command changes state - forward or inverted, across four call sites - was the pressure worth relieving first, and pulled it into one function every apply site calls, including the batch rollback and undoLast. The inspection-zone rule doesn't touch what a command does, only whether it's allowed to happen at all - refund-by-reason branching was never touched, so it still duplicates the new clause across runCommand and replayBatch's own validation, at exactly the no-pattern baseline's cost."
+    }
+  ],
+  "reviewFocus": [
+    "Does the reader's own restructuring name, honestly, which pressure it chose to relieve - legality, or effect/inverse - and admit the other is still duplicated?",
+    "Would a reader who restructured command-effects instead of command-rules still recognize, from the measured numbers alone, why the inspection-zone rule landed cheaply or expensively?",
+    "Does the WALKTHROUGH.md for the losing route say plainly that its bet didn't pay off for this act 2, without pretending its own restructuring was worthless in general?",
+    "Do both routes agree, byte for byte, with src/ on every act-1 outcome before the inspection-zone rule exists?",
+    "Does the reader's own rollback logic actually replay each undone command through the same apply/invert rules as the forward path, rather than special-casing it?"
+  ]
+}

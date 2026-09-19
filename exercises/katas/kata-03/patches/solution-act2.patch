@@ -1,0 +1,14 @@
+diff --git a/solutions/command-rules/robot.ts b/solutions/command-rules/robot.ts
+index 4feef98..34f0f79 100644
+--- a/solutions/command-rules/robot.ts
++++ b/solutions/command-rules/robot.ts
+@@ -35,6 +35,9 @@ function validateCommand(state: RobotState, command: RobotCommand): void {
+     if (state.holding !== null) {
+       throw new Error(`already holding ${state.holding}, cannot pick up ${command.itemId}`);
+     }
++    if (command.itemId === "contraband" && !(state.x >= 8 && state.y >= 8)) {
++      throw new Error("contraband can only be picked up inside the inspection zone");
++    }
+     return;
+   }
+   if (state.holding === null) {
