@@ -1,0 +1,45 @@
+{
+  "id": "choice-warehouse-registry",
+  "title": "Warehouse registry",
+  "type": "choice",
+  "patterns": ["Singleton"],
+  "candidates": ["Singleton", "a module", "injection"],
+  "difficulty": 2,
+  "estimatedMinutes": 30,
+  "prerequisites": ["drill-singleton"],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Ravensgate Fulfilment",
+  "subDomain": "one shared list of bin locations",
+  "act2": {
+    "axis": "aligned",
+    "summary": "a second fulfilment site needs its own bin registry, live in the same process as the first - exactly the guarantee a single shared instance is built to prevent",
+    "extensionBudget": { "maxFilesModified": 1, "maxLinesModified": 3, "maxHunks": 1 }
+  },
+  "solutions": [
+    {
+      "slug": "singleton",
+      "title": "A class with a private constructor and getInstance()",
+      "tradeoff": "Cheaper than the no-pattern baseline and the module route, because there's a class to reuse: createWarehouseRegistry() calls a new static method that constructs a second instance from inside the class itself, bypassing getInstance() without relaxing the private constructor. Still costs more than injection - three methods have to be wrapped in a plain object to match the shared handle shape, and a clear() method has to be added to the class first."
+    },
+    {
+      "slug": "module",
+      "title": "Module-level state, no class at all",
+      "tradeoff": "As expensive as the no-pattern baseline, for the same reason: no reusable unit to instantiate a second time, so createWarehouseRegistry() has to hand-duplicate registerBin/binLocation/binsInAisle/clear's logic into a closure from scratch. A module has exactly one instance per process - the same guarantee a singleton class makes, without a class to fall back on when that guarantee is exactly what act 2 needs undone."
+    },
+    {
+      "slug": "injection",
+      "title": "An explicit createWarehouseRegistry() factory, no shared instance",
+      "absorbsAct2": true,
+      "tradeoff": "Already built for this: createWarehouseRegistry() has existed since act 1, because this route was never built around one shared instance. Act 2 costs one export line - the factory just wasn't part of the frozen act-1 boundary yet."
+    }
+  ],
+  "reviewFocus": [
+    "Does the chosen candidate's WALKTHROUGH.md name what would change my mind about the choice, or does it just describe the code?",
+    "Is 'a second live instance is exactly the guarantee a singleton is built to prevent' a fair reading of why Singleton and a module both measure worse here?",
+    "In the singleton route, does createWarehouseRegistry() really produce an instance independent of getInstance()'s cached one, with no shared state leaking between them?",
+    "Do all four routes - and the no-pattern baseline - agree, byte for byte, on registerBin/binLocation/binsInAisle/resetRegistry for act 1, before any of them has two registries at once?",
+    "Would a reader's CHOICE.md, written before act 2, have predicted that 'exactly one instance' is the one guarantee three of these four routes can't cheaply undo?"
+  ]
+}

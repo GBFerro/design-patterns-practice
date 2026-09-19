@@ -1,0 +1,52 @@
+diff --git a/src/index.ts b/src/index.ts
+index 7366679..ad10c32 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -1,2 +1,3 @@
+-export { binLocation, binsInAisle, registerBin, resetRegistry } from "./registry.ts";
++export { binLocation, binsInAisle, createWarehouseRegistry, registerBin, resetRegistry } from "./registry.ts";
+ export type { BinLocation } from "./types.ts";
++export type { WarehouseRegistryHandle } from "./registry.ts";
+diff --git a/src/registry.ts b/src/registry.ts
+index f5caaa3..cd1b221 100644
+--- a/src/registry.ts
++++ b/src/registry.ts
+@@ -26,3 +26,38 @@ export function binsInAisle(aisle: string): readonly BinLocation[] {
+ export function resetRegistry(): void {
+   bins = undefined;
+ }
++
++/**
++ * Everything the app can do with one bin registry - a second, independent
++ * implementation of the four functions above. `registerBin` and friends only
++ * know how to read the one shared `bins` variable above, so there is no way
++ * to point them at a different array.
++ */
++export interface WarehouseRegistryHandle {
++  registerBin(bin: BinLocation): void;
++  binLocation(binId: string): BinLocation | undefined;
++  binsInAisle(aisle: string): readonly BinLocation[];
++  clear(): void;
++}
++
++/**
++ * Builds one independent bin registry - the only way to get a registry that
++ * is not the one shared array every other function in this file reads from.
++ */
++export function createWarehouseRegistry(): WarehouseRegistryHandle {
++  let ownBins: BinLocation[] = [];
++  return {
++    registerBin(bin) {
++      ownBins.push(bin);
++    },
++    binLocation(binId) {
++      return ownBins.find((bin) => bin.binId === binId);
++    },
++    binsInAisle(aisle) {
++      return ownBins.filter((bin) => bin.aisle === aisle);
++    },
++    clear() {
++      ownBins = [];
++    },
++  };
++}

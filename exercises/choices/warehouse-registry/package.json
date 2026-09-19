@@ -1,0 +1,13 @@
+{
+  "name": "@dp/choice-warehouse-registry",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-singleton": "./solutions/singleton/index.ts",
+      "solution-module": "./solutions/module/index.ts",
+      "solution-injection": "./solutions/injection/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

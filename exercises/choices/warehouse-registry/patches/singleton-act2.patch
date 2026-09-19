@@ -1,0 +1,56 @@
+diff --git a/solutions/singleton/index.ts b/solutions/singleton/index.ts
+index 7366679..ad10c32 100644
+--- a/solutions/singleton/index.ts
++++ b/solutions/singleton/index.ts
+@@ -1,2 +1,3 @@
+-export { binLocation, binsInAisle, registerBin, resetRegistry } from "./registry.ts";
++export { binLocation, binsInAisle, createWarehouseRegistry, registerBin, resetRegistry } from "./registry.ts";
+ export type { BinLocation } from "./types.ts";
++export type { WarehouseRegistryHandle } from "./registry.ts";
+diff --git a/solutions/singleton/registry.ts b/solutions/singleton/registry.ts
+index 485ed4d..b82efcc 100644
+--- a/solutions/singleton/registry.ts
++++ b/solutions/singleton/registry.ts
+@@ -20,6 +20,12 @@ export class WarehouseRegistry {
+     WarehouseRegistry.instance = undefined;
+   }
+ 
++  /** Builds an independent instance, bypassing `getInstance()` - called only
++   *  from inside this class, so the private constructor still stands. */
++  static createIndependent(): WarehouseRegistry {
++    return new WarehouseRegistry();
++  }
++
+   registerBin(bin: BinLocation): void {
+     this.bins.push(bin);
+   }
+@@ -31,6 +37,29 @@ export class WarehouseRegistry {
+   binsInAisle(aisle: string): readonly BinLocation[] {
+     return this.bins.filter((bin) => bin.aisle === aisle);
+   }
++
++  clear(): void {
++    this.bins = [];
++  }
++}
++
++export interface WarehouseRegistryHandle {
++  registerBin(bin: BinLocation): void;
++  binLocation(binId: string): BinLocation | undefined;
++  binsInAisle(aisle: string): readonly BinLocation[];
++  clear(): void;
++}
++
++/** Wraps an independent `WarehouseRegistry` instance in the plain handle
++ *  shape every other candidate returns from its own factory. */
++export function createWarehouseRegistry(): WarehouseRegistryHandle {
++  const registry = WarehouseRegistry.createIndependent();
++  return {
++    registerBin: (bin) => registry.registerBin(bin),
++    binLocation: (binId) => registry.binLocation(binId),
++    binsInAisle: (aisle) => registry.binsInAisle(aisle),
++    clear: () => registry.clear(),
++  };
+ }
+ 
+ export function registerBin(bin: BinLocation): void {

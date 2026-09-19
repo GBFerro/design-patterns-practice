@@ -18,12 +18,15 @@ naming the answer in the path would answer it.
 | Mediator | `choice-order-events` |
 | Observer | `choice-order-events` |
 | Proxy | `choice-carrier-gateway` |
+| Singleton | `choice-warehouse-registry` |
 | State | `choice-picking-policy` |
 | Strategy | `choice-picking-policy`, `choice-surcharge-rules` |
 | Template Method | `choice-label-pipeline`, `choice-picking-policy` |
 | Visitor | `choice-package-tree` |
 | a lookup table | `choice-surcharge-rules` |
+| a module | `choice-warehouse-registry` |
 | a pipeline of functions | `choice-label-pipeline` |
 | a rules list | `choice-surcharge-rules` |
 | an object literal | `choice-crate-config` |
+| injection | `choice-warehouse-registry` |
 | plain recursion | `choice-package-tree` |
