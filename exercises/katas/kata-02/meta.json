@@ -1,0 +1,39 @@
+{
+  "id": "kata-02",
+  "title": "Ravensgate rate-shopping engine",
+  "type": "kata",
+  "patterns": [],
+  "difficulty": 3,
+  "estimatedMinutes": 45,
+  "prerequisites": [],
+  "apiFrozen": true,
+  "providesTests": false,
+  "translations": ["en"],
+  "world": "Ravensgate Fulfilment",
+  "subDomain": "carrier rate shopping",
+  "act2": {
+    "axis": "aligned",
+    "summary": "tanager signs a small-parcel arrangement - a new national-zone eligibility exception, unaffected by weight caps, speed tiers or discounts",
+    "extensionBudget": { "maxFilesModified": 1, "maxLinesModified": 2, "maxHunks": 1 }
+  },
+  "solutions": [
+    {
+      "slug": "eligibility-rules",
+      "title": "One shared function decides whether a carrier is even in the running",
+      "absorbsAct2": true,
+      "tradeoff": "This route bet that zone-and-weight eligibility was the pressure most likely to grow a new exception, and pulled both checks into one function shared by both entry points. Tanager's small-parcel exception arrives on exactly that axis: one new clause, inside a function that already receives every value it needs, at 2 lines in a single hunk."
+    },
+    {
+      "slug": "discount-rules",
+      "title": "One shared function decides the price, after each carrier's negotiated rate",
+      "tradeoff": "This route bet that the per-carrier discount arithmetic was worth insulating first - a reasonable bet, since discount rates are the kind of thing a sales team renegotiates on its own schedule. The small-parcel exception never touches pricing at all: eligibility-by-zone was never pulled out, so it still duplicates the new clause across both entry points, at exactly the no-pattern baseline's cost."
+    }
+  ],
+  "reviewFocus": [
+    "Does the reader's own restructuring name, honestly, which pressure it chose to relieve - eligibility, or pricing - and admit the other is still duplicated?",
+    "Would a reader who restructured pricing instead of eligibility still recognize, from the measured numbers alone, why the small-parcel exception landed cheaply or expensively?",
+    "Does the WALKTHROUGH.md for the losing route say plainly that its bet didn't pay off for this act 2, without pretending its own restructuring was worthless in general?",
+    "Do both routes agree, byte for byte, with src/ on every act-1 outcome before the exception exists?",
+    "For a kata that ships without tests: does the reader's own safety net actually exercise the zone, weight and speed-tier boundaries - or only the happy path?"
+  ]
+}

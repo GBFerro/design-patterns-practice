@@ -73,7 +73,8 @@ git clone <your fork> && cd design-patterns-practice
 | Id | Pattern | Difficulty | Time | Verdict | Act 2 axis |
 | --- | --- | --- | --- | --- | --- |
 | [`kata-01`](./exercises/katas/kata-01/) | Ravensgate returns and refunds engine | ●●● | ~45 min | `-` | aligned |
+| [`kata-02`](./exercises/katas/kata-02/) | Ravensgate rate-shopping engine | ●●● | ~45 min | `-` | aligned |
 
 ---
 
-_32 of 36 exercises written (23 drills · 8 choices · 5 katas)._
+_33 of 36 exercises written (23 drills · 8 choices · 5 katas)._

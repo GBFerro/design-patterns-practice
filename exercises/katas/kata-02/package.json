@@ -1,0 +1,12 @@
+{
+  "name": "@dp/kata-02",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-eligibility-rules": "./solutions/eligibility-rules/index.ts",
+      "solution-discount-rules": "./solutions/discount-rules/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

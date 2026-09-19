@@ -1,0 +1,13 @@
+diff --git a/solutions/eligibility-rules/rate-shopping.ts b/solutions/eligibility-rules/rate-shopping.ts
+index 71773b1..3246d19 100644
+--- a/solutions/eligibility-rules/rate-shopping.ts
++++ b/solutions/eligibility-rules/rate-shopping.ts
+@@ -19,7 +19,7 @@ function isEligible(carrierId: CarrierQuote["carrierId"], zone: DestinationZone,
+   } else if (carrierId === "skyfreight") {
+     zoneOk = true;
+   } else {
+-    zoneOk = zone === "local" || zone === "regional";
++    zoneOk = zone === "local" || zone === "regional" || (zone === "national" && weightKg <= 12);
+   }
+   if (!zoneOk) return false;
+ 

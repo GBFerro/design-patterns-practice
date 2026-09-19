@@ -1,0 +1,28 @@
+diff --git a/src/rate-shopping.ts b/src/rate-shopping.ts
+index 63974fd..19d296e 100644
+--- a/src/rate-shopping.ts
++++ b/src/rate-shopping.ts
+@@ -23,7 +23,10 @@ export function pickCheapestCarrier(request: ShipmentRequest, quotes: readonly C
+     } else if (quote.carrierId === "skyfreight") {
+       zoneOk = true;
+     } else {
+-      zoneOk = request.destinationZone === "local" || request.destinationZone === "regional";
++      zoneOk =
++        request.destinationZone === "local" ||
++        request.destinationZone === "regional" ||
++        (request.destinationZone === "national" && request.weightKg <= 12);
+     }
+     if (!zoneOk) continue;
+ 
+@@ -85,7 +88,10 @@ export function pickCheapestForBatch(
+       } else if (quote.carrierId === "skyfreight") {
+         zoneOk = true;
+       } else {
+-        zoneOk = request.destinationZone === "local" || request.destinationZone === "regional";
++        zoneOk =
++          request.destinationZone === "local" ||
++          request.destinationZone === "regional" ||
++          (request.destinationZone === "national" && request.weightKg <= 12);
+       }
+       if (!zoneOk) continue;
+ 
