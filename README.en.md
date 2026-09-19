@@ -68,6 +68,12 @@ git clone <your fork> && cd design-patterns-practice
 | [`choice-surcharge-rules`](./exercises/choices/surcharge-rules/) | Surcharge rules | ●●● | ~40 min | `-` | ⚠ orthogonal |
 | [`choice-warehouse-registry`](./exercises/choices/warehouse-registry/) | Warehouse registry | ●●○ | ~30 min | `-` | aligned |
 
+## Katas — nothing is named
+
+| Id | Pattern | Difficulty | Time | Verdict | Act 2 axis |
+| --- | --- | --- | --- | --- | --- |
+| [`kata-01`](./exercises/katas/kata-01/) | Ravensgate returns and refunds engine | ●●● | ~45 min | `-` | aligned |
+
 ---
 
-_31 of 36 exercises written (23 drills · 8 choices · 5 katas)._
+_32 of 36 exercises written (23 drills · 8 choices · 5 katas)._

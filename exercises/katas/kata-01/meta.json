@@ -1,0 +1,38 @@
+{
+  "id": "kata-01",
+  "title": "Ravensgate returns and refunds engine",
+  "type": "kata",
+  "patterns": [],
+  "difficulty": 3,
+  "estimatedMinutes": 45,
+  "prerequisites": [],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Ravensgate Fulfilment",
+  "subDomain": "returns and refunds",
+  "act2": {
+    "axis": "aligned",
+    "summary": "a supplier recall arrives - a new return reason with its own refund rule, unaffected by restock disposition or notification channel",
+    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 5, "maxHunks": 2 }
+  },
+  "solutions": [
+    {
+      "slug": "reason-based-refunds",
+      "title": "One shared function decides the refund, by reason",
+      "absorbsAct2": true,
+      "tradeoff": "This route bet that the refund-by-reason branching was the pressure most likely to grow a new member, and pulled it into one function shared by both entry points. The recall arrives on exactly that axis: one new branch, one place, 5 lines across 2 hunks."
+    },
+    {
+      "slug": "condition-based-restock",
+      "title": "One shared function decides the restock disposition, by condition",
+      "tradeoff": "This route bet that restock disposition was the pressure worth relieving first, and pulled it into one function shared by both entry points - a reasonable bet the warehouse floor would have applauded. The recall doesn't touch that axis at all: refund-by-reason branching was never touched, so it still duplicates the new branch across both entry points, at exactly the no-pattern baseline's cost."
+    }
+  ],
+  "reviewFocus": [
+    "Does the reader's own restructuring name, honestly, which of the three pressures (refund by reason, restock by condition, notification by method) it chose to relieve - and does it admit the other two are still duplicated?",
+    "Would a reader who restructured a different axis than their own solution's still recognize why the recall lands cheaply or expensively, from the measured numbers alone?",
+    "Does the WALKTHROUGH.md for the losing route say plainly that its bet didn't pay off for this act 2, without pretending its own restructuring was worthless in general?",
+    "Do both routes agree, byte for byte, with src/ on every act-1 outcome before the recall exists?"
+  ]
+}

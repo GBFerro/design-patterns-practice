@@ -1,0 +1,34 @@
+diff --git a/solutions/condition-based-restock/returns.ts b/solutions/condition-based-restock/returns.ts
+index 0dba9f2..3e17cec 100644
+--- a/solutions/condition-based-restock/returns.ts
++++ b/solutions/condition-based-restock/returns.ts
+@@ -27,6 +27,9 @@ export function processReturn(request: ReturnRequest): ReturnOutcome {
+   } else if (request.reason === "wrong-item") {
+     refundCents = request.itemPriceCents;
+     refundMethod = "original-payment";
++  } else if (request.reason === "recalled") {
++    refundCents = Math.min(request.itemPriceCents, 50_000);
++    refundMethod = "original-payment";
+   } else {
+     refundCents = Math.round(request.itemPriceCents * 0.85);
+     refundMethod = "store-credit";
+@@ -65,6 +68,9 @@ export function processBulkReturns(requests: readonly ReturnRequest[]): readonly
+     } else if (request.reason === "wrong-item") {
+       refundCents = request.itemPriceCents;
+       refundMethod = "original-payment";
++    } else if (request.reason === "recalled") {
++      refundCents = Math.min(request.itemPriceCents, 50_000);
++      refundMethod = "original-payment";
+     } else {
+       refundCents = Math.round(request.itemPriceCents * 0.85);
+       refundMethod = "store-credit";
+diff --git a/solutions/condition-based-restock/types.ts b/solutions/condition-based-restock/types.ts
+index 2f6ef25..ed65e51 100644
+--- a/solutions/condition-based-restock/types.ts
++++ b/solutions/condition-based-restock/types.ts
+@@ -1,4 +1,4 @@
+-export type ReturnReason = "defective" | "wrong-item" | "changed-mind";
++export type ReturnReason = "defective" | "wrong-item" | "changed-mind" | "recalled";
+ 
+ export type ItemCondition = "sealed" | "opened-good" | "opened-damaged";
+ 

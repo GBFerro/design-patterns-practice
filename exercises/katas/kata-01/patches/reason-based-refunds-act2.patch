@@ -1,0 +1,24 @@
+diff --git a/solutions/reason-based-refunds/returns.ts b/solutions/reason-based-refunds/returns.ts
+index 8bf1f3b..369fff6 100644
+--- a/solutions/reason-based-refunds/returns.ts
++++ b/solutions/reason-based-refunds/returns.ts
+@@ -12,6 +12,9 @@ function refundFor(request: ReturnRequest): Pick<ReturnOutcome, "refundCents" |
+   if (request.reason === "wrong-item") {
+     return { refundCents: request.itemPriceCents, refundMethod: "original-payment" };
+   }
++  if (request.reason === "recalled") {
++    return { refundCents: Math.min(request.itemPriceCents, 50_000), refundMethod: "original-payment" };
++  }
+   return { refundCents: Math.round(request.itemPriceCents * 0.85), refundMethod: "store-credit" };
+ }
+ 
+diff --git a/solutions/reason-based-refunds/types.ts b/solutions/reason-based-refunds/types.ts
+index 2f6ef25..ed65e51 100644
+--- a/solutions/reason-based-refunds/types.ts
++++ b/solutions/reason-based-refunds/types.ts
+@@ -1,4 +1,4 @@
+-export type ReturnReason = "defective" | "wrong-item" | "changed-mind";
++export type ReturnReason = "defective" | "wrong-item" | "changed-mind" | "recalled";
+ 
+ export type ItemCondition = "sealed" | "opened-good" | "opened-damaged";
+ 
