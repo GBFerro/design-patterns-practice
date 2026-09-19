@@ -65,7 +65,8 @@ git clone <your fork> && cd design-patterns-practice
 | [`choice-order-events`](./exercises/choices/order-events/) | Order events | ●●● | ~40 min | `-` | aligned |
 | [`choice-package-tree`](./exercises/choices/package-tree/) | Package tree | ●●● | ~40 min | `-` | aligned |
 | [`choice-picking-policy`](./exercises/choices/picking-policy/) | Picking policy | ●●● | ~40 min | `-` | aligned |
+| [`choice-surcharge-rules`](./exercises/choices/surcharge-rules/) | Surcharge rules | ●●● | ~40 min | `-` | ⚠ orthogonal |
 
 ---
 
-_29 of 36 exercises written (23 drills · 8 choices · 5 katas)._
+_30 of 36 exercises written (23 drills · 8 choices · 5 katas)._

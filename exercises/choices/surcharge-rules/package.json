@@ -1,0 +1,13 @@
+{
+  "name": "@dp/choice-surcharge-rules",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-strategy": "./solutions/strategy/index.ts",
+      "solution-lookup-table": "./solutions/lookup-table/index.ts",
+      "solution-rules-list": "./solutions/rules-list/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

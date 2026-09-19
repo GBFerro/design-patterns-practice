@@ -19,9 +19,11 @@ naming the answer in the path would answer it.
 | Observer | `choice-order-events` |
 | Proxy | `choice-carrier-gateway` |
 | State | `choice-picking-policy` |
-| Strategy | `choice-picking-policy` |
+| Strategy | `choice-picking-policy`, `choice-surcharge-rules` |
 | Template Method | `choice-label-pipeline`, `choice-picking-policy` |
 | Visitor | `choice-package-tree` |
+| a lookup table | `choice-surcharge-rules` |
 | a pipeline of functions | `choice-label-pipeline` |
+| a rules list | `choice-surcharge-rules` |
 | an object literal | `choice-crate-config` |
 | plain recursion | `choice-package-tree` |

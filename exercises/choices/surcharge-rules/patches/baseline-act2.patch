@@ -1,0 +1,42 @@
+diff --git a/src/surcharges.ts b/src/surcharges.ts
+index 9b6eb29..dcda61c 100644
+--- a/src/surcharges.ts
++++ b/src/surcharges.ts
+@@ -4,6 +4,7 @@ const FUEL_SURCHARGE_RATE = 0.12;
+ const REMOTE_AREA_SURCHARGE_CENTS = 1500;
+ const OVERSIZE_SURCHARGE_CENTS = 2000;
+ const OVERSIZE_THRESHOLD_CM = 150;
++const HAZMAT_SURCHARGE_CENTS = 3000;
+ 
+ function isOversize(shipment: Shipment): boolean {
+   return (
+@@ -17,13 +18,15 @@ export function quoteSurcharges(shipment: Shipment): SurchargeBreakdown {
+   const fuelCents = Math.round(shipment.baseRateCents * FUEL_SURCHARGE_RATE);
+   const remoteAreaCents = shipment.destination === "remote" ? REMOTE_AREA_SURCHARGE_CENTS : 0;
+   const oversizeCents = isOversize(shipment) ? OVERSIZE_SURCHARGE_CENTS : 0;
+-  const totalCents = fuelCents + remoteAreaCents + oversizeCents;
+-  return { fuelCents, remoteAreaCents, oversizeCents, totalCents };
++  const hazmatCents = remoteAreaCents > 0 && oversizeCents > 0 ? HAZMAT_SURCHARGE_CENTS : 0;
++  const totalCents = fuelCents + remoteAreaCents + oversizeCents + hazmatCents;
++  return { fuelCents, remoteAreaCents, oversizeCents, hazmatCents, totalCents };
+ }
+ 
+ export function totalSurchargeCents(shipment: Shipment): number {
+   const fuelCents = Math.round(shipment.baseRateCents * FUEL_SURCHARGE_RATE);
+   const remoteAreaCents = shipment.destination === "remote" ? REMOTE_AREA_SURCHARGE_CENTS : 0;
+   const oversizeCents = isOversize(shipment) ? OVERSIZE_SURCHARGE_CENTS : 0;
+-  return fuelCents + remoteAreaCents + oversizeCents;
++  const hazmatCents = remoteAreaCents > 0 && oversizeCents > 0 ? HAZMAT_SURCHARGE_CENTS : 0;
++  return fuelCents + remoteAreaCents + oversizeCents + hazmatCents;
+ }
+diff --git a/src/types.ts b/src/types.ts
+index d41f9db..d4390f1 100644
+--- a/src/types.ts
++++ b/src/types.ts
+@@ -12,5 +12,6 @@ export interface SurchargeBreakdown {
+   readonly fuelCents: number;
+   readonly remoteAreaCents: number;
+   readonly oversizeCents: number;
++  readonly hazmatCents: number;
+   readonly totalCents: number;
+ }

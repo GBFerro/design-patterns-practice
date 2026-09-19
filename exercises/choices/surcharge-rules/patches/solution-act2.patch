@@ -1,0 +1,45 @@
+diff --git a/solutions/rules-list/quote.ts b/solutions/rules-list/quote.ts
+index 1c8cfee..11901af 100644
+--- a/solutions/rules-list/quote.ts
++++ b/solutions/rules-list/quote.ts
+@@ -16,6 +16,7 @@ export function quoteSurcharges(shipment: Shipment): SurchargeBreakdown {
+     fuelCents: amounts.fuel ?? 0,
+     remoteAreaCents: amounts.remoteArea ?? 0,
+     oversizeCents: amounts.oversize ?? 0,
++    hazmatCents: amounts.hazmat ?? 0,
+     totalCents,
+   };
+ }
+diff --git a/solutions/rules-list/surcharges.ts b/solutions/rules-list/surcharges.ts
+index 1c85a78..0e678bb 100644
+--- a/solutions/rules-list/surcharges.ts
++++ b/solutions/rules-list/surcharges.ts
+@@ -15,7 +15,7 @@ function isOversize(shipment: Shipment): boolean {
+  * computed earlier in the list, keyed by id - so a rule can depend on the rules before it.
+  */
+ export interface SurchargeRule {
+-  readonly id: "fuel" | "remoteArea" | "oversize";
++  readonly id: "fuel" | "remoteArea" | "oversize" | "hazmat";
+   amount(shipment: Shipment, soFar: Readonly<Record<string, number>>): number;
+ }
+ 
+@@ -23,4 +23,8 @@ export const SURCHARGE_RULES: readonly SurchargeRule[] = [
+   { id: "fuel", amount: (shipment) => Math.round(shipment.baseRateCents * 0.12) },
+   { id: "remoteArea", amount: (shipment) => (shipment.destination === "remote" ? 1500 : 0) },
+   { id: "oversize", amount: (shipment) => (isOversize(shipment) ? 2000 : 0) },
++  {
++    id: "hazmat",
++    amount: (_shipment, soFar) => ((soFar.remoteArea ?? 0) > 0 && (soFar.oversize ?? 0) > 0 ? 3000 : 0),
++  },
+ ];
+diff --git a/solutions/rules-list/types.ts b/solutions/rules-list/types.ts
+index d41f9db..d4390f1 100644
+--- a/solutions/rules-list/types.ts
++++ b/solutions/rules-list/types.ts
+@@ -12,5 +12,6 @@ export interface SurchargeBreakdown {
+   readonly fuelCents: number;
+   readonly remoteAreaCents: number;
+   readonly oversizeCents: number;
++  readonly hazmatCents: number;
+   readonly totalCents: number;
+ }

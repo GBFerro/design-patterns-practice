@@ -1,0 +1,45 @@
+{
+  "id": "choice-surcharge-rules",
+  "title": "Surcharge rules",
+  "type": "choice",
+  "patterns": ["Strategy"],
+  "candidates": ["Strategy", "a lookup table", "a rules list"],
+  "difficulty": 3,
+  "estimatedMinutes": 40,
+  "prerequisites": ["drill-strategy"],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Ravensgate Fulfilment",
+  "subDomain": "fuel, remote-area and oversize surcharges",
+  "act2": {
+    "axis": "orthogonal",
+    "summary": "a hazmat surcharge arrives that only applies when two existing surcharges (remote-area and oversize) already do - a rule about the relationship between surcharges, not a new independent one",
+    "extensionBudget": { "maxFilesModified": 3, "maxLinesModified": 8, "maxHunks": 4 }
+  },
+  "solutions": [
+    {
+      "slug": "strategy",
+      "title": "One class per surcharge, computed from the shipment alone",
+      "tradeoff": "The most expensive of all four measured routes. The shared id union has to grow, a new class carries the usual per-strategy boilerplate for one check, and - because no strategy can see another strategy's result - it still has to re-derive 'is remote and is oversize' from the raw shipment instead of reading remoteArea/oversize's already-computed amounts."
+    },
+    {
+      "slug": "lookup-table",
+      "title": "A Record of named surcharge functions, each pure in the shipment",
+      "tradeoff": "Cheaper than Strategy - no class ceremony, just one more key and function - but the same isolation problem: each entry is a pure function of the shipment alone, so the new entry still has to re-derive the cross-condition rather than read it. Ties the no-pattern baseline on hunks but costs more lines and touches one more file."
+    },
+    {
+      "slug": "rules-list",
+      "title": "An ordered list of rules, each seeing every surcharge computed before it",
+      "absorbsAct2": true,
+      "tradeoff": "The only candidate that reads rather than re-derives: the new rule checks the accumulator's already-computed remoteArea and oversize amounts directly. Fewest lines of any of the four measured routes, including the no-pattern baseline - but one more hunk than the baseline, because the change lands in three separate spots (the id union, the rules array, the return literal) instead of inside two self-contained function bodies the baseline already had."
+    }
+  ],
+  "reviewFocus": [
+    "Does the chosen candidate's WALKTHROUGH.md name what would change my mind about the choice, or does it just describe the code?",
+    "Is 'a rule about the relationship between surcharges, not a new independent one' a fair reading of why this act 2 sits outside Strategy's usual strength?",
+    "In the strategy and lookup-table routes, does the hazmat check really re-derive 'is remote and is oversize' from the raw shipment, rather than reading the other surcharges' already-computed amounts?",
+    "Does the no-pattern baseline actually beat every structured candidate on hunks, and is that reported honestly rather than picked around?",
+    "Would a reader's CHOICE.md, written before act 2, have predicted that none of the three candidates - not even the winner - beats the no-pattern baseline on every dimension?"
+  ]
+}
