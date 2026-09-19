@@ -16,7 +16,7 @@
   "act2": {
     "axis": "aligned",
     "summary": "a warmup check inserted in the middle of the order, and the whole order reversed for one telescope (weather first)",
-    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 12, "maxHunks": 3 }
+    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 17, "maxHunks": 3 }
   },
   "forbidden": [
     "telescope\\.name === \"Ridgeline\"",

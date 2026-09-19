@@ -33,6 +33,8 @@ export class HazmatWarningDecorator extends LabelDecorator {
 export class CustomsDeclarationDecorator extends LabelDecorator {
   render(shipment: Shipment): string[] {
     const lines = this.wrapped.render(shipment);
-    return shipment.destinationCountry !== "US" ? [...lines, "CUSTOMS: contents declared, origin US"] : lines;
+    return shipment.destinationCountry !== "US"
+      ? [...lines, "CUSTOMS: contents declared, origin US"]
+      : lines;
   }
 }

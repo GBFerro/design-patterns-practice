@@ -25,7 +25,12 @@ export class ExposureSetup {
   }
 
   createMemento(): ExposureMemento {
-    return new ConcreteExposureMemento(this.instrumentName, this.filterName, this.exposureSeconds, this.binning);
+    return new ConcreteExposureMemento(
+      this.instrumentName,
+      this.filterName,
+      this.exposureSeconds,
+      this.binning,
+    );
   }
 
   restore(memento: ExposureMemento): void {

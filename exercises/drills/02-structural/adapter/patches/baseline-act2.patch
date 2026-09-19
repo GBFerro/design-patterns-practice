@@ -1,14 +1,19 @@
 diff --git a/src/admit.ts b/src/admit.ts
-index b2281ec..ab3304b 100644
+index b2281ec..dcd0930 100644
 --- a/src/admit.ts
 +++ b/src/admit.ts
-@@ -1,4 +1,4 @@
+@@ -1,4 +1,9 @@
 -import type { AdmissionResult, FareReader, LegacyCardScanner } from "./types.ts";
-+import type { AdmissionResult, ContactlessReader, FareReader, LegacyCardScanner } from "./types.ts";
++import type {
++  AdmissionResult,
++  ContactlessReader,
++  FareReader,
++  LegacyCardScanner,
++} from "./types.ts";
  
  const FARE_CENTS = 275;
  
-@@ -29,3 +29,19 @@ export function admitLegacyPassenger(scanner: LegacyCardScanner): AdmissionResul
+@@ -29,3 +34,19 @@ export function admitLegacyPassenger(scanner: LegacyCardScanner): AdmissionResul
    }
    return { admitted: true, remainingBalanceCents: balanceCents - FARE_CENTS };
  }
@@ -29,12 +34,16 @@ index b2281ec..ab3304b 100644
 +  return { admitted: true, remainingBalanceCents: balanceCents - FARE_CENTS };
 +}
 diff --git a/src/index.ts b/src/index.ts
-index af5522b..cc2f345 100644
+index af5522b..755aa85 100644
 --- a/src/index.ts
 +++ b/src/index.ts
-@@ -1,6 +1,7 @@
+@@ -1,6 +1,11 @@
 -export { admitLegacyPassenger, admitPassenger } from "./admit.ts";
-+export { admitContactlessPassenger, admitLegacyPassenger, admitPassenger } from "./admit.ts";
++export {
++  admitContactlessPassenger,
++  admitLegacyPassenger,
++  admitPassenger,
++} from "./admit.ts";
  export type {
    AdmissionResult,
 +  ContactlessReader,

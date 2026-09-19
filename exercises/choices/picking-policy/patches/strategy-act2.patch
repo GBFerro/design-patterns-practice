@@ -1,8 +1,8 @@
 diff --git a/solutions/strategy/policy.ts b/solutions/strategy/policy.ts
-index 0db0378..1df095c 100644
+index 0db0378..77fd11c 100644
 --- a/solutions/strategy/policy.ts
 +++ b/solutions/strategy/policy.ts
-@@ -2,26 +2,50 @@ import { strategies } from "./strategies.ts";
+@@ -2,26 +2,51 @@ import { strategies } from "./strategies.ts";
  import type { Order, PickInstruction } from "./types.ts";
  
  const BATCH_THRESHOLD = 3;
@@ -46,7 +46,8 @@ index 0db0378..1df095c 100644
 +    if (this.mode === "surge") {
 +      this.surgeOrderIds?.delete(orderId);
 +      if (this.surgeOrderIds?.size === 0) {
-+        const resumesBatch = this.batchOrderIds !== undefined && this.batchOrderIds.size > 0;
++        const resumesBatch =
++          this.batchOrderIds !== undefined && this.batchOrderIds.size > 0;
 +        this.mode = resumesBatch ? "batch" : "individual";
 +        this.surgeOrderIds = undefined;
 +        if (!resumesBatch) this.batchOrderIds = undefined;
@@ -57,7 +58,7 @@ index 0db0378..1df095c 100644
      this.batchOrderIds?.delete(orderId);
      if (this.mode === "batch" && this.batchOrderIds?.size === 0) {
        this.mode = "individual";
-@@ -29,7 +53,7 @@ export class PickingPolicy {
+@@ -29,7 +54,7 @@ export class PickingPolicy {
      }
    }
  
@@ -67,7 +68,7 @@ index 0db0378..1df095c 100644
    }
  }
 diff --git a/solutions/strategy/strategies.ts b/solutions/strategy/strategies.ts
-index 41df2c8..aaa8962 100644
+index 3f789b6..aaa8962 100644
 --- a/solutions/strategy/strategies.ts
 +++ b/solutions/strategy/strategies.ts
 @@ -2,7 +2,8 @@ import type { Order, PickInstruction } from "./types.ts";
@@ -80,7 +81,7 @@ index 41df2c8..aaa8962 100644
  ) => PickInstruction;
  
  function oldest(orders: readonly Order[]): Order {
-@@ -14,11 +15,23 @@ const individual: RoutingStrategy = (queue) => {
+@@ -14,18 +15,23 @@ const individual: RoutingStrategy = (queue) => {
    return { mode: "individual", binId: target.binId, orderIds: [target.id] };
  };
  
@@ -90,24 +91,24 @@ index 41df2c8..aaa8962 100644
 +  const surviving = queue.filter((order) => orderIds!.has(order.id));
    const target = oldest(surviving);
    const matching = surviving.filter((order) => order.binId === target.binId);
--  return { mode: "batch", binId: target.binId, orderIds: matching.map((order) => order.id) };
-+  return {
-+    mode: "batch",
-+    binId: target.binId,
-+    orderIds: matching.map((order) => order.id),
+   return {
+     mode: "batch",
+     binId: target.binId,
+     orderIds: matching.map((order) => order.id),
 +    ...(urgent ? { urgent: true } : {}),
-+  };
+   };
  };
  
--export const strategies: Record<"individual" | "batch", RoutingStrategy> = { individual, batch };
+-export const strategies: Record<"individual" | "batch", RoutingStrategy> = {
 +// surge reuses the exact same grouping logic batch already had - the only
 +// thing that differs between them is which id set is active, and that
 +// decision lives in the wrapper, not here.
 +export const strategies: Record<"individual" | "batch" | "surge", RoutingStrategy> = {
-+  individual,
+   individual,
+-  batch,
 +  batch: grouped,
 +  surge: grouped,
-+};
+ };
 diff --git a/solutions/strategy/types.ts b/solutions/strategy/types.ts
 index d5d6509..dacdcc1 100644
 --- a/solutions/strategy/types.ts

@@ -13,6 +13,7 @@ export function assemblePress(plate: Plate, inkSystem: InkSystem, feeder: Feeder
   const family = plate.family;
   return {
     family,
-    describe: () => `${family} press: ${plate.describe()}, ${inkSystem.describe()}, ${feeder.describe()}`,
+    describe: () =>
+      `${family} press: ${plate.describe()}, ${inkSystem.describe()}, ${feeder.describe()}`,
   };
 }

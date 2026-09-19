@@ -6,7 +6,12 @@ function buildStopMetadata(stopId: string): StopMetadata {
   const entry = STOP_DIRECTORY[stopId];
   if (!entry) throw new Error(`unknown stop: ${stopId}`);
   recordStopMetadataAllocation();
-  return { stopId, name: entry.name, zone: entry.zone, wheelchairAccessible: entry.wheelchairAccessible };
+  return {
+    stopId,
+    name: entry.name,
+    zone: entry.zone,
+    wheelchairAccessible: entry.wheelchairAccessible,
+  };
 }
 
 /** One StopTime per trip-stop pair. Caldermoor's weekday timetable is 200,000 of these -

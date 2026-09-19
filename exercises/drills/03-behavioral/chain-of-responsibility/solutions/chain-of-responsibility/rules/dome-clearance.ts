@@ -5,7 +5,8 @@ import type { ObservationRequest } from "../types.ts";
  *  movable dome (see chain.ts) - it never has to ask. */
 export class DomeClearanceRule extends BaseRule {
   protected check(request: ObservationRequest): string | null {
-    if (request.altitudeDegrees > 85) return "near-zenith pointing risks dome slit clearance";
+    if (request.altitudeDegrees > 85)
+      return "near-zenith pointing risks dome slit clearance";
     return null;
   }
 }

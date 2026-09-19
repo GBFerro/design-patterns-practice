@@ -35,7 +35,9 @@ export class TelescopeController {
 
   arrive(): void {
     if (this.currentStatus !== "slewing") {
-      throw new Error(`Cannot arrive: the telescope is "${this.currentStatus}", not slewing.`);
+      throw new Error(
+        `Cannot arrive: the telescope is "${this.currentStatus}", not slewing.`,
+      );
     }
     this.record("arrive");
     this.currentStatus = "tracking";
@@ -43,7 +45,9 @@ export class TelescopeController {
 
   nudge(deltaArcsec: number): void {
     if (this.currentStatus !== "tracking") {
-      throw new Error(`Cannot nudge: the telescope is "${this.currentStatus}", not tracking.`);
+      throw new Error(
+        `Cannot nudge: the telescope is "${this.currentStatus}", not tracking.`,
+      );
     }
     this.record(`nudge(${deltaArcsec})`);
   }

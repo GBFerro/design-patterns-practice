@@ -3,16 +3,28 @@ import { test } from "node:test";
 
 import { runNight } from "#exercise";
 
-function stepNames(log: { readonly steps: readonly { readonly step: string }[] }): string[] {
+function stepNames(log: {
+  readonly steps: readonly { readonly step: string }[];
+}): string[] {
   return log.steps.map((step) => step.step);
 }
 
 // Guards against the five steps being reordered while moving them into a shared
 // runner - the order is the one thing every instrument must agree on.
 test("every instrument runs connect, calibrate, capture, download, disconnect in that order", () => {
-  for (const instrument of ["wide-field-camera", "spectrograph", "thermal-imager"] as const) {
+  for (const instrument of [
+    "wide-field-camera",
+    "spectrograph",
+    "thermal-imager",
+  ] as const) {
     const log = runNight(instrument, "M31");
-    assert.deepEqual(stepNames(log), ["connect", "calibrate", "capture", "download", "disconnect"]);
+    assert.deepEqual(stepNames(log), [
+      "connect",
+      "calibrate",
+      "capture",
+      "download",
+      "disconnect",
+    ]);
   }
 });
 

@@ -1,9 +1,15 @@
 diff --git a/solutions/injection/index.ts b/solutions/injection/index.ts
-index 7366679..ad10c32 100644
+index 7366679..6127e90 100644
 --- a/solutions/injection/index.ts
 +++ b/solutions/injection/index.ts
-@@ -1,2 +1,3 @@
+@@ -1,2 +1,9 @@
 -export { binLocation, binsInAisle, registerBin, resetRegistry } from "./registry.ts";
-+export { binLocation, binsInAisle, createWarehouseRegistry, registerBin, resetRegistry } from "./registry.ts";
++export {
++  binLocation,
++  binsInAisle,
++  createWarehouseRegistry,
++  registerBin,
++  resetRegistry,
++} from "./registry.ts";
  export type { BinLocation } from "./types.ts";
 +export type { WarehouseRegistryHandle } from "./registry.ts";

@@ -35,7 +35,8 @@ export class PanelMediator {
   }
 
   private refresh(): void {
-    const ready = this.locked && this.selected !== null && this.seconds > 0 && !this.severe;
+    const ready =
+      this.locked && this.selected !== null && this.seconds > 0 && !this.severe;
     this.readyLamp.setLit(ready);
     this.startButton.setEnabled(ready);
   }

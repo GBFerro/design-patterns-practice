@@ -1,5 +1,5 @@
 diff --git a/solutions/mediator/panel-mediator.ts b/solutions/mediator/panel-mediator.ts
-index fcf69dc..c5d2f18 100644
+index 1e6b3dd..98d376c 100644
 --- a/solutions/mediator/panel-mediator.ts
 +++ b/solutions/mediator/panel-mediator.ts
 @@ -7,7 +7,7 @@ export class PanelMediator {
@@ -11,7 +11,7 @@ index fcf69dc..c5d2f18 100644
  
    constructor(
      private readonly readyLamp: ReadyLamp,
-@@ -29,13 +29,18 @@ export class PanelMediator {
+@@ -29,14 +29,19 @@ export class PanelMediator {
      this.refresh();
    }
  
@@ -28,8 +28,9 @@ index fcf69dc..c5d2f18 100644
    }
  
    private refresh(): void {
--    const ready = this.locked && this.selected !== null && this.seconds > 0 && !this.severe;
-+    const ready = this.locked && this.selected !== null && this.seconds > 0 && this.domeOpen;
+     const ready =
+-      this.locked && this.selected !== null && this.seconds > 0 && !this.severe;
++      this.locked && this.selected !== null && this.seconds > 0 && this.domeOpen;
      this.readyLamp.setLit(ready);
      this.startButton.setEnabled(ready);
    }
@@ -75,7 +76,7 @@ index 8bbbfae..603ff96 100644
    readonly readyLampLit: boolean;
    readonly startButtonEnabled: boolean;
  }
-diff --git a/solutions/mediator/widgets/dome-status.ts b/solutions/mediator/widgets/dome-status.ts
+diff --git a/after/solutions/mediator/widgets/dome-status.ts b/solutions/mediator/widgets/dome-status.ts
 new file mode 100644
 index 0000000..86cbf47
 --- /dev/null

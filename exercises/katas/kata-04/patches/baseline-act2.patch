@@ -1,5 +1,5 @@
 diff --git a/src/invoicing.ts b/src/invoicing.ts
-index f3136e1..b8ea9dd 100644
+index 3bb2cd2..00101a1 100644
 --- a/src/invoicing.ts
 +++ b/src/invoicing.ts
 @@ -1,6 +1,7 @@
@@ -10,7 +10,7 @@ index f3136e1..b8ea9dd 100644
  
  /**
   * Turn a completed order into its invoice: build each line, add the
-@@ -35,6 +36,9 @@ export function finalizeInvoice(order: Order): Invoice {
+@@ -38,6 +39,9 @@ export function finalizeInvoice(order: Order): Invoice {
    if (totalCents > LARGE_ORDER_THRESHOLD_CENTS) {
      notifiedChannels.push("large-order-desk");
    }
@@ -18,9 +18,9 @@ index f3136e1..b8ea9dd 100644
 +    notifiedChannels.push("low-value-review");
 +  }
  
-   return { orderId: order.orderId, lines, subtotalCents, surchargeCents, totalCents, notifiedChannels };
- }
-@@ -76,6 +80,9 @@ export function finalizeInvoiceBatch(orders: readonly Order[]): readonly Invoice
+   return {
+     orderId: order.orderId,
+@@ -89,6 +93,9 @@ export function finalizeInvoiceBatch(orders: readonly Order[]): readonly Invoice
      if (totalCents > LARGE_ORDER_THRESHOLD_CENTS) {
        notifiedChannels.push("large-order-desk");
      }
@@ -28,5 +28,5 @@ index f3136e1..b8ea9dd 100644
 +      notifiedChannels.push("low-value-review");
 +    }
  
-     invoices.push({ orderId: order.orderId, lines, subtotalCents, surchargeCents, totalCents, notifiedChannels });
-   }
+     invoices.push({
+       orderId: order.orderId,

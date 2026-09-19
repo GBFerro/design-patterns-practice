@@ -21,6 +21,9 @@ export interface SurchargeRule {
 
 export const SURCHARGE_RULES: readonly SurchargeRule[] = [
   { id: "fuel", amount: (shipment) => Math.round(shipment.baseRateCents * 0.12) },
-  { id: "remoteArea", amount: (shipment) => (shipment.destination === "remote" ? 1500 : 0) },
+  {
+    id: "remoteArea",
+    amount: (shipment) => (shipment.destination === "remote" ? 1500 : 0),
+  },
   { id: "oversize", amount: (shipment) => (isOversize(shipment) ? 2000 : 0) },
 ];

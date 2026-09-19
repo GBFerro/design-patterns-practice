@@ -7,5 +7,9 @@ import type { Press, PressFamily } from "./types.ts";
 /** Everything a shop-floor operator needs: a ready-to-run press for one
  *  named family. */
 export function buildPress(family: PressFamily): Press {
-  return assemblePress(createPlate(family), createInkSystem(family), createFeeder(family));
+  return assemblePress(
+    createPlate(family),
+    createInkSystem(family),
+    createFeeder(family),
+  );
 }

@@ -32,7 +32,10 @@ test("builds a timetable with one entry per trip-stop pair", () => {
 
 test("rejects an unknown stop", () => {
   assert.throws(
-    () => buildTimetable([{ tripId: "999", stopId: "nowhere", arrivalMinutes: 0, departureMinutes: 1 }]),
+    () =>
+      buildTimetable([
+        { tripId: "999", stopId: "nowhere", arrivalMinutes: 0, departureMinutes: 1 },
+      ]),
     /unknown stop/,
   );
 });

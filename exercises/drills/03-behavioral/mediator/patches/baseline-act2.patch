@@ -59,7 +59,7 @@ index 8bbbfae..603ff96 100644
    readonly readyLampLit: boolean;
    readonly startButtonEnabled: boolean;
  }
-diff --git a/src/widgets/dome-status.ts b/src/widgets/dome-status.ts
+diff --git a/after/src/widgets/dome-status.ts b/src/widgets/dome-status.ts
 new file mode 100644
 index 0000000..ed2b131
 --- /dev/null

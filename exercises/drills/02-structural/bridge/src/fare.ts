@@ -23,14 +23,20 @@ class FlatCardFare {
 
 class DistanceCashFare {
   calculate(measure: number): FareResult {
-    const base = Math.max(DISTANCE_MIN_CENTS, Math.round(measure * DISTANCE_RATE_CENTS_PER_KM));
+    const base = Math.max(
+      DISTANCE_MIN_CENTS,
+      Math.round(measure * DISTANCE_RATE_CENTS_PER_KM),
+    );
     return { chargedCents: roundUpToQuarter(base) };
   }
 }
 
 class DistanceCardFare {
   calculate(measure: number): FareResult {
-    const base = Math.max(DISTANCE_MIN_CENTS, Math.round(measure * DISTANCE_RATE_CENTS_PER_KM));
+    const base = Math.max(
+      DISTANCE_MIN_CENTS,
+      Math.round(measure * DISTANCE_RATE_CENTS_PER_KM),
+    );
     return { chargedCents: base + 10 };
   }
 }
@@ -43,9 +49,13 @@ export function calculateFare(
   mediumKind: PaymentMediumKind,
   measure: number,
 ): FareResult {
-  if (policyKind === "flat" && mediumKind === "cash") return new FlatCashFare().calculate();
-  if (policyKind === "flat" && mediumKind === "card") return new FlatCardFare().calculate();
-  if (policyKind === "distance" && mediumKind === "cash") return new DistanceCashFare().calculate(measure);
-  if (policyKind === "distance" && mediumKind === "card") return new DistanceCardFare().calculate(measure);
+  if (policyKind === "flat" && mediumKind === "cash")
+    return new FlatCashFare().calculate();
+  if (policyKind === "flat" && mediumKind === "card")
+    return new FlatCardFare().calculate();
+  if (policyKind === "distance" && mediumKind === "cash")
+    return new DistanceCashFare().calculate(measure);
+  if (policyKind === "distance" && mediumKind === "card")
+    return new DistanceCardFare().calculate(measure);
   throw new Error(`no fare rule for ${policyKind}/${mediumKind}`);
 }

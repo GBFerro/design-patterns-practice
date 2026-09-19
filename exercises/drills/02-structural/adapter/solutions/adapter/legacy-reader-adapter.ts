@@ -8,9 +8,16 @@ export class LegacyReaderAdapter implements FareReader {
 
   readFare(): FareRead | null {
     const result = this.scanner.scanCard();
-    if (result.status === "no-card" || result.cardNumber === undefined || result.balanceDollars === undefined) {
+    if (
+      result.status === "no-card" ||
+      result.cardNumber === undefined ||
+      result.balanceDollars === undefined
+    ) {
       return null;
     }
-    return { cardId: result.cardNumber, balanceCents: Math.round(result.balanceDollars * 100) };
+    return {
+      cardId: result.cardNumber,
+      balanceCents: Math.round(result.balanceDollars * 100),
+    };
   }
 }

@@ -16,7 +16,7 @@
   "act2": {
     "axis": "aligned",
     "summary": "a fourth job kind arrives",
-    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 11, "maxHunks": 4 }
+    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 15, "maxHunks": 4 }
   },
   "forbidden": ["switch\\s*\\(\\s*request\\.jobKind"],
   "solutions": [

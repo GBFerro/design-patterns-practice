@@ -26,7 +26,10 @@ export function finalizeInvoice(order: Order): Invoice {
       return { sku: line.sku, totalCents: line.quantity * line.unitPriceCents };
     }
     if (line.kind === "bundle") {
-      return { sku: line.sku, totalCents: Math.round(line.quantity * line.unitPriceCents * 0.9) };
+      return {
+        sku: line.sku,
+        totalCents: Math.round(line.quantity * line.unitPriceCents * 0.9),
+      };
     }
     return { sku: line.sku, totalCents: line.unitPriceCents };
   });
@@ -43,7 +46,14 @@ export function finalizeInvoice(order: Order): Invoice {
 
   const totalCents = subtotalCents + surchargeCents;
 
-  return { orderId: order.orderId, lines, subtotalCents, surchargeCents, totalCents, notifiedChannels: notifiedChannelsFor(totalCents) };
+  return {
+    orderId: order.orderId,
+    lines,
+    subtotalCents,
+    surchargeCents,
+    totalCents,
+    notifiedChannels: notifiedChannelsFor(totalCents),
+  };
 }
 
 /**
@@ -61,7 +71,10 @@ export function finalizeInvoiceBatch(orders: readonly Order[]): readonly Invoice
         return { sku: line.sku, totalCents: line.quantity * line.unitPriceCents };
       }
       if (line.kind === "bundle") {
-        return { sku: line.sku, totalCents: Math.round(line.quantity * line.unitPriceCents * 0.9) };
+        return {
+          sku: line.sku,
+          totalCents: Math.round(line.quantity * line.unitPriceCents * 0.9),
+        };
       }
       return { sku: line.sku, totalCents: line.unitPriceCents };
     });

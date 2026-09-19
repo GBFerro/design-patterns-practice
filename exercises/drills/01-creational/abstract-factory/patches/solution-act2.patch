@@ -1,15 +1,19 @@
 diff --git a/solutions/abstract-factory/factory.ts b/solutions/abstract-factory/factory.ts
-index 6e29e01..ac6f606 100644
+index 6e29e01..c0e9b6e 100644
 --- a/solutions/abstract-factory/factory.ts
 +++ b/solutions/abstract-factory/factory.ts
-@@ -1,5 +1,6 @@
+@@ -1,5 +1,10 @@
  import { DigitalFeeder, DigitalInkSystem, DigitalPlate } from "./parts/digital.ts";
  import { OffsetFeeder, OffsetInkSystem, OffsetPlate } from "./parts/offset.ts";
-+import { WideFormatFeeder, WideFormatInkSystem, WideFormatPlate } from "./parts/wide-format.ts";
++import {
++  WideFormatFeeder,
++  WideFormatInkSystem,
++  WideFormatPlate,
++} from "./parts/wide-format.ts";
  import type { Feeder, InkSystem, Plate, PressFamily } from "./types.ts";
  
  /** GoF's `AbstractFactory`. Implementing this interface means providing
-@@ -35,9 +36,22 @@ class OffsetPressFactory implements PressFactory {
+@@ -35,9 +40,22 @@ class OffsetPressFactory implements PressFactory {
    }
  }
  
@@ -32,7 +36,7 @@ index 6e29e01..ac6f606 100644
  };
  
  export function getPressFactory(family: PressFamily): PressFactory {
-diff --git a/solutions/abstract-factory/parts/wide-format.ts b/solutions/abstract-factory/parts/wide-format.ts
+diff --git a/after/solutions/abstract-factory/parts/wide-format.ts b/solutions/abstract-factory/parts/wide-format.ts
 new file mode 100644
 index 0000000..a7bb0ee
 --- /dev/null

@@ -1,8 +1,8 @@
 diff --git a/solutions/legacy-adapter/adapter.ts b/solutions/legacy-adapter/adapter.ts
-index 685aa53..2fe48b7 100644
+index 5fd8501..78671d8 100644
 --- a/solutions/legacy-adapter/adapter.ts
 +++ b/solutions/legacy-adapter/adapter.ts
-@@ -5,7 +5,7 @@ export interface InventoryReader {
+@@ -10,7 +10,7 @@ export interface InventoryReader {
    read(record: LegacyWmsRecord): InventoryRecord;
  }
  
@@ -11,7 +11,7 @@ index 685aa53..2fe48b7 100644
  
  /**
   * Wraps the legacy WMS's record shape behind the `InventoryReader`
-@@ -36,7 +36,7 @@ export class LegacyWmsAdapter implements InventoryReader {
+@@ -41,7 +41,7 @@ export class LegacyWmsAdapter implements InventoryReader {
  
      return {
        sku: record.itemCode,
@@ -20,7 +20,7 @@ index 685aa53..2fe48b7 100644
        status,
        location,
        lastUpdated,
-@@ -51,6 +51,8 @@ export class LegacyWmsAdapter implements InventoryReader {
+@@ -56,6 +56,8 @@ export class LegacyWmsAdapter implements InventoryReader {
          return "onHold";
        case "D":
          return "discontinued";

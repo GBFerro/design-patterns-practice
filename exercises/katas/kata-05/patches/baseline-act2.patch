@@ -12,10 +12,10 @@ index 86210df..f974378 100644
  export interface BinLocation {
    readonly aisle: string;
 diff --git a/src/wms-sync.ts b/src/wms-sync.ts
-index 969d72c..44899a6 100644
+index 5a77381..7398646 100644
 --- a/src/wms-sync.ts
 +++ b/src/wms-sync.ts
-@@ -17,6 +17,8 @@ export function syncInventorySnapshot(records: readonly LegacyWmsRecord[]): read
+@@ -24,6 +24,8 @@ export function syncInventorySnapshot(
        status = "onHold";
      } else if (record.statusCode === "D") {
        status = "discontinued";
@@ -24,7 +24,7 @@ index 969d72c..44899a6 100644
      } else {
        throw new Error(`unknown legacy status code: ${record.statusCode}`);
      }
-@@ -34,7 +36,7 @@ export function syncInventorySnapshot(records: readonly LegacyWmsRecord[]): read
+@@ -41,7 +43,7 @@ export function syncInventorySnapshot(
  
      out.push({
        sku: record.itemCode,
@@ -33,7 +33,7 @@ index 969d72c..44899a6 100644
        status,
        location,
        lastUpdated,
-@@ -58,6 +60,8 @@ export function applyChangeFeedEvent(record: LegacyWmsRecord): InventoryRecord {
+@@ -65,6 +67,8 @@ export function applyChangeFeedEvent(record: LegacyWmsRecord): InventoryRecord {
      status = "onHold";
    } else if (record.statusCode === "D") {
      status = "discontinued";
@@ -42,7 +42,7 @@ index 969d72c..44899a6 100644
    } else {
      throw new Error(`unknown legacy status code: ${record.statusCode}`);
    }
-@@ -75,7 +79,7 @@ export function applyChangeFeedEvent(record: LegacyWmsRecord): InventoryRecord {
+@@ -82,7 +86,7 @@ export function applyChangeFeedEvent(record: LegacyWmsRecord): InventoryRecord {
  
    return {
      sku: record.itemCode,

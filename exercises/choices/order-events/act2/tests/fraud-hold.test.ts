@@ -1,15 +1,28 @@
 import assert from "node:assert/strict";
 import { beforeEach, test } from "node:test";
 
-import { calledConsumers, orderShipped, resendOrderNotifications, resetCalls } from "#exercise";
+import {
+  calledConsumers,
+  orderShipped,
+  resendOrderNotifications,
+  resetCalls,
+} from "#exercise";
 import type { Order } from "#exercise";
 
 beforeEach(() => {
   resetCalls();
 });
 
-const clean: Order = { id: "O100", customerEmail: "a@example.com", customerPhone: "+15551234567" };
-const held: Order = { id: "O200", customerEmail: "b@flagged.example", customerPhone: "+15559876543" };
+const clean: Order = {
+  id: "O100",
+  customerEmail: "a@example.com",
+  customerPhone: "+15551234567",
+};
+const held: Order = {
+  id: "O200",
+  customerEmail: "b@flagged.example",
+  customerPhone: "+15559876543",
+};
 
 test("a clean order still fires all four, in the act-1 order", () => {
   orderShipped(clean);
@@ -34,8 +47,12 @@ test("resendOrderNotifications fires all four for a clean order", () => {
 test("a held order followed by a clean order: each gets its own correct fan-out", () => {
   orderShipped(held);
   orderShipped(clean);
-  assert.deepEqual(
-    calledConsumers(),
-    ["inventory", "analytics", "inventory", "analytics", "email", "sms"],
-  );
+  assert.deepEqual(calledConsumers(), [
+    "inventory",
+    "analytics",
+    "inventory",
+    "analytics",
+    "email",
+    "sms",
+  ]);
 });

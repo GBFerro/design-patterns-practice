@@ -18,10 +18,10 @@ index 34ce9fc..03a274b 100644
 +  "svc-9": { latitude: 41.201, longitude: -111.43 },
  };
 diff --git a/solutions/proxy/vehicle-position-proxy.ts b/solutions/proxy/vehicle-position-proxy.ts
-index 2493efd..0e4aab6 100644
+index 2493efd..c645739 100644
 --- a/solutions/proxy/vehicle-position-proxy.ts
 +++ b/solutions/proxy/vehicle-position-proxy.ts
-@@ -1,14 +1,19 @@
+@@ -1,14 +1,20 @@
  import type { VehiclePosition, VehiclePositionService } from "./types.ts";
  
 -/** A virtual proxy: caches each vehicle's position the first time it's asked for, so a
@@ -39,7 +39,8 @@ index 2493efd..0e4aab6 100644
    constructor(private readonly realService: VehiclePositionService) {}
  
    currentPosition(vehicleId: string): VehiclePosition {
-+    if (RESTRICTED_VEHICLE_IDS.has(vehicleId)) throw new Error(`access denied for vehicle: ${vehicleId}`);
++    if (RESTRICTED_VEHICLE_IDS.has(vehicleId))
++      throw new Error(`access denied for vehicle: ${vehicleId}`);
 +
      const cached = this.cache.get(vehicleId);
      if (cached) return cached;

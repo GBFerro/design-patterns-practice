@@ -1,8 +1,12 @@
 import type { Route, RouteLeg, Stop } from "./types.ts";
 
 const LEGS: Record<string, readonly RouteLeg[]> = {
-  "mill-ave->harbor-sq": [{ lineId: "red", fromStopId: "mill-ave", toStopId: "harbor-sq", minutes: 12 }],
-  "harbor-sq->mill-ave": [{ lineId: "red", fromStopId: "harbor-sq", toStopId: "mill-ave", minutes: 12 }],
+  "mill-ave->harbor-sq": [
+    { lineId: "red", fromStopId: "mill-ave", toStopId: "harbor-sq", minutes: 12 },
+  ],
+  "harbor-sq->mill-ave": [
+    { lineId: "red", fromStopId: "harbor-sq", toStopId: "mill-ave", minutes: 12 },
+  ],
   "mill-ave->castleview": [
     { lineId: "red", fromStopId: "mill-ave", toStopId: "harbor-sq", minutes: 12 },
     { lineId: "blue", fromStopId: "harbor-sq", toStopId: "castleview", minutes: 9 },

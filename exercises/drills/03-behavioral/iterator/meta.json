@@ -16,7 +16,7 @@
   "act2": {
     "axis": "aligned",
     "summary": "a reverse traversal (most recent first, reused by three reports) and a bounded forward scan that must stop once it has enough matches, both reported against how many entries were actually visited",
-    "extensionBudget": { "maxFilesModified": 3, "maxLinesModified": 74, "maxHunks": 4 }
+    "extensionBudget": { "maxFilesModified": 3, "maxLinesModified": 80, "maxHunks": 4 }
   },
   "forbidden": ["\\.entryAt\\(", "\\.entriesInPage\\(", "for \\(let page = 0"],
   "solutions": [

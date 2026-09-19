@@ -33,7 +33,7 @@ index 04984d0..d38ca92 100644
 +export { SeniorDiscount } from "./senior-discount.ts";
  export { StudentDiscount } from "./student-discount.ts";
  export type { FareOptions } from "./types.ts";
-diff --git a/solutions/decorator/senior-discount.ts b/solutions/decorator/senior-discount.ts
+diff --git a/after/solutions/decorator/senior-discount.ts b/solutions/decorator/senior-discount.ts
 new file mode 100644
 index 0000000..ea9f1ec
 --- /dev/null

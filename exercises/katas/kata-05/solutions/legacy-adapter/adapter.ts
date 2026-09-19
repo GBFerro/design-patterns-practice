@@ -1,4 +1,9 @@
-import type { BinLocation, InventoryRecord, InventoryStatus, LegacyWmsRecord } from "./types.ts";
+import type {
+  BinLocation,
+  InventoryRecord,
+  InventoryStatus,
+  LegacyWmsRecord,
+} from "./types.ts";
 
 /** Anything that can turn a legacy WMS record into a clean inventory record. */
 export interface InventoryReader {

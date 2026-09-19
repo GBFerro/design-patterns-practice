@@ -7,7 +7,7 @@ index db60fd2..ba7095c 100644
  export { Stop } from "./stop.ts";
  export { totalMinutes } from "./total-minutes.ts";
 +export { WalkingTransfer } from "./walking-transfer.ts";
-diff --git a/solutions/composite/walking-transfer.ts b/solutions/composite/walking-transfer.ts
+diff --git a/after/solutions/composite/walking-transfer.ts b/solutions/composite/walking-transfer.ts
 new file mode 100644
 index 0000000..e99920d
 --- /dev/null

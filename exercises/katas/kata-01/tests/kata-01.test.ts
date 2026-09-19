@@ -24,13 +24,17 @@ describe("processReturn", () => {
   });
 
   it("refunds a wrong-item return in full, to the original payment method", () => {
-    const outcome = processReturn(request({ reason: "wrong-item", itemPriceCents: 6000 }));
+    const outcome = processReturn(
+      request({ reason: "wrong-item", itemPriceCents: 6000 }),
+    );
     assert.equal(outcome.refundCents, 6000);
     assert.equal(outcome.refundMethod, "original-payment");
   });
 
   it("refunds a changed-mind return as store credit, minus a 15% restocking fee", () => {
-    const outcome = processReturn(request({ reason: "changed-mind", itemPriceCents: 4000 }));
+    const outcome = processReturn(
+      request({ reason: "changed-mind", itemPriceCents: 4000 }),
+    );
     assert.equal(outcome.refundCents, 3400);
     assert.equal(outcome.refundMethod, "store-credit");
   });
@@ -70,7 +74,12 @@ describe("processBulkReturns", () => {
   it("processes every request in the batch, in order", () => {
     const outcomes = processBulkReturns([
       request({ returnId: "R-1", reason: "defective", itemPriceCents: 1000 }),
-      request({ returnId: "R-2", reason: "changed-mind", itemPriceCents: 1000, condition: "opened-good" }),
+      request({
+        returnId: "R-2",
+        reason: "changed-mind",
+        itemPriceCents: 1000,
+        condition: "opened-good",
+      }),
     ]);
     assert.equal(outcomes.length, 2);
     assert.equal(outcomes[0]?.returnId, "R-1");
@@ -81,8 +90,12 @@ describe("processBulkReturns", () => {
   });
 
   it("agrees with processReturn on every field, for the same request", () => {
-    const single = processReturn(request({ reason: "changed-mind", condition: "opened-damaged" }));
-    const [bulk] = processBulkReturns([request({ reason: "changed-mind", condition: "opened-damaged" })]);
+    const single = processReturn(
+      request({ reason: "changed-mind", condition: "opened-damaged" }),
+    );
+    const [bulk] = processBulkReturns([
+      request({ reason: "changed-mind", condition: "opened-damaged" }),
+    ]);
     assert.deepEqual(bulk, single);
   });
 

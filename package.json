@@ -2,10 +2,9 @@
   "name": "design-patterns-practice",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "description": "Hands-on TypeScript exercises for the GoF design patterns - each one in two acts.",
   "license": "MIT",
-  "engines": { "node": ">=22.6" },
+  "type": "module",
   "scripts": {
     "test": "./dp test",
     "check": "./dp check",
@@ -17,6 +16,9 @@
     "typecheck:exercises": "tsc -p tsconfig.exercises.json"
   },
   "devDependencies": {},
+  "engines": {
+    "node": ">=22.6"
+  },
   "optionalToolchain": {
     "comment": "Not required to practise. Install only to run the optional gates: npm i -D typescript @types/node oxlint oxfmt@0.65.0",
     "typescript": "^5.6.0",

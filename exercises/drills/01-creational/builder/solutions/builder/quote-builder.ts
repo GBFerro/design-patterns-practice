@@ -43,7 +43,8 @@ class QuoteBuilder implements QuoteDraft {
   }
 
   build(): Quote {
-    const { discountPercent, rushFee, deliveryMethod, quantity, baseUnitCost } = this.state;
+    const { discountPercent, rushFee, deliveryMethod, quantity, baseUnitCost } =
+      this.state;
 
     if (discountPercent > 0 && rushFee > 0) {
       throw new Error("a rush job cannot also receive a discount");

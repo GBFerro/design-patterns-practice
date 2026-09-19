@@ -5,14 +5,19 @@ import type { ReturnOutcome, ReturnRequest } from "./types.ts";
  * decided was worth pulling out of `processReturn` and `processBulkReturns`
  * both: it is the axis most likely to grow a new member next.
  */
-function refundFor(request: ReturnRequest): Pick<ReturnOutcome, "refundCents" | "refundMethod"> {
+function refundFor(
+  request: ReturnRequest,
+): Pick<ReturnOutcome, "refundCents" | "refundMethod"> {
   if (request.reason === "defective") {
     return { refundCents: request.itemPriceCents, refundMethod: "original-payment" };
   }
   if (request.reason === "wrong-item") {
     return { refundCents: request.itemPriceCents, refundMethod: "original-payment" };
   }
-  return { refundCents: Math.round(request.itemPriceCents * 0.85), refundMethod: "store-credit" };
+  return {
+    refundCents: Math.round(request.itemPriceCents * 0.85),
+    refundMethod: "store-credit",
+  };
 }
 
 /**
@@ -51,7 +56,9 @@ export function processReturn(request: ReturnRequest): ReturnOutcome {
  * per return. Same three decisions, same rules — this just has more than
  * one request to make them for.
  */
-export function processBulkReturns(requests: readonly ReturnRequest[]): readonly ReturnOutcome[] {
+export function processBulkReturns(
+  requests: readonly ReturnRequest[],
+): readonly ReturnOutcome[] {
   const outcomes: ReturnOutcome[] = [];
 
   for (const request of requests) {

@@ -1,5 +1,5 @@
 diff --git a/solutions/chain-of-responsibility/chain.ts b/solutions/chain-of-responsibility/chain.ts
-index 19b1a9b..ff2dd14 100644
+index 19b1a9b..50bac18 100644
 --- a/solutions/chain-of-responsibility/chain.ts
 +++ b/solutions/chain-of-responsibility/chain.ts
 @@ -2,6 +2,7 @@ import { AltitudeRule } from "./rules/altitude.ts";
@@ -10,7 +10,7 @@ index 19b1a9b..ff2dd14 100644
  import { MoonSeparationRule } from "./rules/moon-separation.ts";
  import { WeatherRule } from "./rules/weather.ts";
  import type { ValidationRule } from "./rule.ts";
-@@ -12,11 +13,19 @@ import type { Telescope } from "./types.ts";
+@@ -12,11 +13,24 @@ import type { Telescope } from "./types.ts";
  export function buildChain(telescope: Telescope): ValidationRule {
    const altitude = new AltitudeRule();
    const moon = new MoonSeparationRule();
@@ -23,7 +23,12 @@ index 19b1a9b..ff2dd14 100644
 +  // Ridgeline is remote and robotic: weather is the cheapest check, so it
 +  // runs first there and nowhere else. Every other rule keeps its place.
 +  if (telescope.name === "Ridgeline") {
-+    weather.setNext(altitude).setNext(moon).setNext(warmup).setNext(instrument).setNext(exposure);
++    weather
++      .setNext(altitude)
++      .setNext(moon)
++      .setNext(warmup)
++      .setNext(instrument)
++      .setNext(exposure);
 +    return weather;
 +  }
 +
@@ -31,7 +36,7 @@ index 19b1a9b..ff2dd14 100644
  
    if (telescope.hasMovableDome) {
      exposure.setNext(new DomeClearanceRule()).setNext(weather);
-diff --git a/solutions/chain-of-responsibility/rules/instrument-warmup.ts b/solutions/chain-of-responsibility/rules/instrument-warmup.ts
+diff --git a/after/solutions/chain-of-responsibility/rules/instrument-warmup.ts b/solutions/chain-of-responsibility/rules/instrument-warmup.ts
 new file mode 100644
 index 0000000..5ca7298
 --- /dev/null

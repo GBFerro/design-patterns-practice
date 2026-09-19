@@ -1,8 +1,8 @@
 diff --git a/src/evaluate.ts b/src/evaluate.ts
-index bf01ecd..25f4e8b 100644
+index 183ddf6..a2da5a3 100644
 --- a/src/evaluate.ts
 +++ b/src/evaluate.ts
-@@ -24,6 +24,21 @@ export function evaluateConstraint(expression: string, context: SkyContext): boo
+@@ -24,6 +24,22 @@ export function evaluateConstraint(expression: string, context: SkyContext): boo
        if (!context.clear) return false;
        continue;
      }
@@ -15,7 +15,8 @@ index bf01ecd..25f4e8b 100644
 +      const parts = clause.split(">=").map((part) => part.trim());
 +      const field = parts[0];
 +      const raw = parts[1];
-+      if (field === undefined || raw === undefined) throw new Error(`unparseable clause: ${clause}`);
++      if (field === undefined || raw === undefined)
++        throw new Error(`unparseable clause: ${clause}`);
 +      const getValue = FIELD_GETTERS[field];
 +      if (getValue === undefined) throw new Error(`unknown field: ${field}`);
 +      if (!(getValue(context) >= Number(raw))) return false;

@@ -20,7 +20,7 @@ index 09cf31a..003b849 100644
    abstract isAnomaly(): boolean;
 +  abstract operatorNote(): string | null;
  }
-diff --git a/src/records/dome.ts b/src/records/dome.ts
+diff --git a/after/src/records/dome.ts b/src/records/dome.ts
 new file mode 100644
 index 0000000..adde65d
 --- /dev/null

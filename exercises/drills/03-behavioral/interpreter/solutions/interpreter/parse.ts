@@ -28,7 +28,8 @@ function parseComparison(clause: string): ComparisonExpression {
   const parts = clause.split(operator).map((part) => part.trim());
   const field = parts[0];
   const raw = parts[1];
-  if (field === undefined || raw === undefined) throw new Error(`unparseable clause: ${clause}`);
+  if (field === undefined || raw === undefined)
+    throw new Error(`unparseable clause: ${clause}`);
   const getValue = FIELD_GETTERS[field];
   if (getValue === undefined) throw new Error(`unknown field: ${field}`);
 

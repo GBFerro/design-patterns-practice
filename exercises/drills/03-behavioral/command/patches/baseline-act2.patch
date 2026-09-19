@@ -1,8 +1,8 @@
 diff --git a/src/panel.ts b/src/panel.ts
-index 20ec7e5..c3d9e71 100644
+index 20ec7e5..c05e471 100644
 --- a/src/panel.ts
 +++ b/src/panel.ts
-@@ -1,33 +1,73 @@
+@@ -1,33 +1,79 @@
  import type { ActionRecord, InstrumentPanel } from "./types.ts";
  
 +interface Snapshot {
@@ -19,7 +19,10 @@ index 20ec7e5..c3d9e71 100644
 +function applyEffect(position: Position, action: ActionRecord): Position {
 +  switch (action.type) {
 +    case "move-focuser":
-+      return { ...position, focuserPosition: position.focuserPosition + action.deltaMicrons };
++      return {
++        ...position,
++        focuserPosition: position.focuserPosition + action.deltaMicrons,
++      };
 +    case "rotate-wheel":
 +      return { ...position, filterSlot: action.toSlot };
 +    case "macro":
@@ -76,7 +79,10 @@ index 20ec7e5..c3d9e71 100644
 -        break;
 -    }
 +    const position = applyEffect(this.current, action);
-+    const next: Snapshot = { ...position, history: [...this.current.history, describe(action)] };
++    const next: Snapshot = {
++      ...position,
++      history: [...this.current.history, describe(action)],
++    };
 +    this.states = [...this.states.slice(0, this.pointer + 1), next];
 +    this.pointer += 1;
 +  }

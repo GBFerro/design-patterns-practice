@@ -16,7 +16,7 @@
   "act2": {
     "axis": "aligned",
     "summary": "an allocation budget, measured - not a functional requirement",
-    "extensionBudget": { "maxFilesModified": 1, "maxLinesModified": 1, "maxHunks": 1 }
+    "extensionBudget": { "maxFilesModified": 1, "maxLinesModified": 4, "maxHunks": 1 }
   },
   "forbidden": ["function buildStopMetadata\\("],
   "solutions": [

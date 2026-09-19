@@ -1,5 +1,5 @@
 diff --git a/solutions/state/states/batch-state.ts b/solutions/state/states/batch-state.ts
-index b94b180..0b73f1e 100644
+index 691f7ac..863a188 100644
 --- a/solutions/state/states/batch-state.ts
 +++ b/solutions/state/states/batch-state.ts
 @@ -1,6 +1,9 @@
@@ -12,13 +12,16 @@ index b94b180..0b73f1e 100644
  
  export class BatchState implements PolicyState {
    readonly name = "batch" as const;
-@@ -8,6 +11,12 @@ export class BatchState implements PolicyState {
+@@ -8,6 +11,15 @@ export class BatchState implements PolicyState {
    constructor(private readonly orderIds: Set<string>) {}
  
    plan(queue: readonly Order[]): PlanResult {
 +    const waiting = queue.filter((order) => !this.orderIds.has(order.id));
 +    if (waiting.length >= SURGE_THRESHOLD) {
-+      const surge = new SurgeState(new Set(waiting.map((order) => order.id)), this.orderIds);
++      const surge = new SurgeState(
++        new Set(waiting.map((order) => order.id)),
++        this.orderIds,
++      );
 +      return surge.plan(queue);
 +    }
 +
@@ -38,12 +41,12 @@ index 2788dcd..9b83aba 100644
    plan(queue: readonly Order[]): PlanResult;
    recordPicked(orderId: string): PolicyState;
  }
-diff --git a/solutions/state/states/surge-state.ts b/solutions/state/states/surge-state.ts
+diff --git a/after/solutions/state/states/surge-state.ts b/solutions/state/states/surge-state.ts
 new file mode 100644
-index 0000000..83184d4
+index 0000000..50fbe91
 --- /dev/null
 +++ b/solutions/state/states/surge-state.ts
-@@ -0,0 +1,34 @@
+@@ -0,0 +1,36 @@
 +import type { Order } from "../types.ts";
 +import { BatchState } from "./batch-state.ts";
 +import { IndividualState } from "./individual-state.ts";
@@ -75,7 +78,9 @@ index 0000000..83184d4
 +  recordPicked(orderId: string): PolicyState {
 +    this.surgeOrderIds.delete(orderId);
 +    if (this.surgeOrderIds.size > 0) return this;
-+    return this.suspendedBatchIds.size > 0 ? new BatchState(this.suspendedBatchIds) : new IndividualState();
++    return this.suspendedBatchIds.size > 0
++      ? new BatchState(this.suspendedBatchIds)
++      : new IndividualState();
 +  }
 +}
 diff --git a/solutions/state/types.ts b/solutions/state/types.ts

@@ -16,9 +16,12 @@
   "act2": {
     "axis": "aligned",
     "summary": "two subsystems change their internals and one is replaced",
-    "extensionBudget": { "maxFilesModified": 5, "maxLinesModified": 28, "maxHunks": 5 }
+    "extensionBudget": { "maxFilesModified": 5, "maxLinesModified": 34, "maxHunks": 5 }
   },
-  "forbidden": ["const stopResolver = new StopResolver\\(\\);", "const alertService = new AlertService\\(\\);"],
+  "forbidden": [
+    "const stopResolver = new StopResolver\\(\\);",
+    "const alertService = new AlertService\\(\\);"
+  ],
   "solutions": [
     {
       "slug": "facade",

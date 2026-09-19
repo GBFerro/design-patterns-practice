@@ -85,7 +85,9 @@ export function run(argv: readonly string[]): number {
   if (absorbing === undefined) {
     line(`  ${dim("nenhuma solução declara absorbsAct2")}`);
   } else {
-    line(`  src/ → solutions/${absorbing.slug}/    ${structureCost(exercise, absorbing.slug)}`);
+    line(
+      `  src/ → solutions/${absorbing.slug}/    ${structureCost(exercise, absorbing.slug)}`,
+    );
   }
 
   line();
@@ -103,9 +105,13 @@ export function run(argv: readonly string[]): number {
     const verdict = checkBudget(summary, budget);
     const proved = provePatch(exercise, SOLUTION_PATCH, absorbing.slug);
     ok = ok && verdict.withinBudget && proved;
-    line(`  ${verdict.withinBudget ? TICK : CROSS} ${bold("com o pattern")}   ${describe(summary)}`);
+    line(
+      `  ${verdict.withinBudget ? TICK : CROSS} ${bold("com o pattern")}   ${describe(summary)}`,
+    );
     for (const reason of verdict.reasons) line(`      ${CROSS} ${reason}`);
-    line(`      ${proved ? TICK : CROSS} o ato 2 passa nessa rota${proved ? "" : " — NÃO passa"}`);
+    line(
+      `      ${proved ? TICK : CROSS} o ato 2 passa nessa rota${proved ? "" : " — NÃO passa"}`,
+    );
   } else {
     line(`  ${dim("sem patches/solution-act2.patch — nada medido")}`);
     ok = false;

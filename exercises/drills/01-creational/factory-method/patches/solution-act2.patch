@@ -1,5 +1,5 @@
 diff --git a/solutions/factory-method/factory.ts b/solutions/factory-method/factory.ts
-index c9094c1..950b21b 100644
+index a63edff..8b90405 100644
 --- a/solutions/factory-method/factory.ts
 +++ b/solutions/factory-method/factory.ts
 @@ -1,6 +1,7 @@
@@ -10,13 +10,17 @@ index c9094c1..950b21b 100644
  import type { JobKind, OrderRequest, PrintJob } from "./types.ts";
  
  /** GoF's `Creator`. Every call site defers "which class to instantiate" to
-@@ -27,12 +28,19 @@ class BannerJobFactory extends JobFactory {
+@@ -35,12 +36,23 @@ class BannerJobFactory extends JobFactory {
    }
  }
  
 +class FoilStampingJobFactory extends JobFactory {
 +  createJob(request: OrderRequest): PrintJob {
-+    return new FoilStampingJob(request.customerName, request.quantity, request.foilColor ?? "gold");
++    return new FoilStampingJob(
++      request.customerName,
++      request.quantity,
++      request.foilColor ?? "gold",
++    );
 +  }
 +}
 +
@@ -30,7 +34,7 @@ index c9094c1..950b21b 100644
  };
  
  export function createJob(request: OrderRequest): PrintJob {
-diff --git a/solutions/factory-method/jobs/foil-stamping.ts b/solutions/factory-method/jobs/foil-stamping.ts
+diff --git a/after/solutions/factory-method/jobs/foil-stamping.ts b/solutions/factory-method/jobs/foil-stamping.ts
 new file mode 100644
 index 0000000..91cb848
 --- /dev/null

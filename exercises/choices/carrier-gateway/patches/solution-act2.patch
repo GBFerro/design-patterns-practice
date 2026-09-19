@@ -1,14 +1,19 @@
 diff --git a/solutions/facade/carrier-gateway-facade.ts b/solutions/facade/carrier-gateway-facade.ts
-index 06ab3e9..8bb4a6c 100644
+index 9e6d721..999c74e 100644
 --- a/solutions/facade/carrier-gateway-facade.ts
 +++ b/solutions/facade/carrier-gateway-facade.ts
-@@ -16,9 +16,17 @@ function validate(originZip: string, destZip: string, weightKg: number): void {
+@@ -16,6 +16,8 @@ function validate(originZip: string, destZip: string, weightKg: number): void {
   * `carrierId` as an argument instead of being built with one.
   */
  export class CarrierGatewayFacade {
 +  private readonly cache = new Map<string, CarrierRate>();
 +
-   rate(carrierId: CarrierId, originZip: string, destZip: string, weightKg: number): CarrierRate {
+   rate(
+     carrierId: CarrierId,
+     originZip: string,
+@@ -23,7 +25,13 @@ export class CarrierGatewayFacade {
+     weightKg: number,
+   ): CarrierRate {
      validate(originZip, destZip, weightKg);
 -    return mappers[carrierId](originZip, destZip, weightKg);
 +    const key = `${carrierId}|${originZip}|${destZip}|${weightKg}`;

@@ -21,12 +21,12 @@ index 7717da8..cd3625a 100644
    /** The one place a transition is recorded, whatever state it came from. An
     *  illegal call never reaches here: the state throws before returning. */
    private apply(next: TelescopeState, action: string): void {
-diff --git a/solutions/state/states/fault.ts b/solutions/state/states/fault.ts
+diff --git a/after/solutions/state/states/fault.ts b/solutions/state/states/fault.ts
 new file mode 100644
-index 0000000..7ad4109
+index 0000000..62021c2
 --- /dev/null
 +++ b/solutions/state/states/fault.ts
-@@ -0,0 +1,26 @@
+@@ -0,0 +1,32 @@
 +import type { TelescopeState } from "../state.ts";
 +import { parkedState } from "./parked.ts";
 +
@@ -42,14 +42,20 @@ index 0000000..7ad4109
 +  }
 +
 +  slewTo(): TelescopeState {
-+    throw new Error(`Cannot slew: the telescope is in fault (${this.reason}). Park to recover.`);
++    throw new Error(
++      `Cannot slew: the telescope is in fault (${this.reason}). Park to recover.`,
++    );
 +  }
 +
 +  arrive(): TelescopeState {
-+    throw new Error(`Cannot arrive: the telescope is in fault (${this.reason}). Park to recover.`);
++    throw new Error(
++      `Cannot arrive: the telescope is in fault (${this.reason}). Park to recover.`,
++    );
 +  }
 +
 +  nudge(): TelescopeState {
-+    throw new Error(`Cannot nudge: the telescope is in fault (${this.reason}). Park to recover.`);
++    throw new Error(
++      `Cannot nudge: the telescope is in fault (${this.reason}). Park to recover.`,
++    );
 +  }
 +}

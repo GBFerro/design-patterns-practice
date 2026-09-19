@@ -10,22 +10,34 @@ function state(overrides: Partial<RobotState> = {}): RobotState {
 
 describe("contraband needs the inspection zone", () => {
   it("allows picking up contraband inside the inspection zone", () => {
-    const next = runCommand(state({ x: 8, y: 8 }), { kind: "pickUp", itemId: "contraband" });
+    const next = runCommand(state({ x: 8, y: 8 }), {
+      kind: "pickUp",
+      itemId: "contraband",
+    });
     assert.equal(next.holding, "contraband");
   });
 
   it("allows picking up contraband anywhere inside the zone, not just its corner", () => {
-    const next = runCommand(state({ x: 9, y: 9 }), { kind: "pickUp", itemId: "contraband" });
+    const next = runCommand(state({ x: 9, y: 9 }), {
+      kind: "pickUp",
+      itemId: "contraband",
+    });
     assert.equal(next.holding, "contraband");
   });
 
   it("refuses picking up contraband outside the inspection zone", () => {
-    assert.throws(() => runCommand(state({ x: 5, y: 5 }), { kind: "pickUp", itemId: "contraband" }));
+    assert.throws(() =>
+      runCommand(state({ x: 5, y: 5 }), { kind: "pickUp", itemId: "contraband" }),
+    );
   });
 
   it("refuses contraband when only one of x or y is inside the zone", () => {
-    assert.throws(() => runCommand(state({ x: 8, y: 7 }), { kind: "pickUp", itemId: "contraband" }));
-    assert.throws(() => runCommand(state({ x: 7, y: 8 }), { kind: "pickUp", itemId: "contraband" }));
+    assert.throws(() =>
+      runCommand(state({ x: 8, y: 7 }), { kind: "pickUp", itemId: "contraband" }),
+    );
+    assert.throws(() =>
+      runCommand(state({ x: 7, y: 8 }), { kind: "pickUp", itemId: "contraband" }),
+    );
   });
 
   it("leaves ordinary items unaffected outside the inspection zone", () => {

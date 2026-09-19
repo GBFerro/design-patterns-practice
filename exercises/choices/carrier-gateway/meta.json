@@ -15,7 +15,7 @@
   "act2": {
     "axis": "aligned",
     "summary": "identical repeated rate requests must hit each carrier's native client at most once",
-    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 11, "maxHunks": 2 }
+    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 11, "maxHunks": 3 }
   },
   "solutions": [
     {

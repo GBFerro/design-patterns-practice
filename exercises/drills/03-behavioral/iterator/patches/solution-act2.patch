@@ -36,7 +36,7 @@ index fd2e95e..79d9fed 100644
 +  }
  }
 diff --git a/solutions/iterator/reports.ts b/solutions/iterator/reports.ts
-index 0edbce6..858d66a 100644
+index 0edbce6..8c736c9 100644
 --- a/solutions/iterator/reports.ts
 +++ b/solutions/iterator/reports.ts
 @@ -6,10 +6,16 @@ export function allMessages(log: ObservationLog): string[] {
@@ -59,14 +59,17 @@ index 0edbce6..858d66a 100644
  }
  
  /** The first entry whose message contains `needle`, or undefined if none does. */
-@@ -19,3 +25,44 @@ export function findFirst(log: ObservationLog, needle: string): LogEntry | undef
+@@ -19,3 +25,50 @@ export function findFirst(log: ObservationLog, needle: string): LogEntry | undef
    }
    return undefined;
  }
 +
 +/** The most recent entry whose message contains `needle`, or undefined if
 + *  none does - searched from the end, not the start. */
-+export function mostRecentMatch(log: ObservationLog, needle: string): LogEntry | undefined {
++export function mostRecentMatch(
++  log: ObservationLog,
++  needle: string,
++): LogEntry | undefined {
 +  for (const entry of log.reversed()) {
 +    if (entry.message.includes(needle)) return entry;
 +  }
@@ -75,7 +78,10 @@ index 0edbce6..858d66a 100644
 +
 +/** The `count` most recent messages, most recent first, without walking the
 + *  log from the start. */
-+export function recentMessages(log: ObservationLog, count: number): { messages: string[]; scanned: number } {
++export function recentMessages(
++  log: ObservationLog,
++  count: number,
++): { messages: string[]; scanned: number } {
 +  const messages: string[] = [];
 +  let scanned = 0;
 +  for (const entry of log.reversed()) {

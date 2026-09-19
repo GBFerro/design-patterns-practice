@@ -11,7 +11,7 @@ index 11f87d5..08bfe91 100644
  
  /** GoF's `TerminalExpression` for a numeric fact about the sky right now,
 diff --git a/solutions/interpreter/parse.ts b/solutions/interpreter/parse.ts
-index 7f99509..8778d8e 100644
+index 9c374f9..cc6759e 100644
 --- a/solutions/interpreter/parse.ts
 +++ b/solutions/interpreter/parse.ts
 @@ -14,6 +14,7 @@ const FLAG_GETTERS: Record<string, (context: SkyContext) => boolean> = {

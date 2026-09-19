@@ -25,4 +25,3 @@ export interface NightLog {
   readonly target: string;
   readonly steps: readonly StepLog[];
 }
-

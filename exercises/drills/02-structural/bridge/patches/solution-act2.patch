@@ -22,14 +22,24 @@ index 11ac679..a22b405 100644
 +  }
 +}
 diff --git a/solutions/bridge/fare.ts b/solutions/bridge/fare.ts
-index 7348ebe..5e0b42b 100644
+index 7348ebe..09e8a84 100644
 --- a/solutions/bridge/fare.ts
 +++ b/solutions/bridge/fare.ts
-@@ -1,15 +1,17 @@
+@@ -1,15 +1,27 @@
 -import { DistanceFarePolicy, FlatFarePolicy, type FarePolicy } from "./fare-policy.ts";
 -import { CardPayment, CashPayment, type PaymentMedium } from "./payment-medium.ts";
-+import { DistanceFarePolicy, FlatFarePolicy, ZoneFarePolicy, type FarePolicy } from "./fare-policy.ts";
-+import { CardPayment, CashPayment, PassPayment, type PaymentMedium } from "./payment-medium.ts";
++import {
++  DistanceFarePolicy,
++  FlatFarePolicy,
++  ZoneFarePolicy,
++  type FarePolicy,
++} from "./fare-policy.ts";
++import {
++  CardPayment,
++  CashPayment,
++  PassPayment,
++  type PaymentMedium,
++} from "./payment-medium.ts";
  import type { FarePolicyKind, FareResult, PaymentMediumKind } from "./types.ts";
  
  const MEDIA: Record<PaymentMediumKind, () => PaymentMedium> = {
@@ -46,14 +56,19 @@ index 7348ebe..5e0b42b 100644
  
  /** Any fare policy works with any payment medium - nothing here is
 diff --git a/solutions/bridge/index.ts b/solutions/bridge/index.ts
-index 030c875..3aece5e 100644
+index 030c875..a56ddca 100644
 --- a/solutions/bridge/index.ts
 +++ b/solutions/bridge/index.ts
-@@ -1,5 +1,5 @@
+@@ -1,5 +1,10 @@
  export { calculateFare } from "./fare.ts";
 -export { DistanceFarePolicy, FarePolicy, FlatFarePolicy } from "./fare-policy.ts";
 -export { CardPayment, CashPayment } from "./payment-medium.ts";
-+export { DistanceFarePolicy, FarePolicy, FlatFarePolicy, ZoneFarePolicy } from "./fare-policy.ts";
++export {
++  DistanceFarePolicy,
++  FarePolicy,
++  FlatFarePolicy,
++  ZoneFarePolicy,
++} from "./fare-policy.ts";
 +export { CardPayment, CashPayment, PassPayment } from "./payment-medium.ts";
  export type { PaymentMedium } from "./payment-medium.ts";
  export type { FarePolicyKind, FareResult, PaymentMediumKind } from "./types.ts";

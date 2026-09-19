@@ -8,7 +8,7 @@ index 38dcff9..d0a77ea 100644
 +export { totalItemCount, totalVolume, totalWeight } from "./totals.ts";
 +export type { Carton, Item, PackageNode, Pallet } from "./types.ts";
 diff --git a/solutions/composite/totals.ts b/solutions/composite/totals.ts
-index 9bb675d..217c2be 100644
+index c15a9f4..ad5a6c6 100644
 --- a/solutions/composite/totals.ts
 +++ b/solutions/composite/totals.ts
 @@ -3,11 +3,12 @@ import type { PackageNode as PackageNodeData } from "./types.ts";
@@ -23,9 +23,9 @@ index 9bb675d..217c2be 100644
    volume(): number;
 +  itemCount(): number;
  }
-
+ 
  class ItemNode implements CompositeNode {
-@@ -20,6 +21,10 @@ class ItemNode implements CompositeNode {
+@@ -23,6 +24,10 @@ class ItemNode implements CompositeNode {
    volume(): number {
      return this.volumeM3;
    }
@@ -34,9 +34,9 @@ index 9bb675d..217c2be 100644
 +    return 1;
 +  }
  }
-
+ 
  class CartonNode implements CompositeNode {
-@@ -32,12 +37,38 @@ class CartonNode implements CompositeNode {
+@@ -35,12 +40,40 @@ class CartonNode implements CompositeNode {
    volume(): number {
      return this.children.reduce((sum, child) => sum + child.volume(), 0);
    }
@@ -53,7 +53,9 @@ index 9bb675d..217c2be 100644
 +  ) {}
 +
 +  weight(): number {
-+    return this.tareWeightKg + this.children.reduce((sum, child) => sum + child.weight(), 0);
++    return (
++      this.tareWeightKg + this.children.reduce((sum, child) => sum + child.weight(), 0)
++    );
 +  }
 +
 +  volume(): number {
@@ -64,7 +66,7 @@ index 9bb675d..217c2be 100644
 +    return this.children.reduce((sum, child) => sum + child.itemCount(), 0);
 +  }
  }
-
+ 
  function build(data: PackageNodeData): CompositeNode {
    if (data.kind === "item") {
      return new ItemNode(data.weightKg, data.volumeM3);
@@ -74,8 +76,8 @@ index 9bb675d..217c2be 100644
 +  }
    return new CartonNode(data.children.map(build));
  }
-
-@@ -48,3 +79,7 @@ export function totalWeight(node: PackageNodeData): number {
+ 
+@@ -51,3 +84,7 @@ export function totalWeight(node: PackageNodeData): number {
  export function totalVolume(node: PackageNodeData): number {
    return build(node).volume();
  }
@@ -90,7 +92,7 @@ index ed792d6..830d83f 100644
 @@ -11,4 +11,11 @@ export interface Carton {
    readonly children: readonly PackageNode[];
  }
-
+ 
 -export type PackageNode = Item | Carton;
 +export interface Pallet {
 +  readonly kind: "pallet";

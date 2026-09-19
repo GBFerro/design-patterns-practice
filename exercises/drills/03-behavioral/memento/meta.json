@@ -18,7 +18,12 @@
     "summary": "a field added to the saved state, with zero edits to the caretaker",
     "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 9, "maxHunks": 4 }
   },
-  "forbidden": ["setup\\.instrumentName\\s*=", "setup\\.filterName\\s*=", "setup\\.exposureSeconds\\s*=", "setup\\.binning\\s*="],
+  "forbidden": [
+    "setup\\.instrumentName\\s*=",
+    "setup\\.filterName\\s*=",
+    "setup\\.exposureSeconds\\s*=",
+    "setup\\.binning\\s*="
+  ],
   "solutions": [
     {
       "slug": "memento",

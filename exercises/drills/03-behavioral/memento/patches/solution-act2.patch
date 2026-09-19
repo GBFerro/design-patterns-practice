@@ -10,7 +10,7 @@ index d73a140..4876a4c 100644
    ) {}
  }
 diff --git a/solutions/memento/setup.ts b/solutions/memento/setup.ts
-index b30b91a..7af12ff 100644
+index 321a8a3..a816136 100644
 --- a/solutions/memento/setup.ts
 +++ b/solutions/memento/setup.ts
 @@ -7,6 +7,7 @@ export class ExposureSetup {
@@ -21,7 +21,7 @@ index b30b91a..7af12ff 100644
  
    setInstrument(name: string): void {
      this.instrumentName = name;
-@@ -24,8 +25,12 @@ export class ExposureSetup {
+@@ -24,12 +25,17 @@ export class ExposureSetup {
      this.binning = binning;
    }
  
@@ -30,12 +30,16 @@ index b30b91a..7af12ff 100644
 +  }
 +
    createMemento(): ExposureMemento {
--    return new ConcreteExposureMemento(this.instrumentName, this.filterName, this.exposureSeconds, this.binning);
-+    return new ConcreteExposureMemento(this.instrumentName, this.filterName, this.exposureSeconds, this.binning, this.ditherPattern);
+     return new ConcreteExposureMemento(
+       this.instrumentName,
+       this.filterName,
+       this.exposureSeconds,
+       this.binning,
++      this.ditherPattern,
+     );
    }
  
-   restore(memento: ExposureMemento): void {
-@@ -34,5 +39,6 @@ export class ExposureSetup {
+@@ -39,5 +45,6 @@ export class ExposureSetup {
      this.filterName = state.filterName;
      this.exposureSeconds = state.exposureSeconds;
      this.binning = state.binning;

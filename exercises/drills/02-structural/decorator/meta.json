@@ -18,7 +18,10 @@
     "summary": "a new modifier, plus a required ordering constraint between two of them",
     "extensionBudget": { "maxFilesModified": 3, "maxLinesModified": 9, "maxHunks": 3 }
   },
-  "forbidden": ["if \\(options\\.isStudent\\) price", "if \\(options\\.isOffPeak\\) price"],
+  "forbidden": [
+    "if \\(options\\.isStudent\\) price",
+    "if \\(options\\.isOffPeak\\) price"
+  ],
   "solutions": [
     {
       "slug": "decorator",

@@ -1,6 +1,9 @@
 import type { ObservationRequest, Telescope } from "./types.ts";
 
-export function validateRequest(request: ObservationRequest, telescope: Telescope): string | null {
+export function validateRequest(
+  request: ObservationRequest,
+  telescope: Telescope,
+): string | null {
   if (request.altitudeDegrees < 20) {
     return "target is below the minimum altitude";
   }

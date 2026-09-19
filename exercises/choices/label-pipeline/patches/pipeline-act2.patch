@@ -1,22 +1,25 @@
 diff --git a/solutions/pipeline/label-content.ts b/solutions/pipeline/label-content.ts
-index d98e26a..1f41cf9 100644
+index 12152db..2674327 100644
 --- a/solutions/pipeline/label-content.ts
 +++ b/solutions/pipeline/label-content.ts
-@@ -1,9 +1,21 @@
--import { address, customsDeclaration, fragileWarning, hazmatWarning, header, weight, type Stage } from "./stages.ts";
-+import {
-+  address,
-+  customsDeclaration,
-+  fragileWarning,
-+  hazmatWarning,
-+  header,
+@@ -4,21 +4,18 @@ import {
+   fragileWarning,
+   hazmatWarning,
+   header,
 +  signatureRequired,
-+  weight,
-+  type Stage,
-+} from "./stages.ts";
+   weight,
+   type Stage,
+ } from "./stages.ts";
  import type { Shipment } from "./types.ts";
  
--const stages: readonly Stage[] = [header, address, weight, fragileWarning, hazmatWarning, customsDeclaration];
+-const stages: readonly Stage[] = [
+-  header,
+-  address,
+-  weight,
+-  fragileWarning,
+-  hazmatWarning,
+-  customsDeclaration,
+-];
 -
  function sections(shipment: Shipment): string[] {
 +  const stages: Stage[] = [header, address];
@@ -24,14 +27,14 @@ index d98e26a..1f41cf9 100644
 +  stages.push(weight, fragileWarning, hazmatWarning, customsDeclaration);
 +  if (shipment.destinationCountry !== "US") stages.push(signatureRequired);
 +
-   return stages.map((stage) => stage(shipment)).filter((line): line is string => line !== null);
- }
- 
+   return stages
+     .map((stage) => stage(shipment))
+     .filter((line): line is string => line !== null);
 diff --git a/solutions/pipeline/stages.ts b/solutions/pipeline/stages.ts
-index e059249..c4edeba 100644
+index d102e90..76ace71 100644
 --- a/solutions/pipeline/stages.ts
 +++ b/solutions/pipeline/stages.ts
-@@ -16,3 +16,8 @@ export const hazmatWarning: Stage = (shipment) =>
+@@ -17,3 +17,8 @@ export const hazmatWarning: Stage = (shipment) =>
  
  export const customsDeclaration: Stage = (shipment) =>
    shipment.destinationCountry !== "US" ? "CUSTOMS: contents declared, origin US" : null;

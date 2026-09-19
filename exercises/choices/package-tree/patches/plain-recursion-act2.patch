@@ -8,13 +8,13 @@ index 38dcff9..d0a77ea 100644
 +export { totalItemCount, totalVolume, totalWeight } from "./totals.ts";
 +export type { Carton, Item, PackageNode, Pallet } from "./types.ts";
 diff --git a/solutions/plain-recursion/totals.ts b/solutions/plain-recursion/totals.ts
-index 0512e94..fb6ca08 100644
+index 81e0bf5..f0ea82a 100644
 --- a/solutions/plain-recursion/totals.ts
 +++ b/solutions/plain-recursion/totals.ts
-@@ -1,26 +1,43 @@
+@@ -1,27 +1,54 @@
 -import type { Item, PackageNode } from "./types.ts";
 +import type { Item, PackageNode, Pallet } from "./types.ts";
-
+ 
  /**
 - * One generic fold over the tree: a value from every item, and a way to combine a
 - * carton's children into one value. No object, no interface - two functions, passed in.
@@ -41,9 +41,10 @@ index 0512e94..fb6ca08 100644
 +  }
 +  return combineCarton(childValues);
  }
-
- const sum = (values: readonly number[]): number => values.reduce((total, value) => total + value, 0);
-
+ 
+ const sum = (values: readonly number[]): number =>
+   values.reduce((total, value) => total + value, 0);
+ 
  export function totalWeight(node: PackageNode): number {
 -  return reduceTree(node, (item) => item.weightKg, sum);
 +  return reduceTree(
@@ -53,14 +54,24 @@ index 0512e94..fb6ca08 100644
 +    (pallet, childValues) => pallet.tareWeightKg + sum(childValues),
 +  );
  }
-
+ 
  export function totalVolume(node: PackageNode): number {
 -  return reduceTree(node, (item) => item.volumeM3, sum);
-+  return reduceTree(node, (item) => item.volumeM3, sum, (_pallet, childValues) => sum(childValues));
++  return reduceTree(
++    node,
++    (item) => item.volumeM3,
++    sum,
++    (_pallet, childValues) => sum(childValues),
++  );
 +}
 +
 +export function totalItemCount(node: PackageNode): number {
-+  return reduceTree(node, () => 1, sum, (_pallet, childValues) => sum(childValues));
++  return reduceTree(
++    node,
++    () => 1,
++    sum,
++    (_pallet, childValues) => sum(childValues),
++  );
  }
 diff --git a/solutions/plain-recursion/types.ts b/solutions/plain-recursion/types.ts
 index ed792d6..830d83f 100644
@@ -69,7 +80,7 @@ index ed792d6..830d83f 100644
 @@ -11,4 +11,11 @@ export interface Carton {
    readonly children: readonly PackageNode[];
  }
-
+ 
 -export type PackageNode = Item | Carton;
 +export interface Pallet {
 +  readonly kind: "pallet";

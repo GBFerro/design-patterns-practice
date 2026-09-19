@@ -18,7 +18,14 @@ const batch: RoutingStrategy = (queue, batchOrderIds) => {
   const surviving = queue.filter((order) => batchOrderIds!.has(order.id));
   const target = oldest(surviving);
   const matching = surviving.filter((order) => order.binId === target.binId);
-  return { mode: "batch", binId: target.binId, orderIds: matching.map((order) => order.id) };
+  return {
+    mode: "batch",
+    binId: target.binId,
+    orderIds: matching.map((order) => order.id),
+  };
 };
 
-export const strategies: Record<"individual" | "batch", RoutingStrategy> = { individual, batch };
+export const strategies: Record<"individual" | "batch", RoutingStrategy> = {
+  individual,
+  batch,
+};

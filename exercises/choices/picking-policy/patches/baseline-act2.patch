@@ -1,5 +1,5 @@
 diff --git a/src/picking-policy.ts b/src/picking-policy.ts
-index 5d967b3..6cdc066 100644
+index bdbe39c..a6dd589 100644
 --- a/src/picking-policy.ts
 +++ b/src/picking-policy.ts
 @@ -1,9 +1,11 @@
@@ -15,7 +15,7 @@ index 5d967b3..6cdc066 100644
  
  function oldest(orders: readonly Order[]): Order {
    return [...orders].sort((a, b) => a.queuedAt - b.queuedAt)[0]!;
-@@ -22,11 +24,26 @@ export function planNextPick(queue: readonly Order[]): PickInstruction {
+@@ -22,11 +24,31 @@ export function planNextPick(queue: readonly Order[]): PickInstruction {
      batchOrderIds = new Set(queue.map((order) => order.id));
    }
  
@@ -36,13 +36,18 @@ index 5d967b3..6cdc066 100644
 +    const surviving = queue.filter((order) => surgeOrderIds.has(order.id));
 +    const target = oldest(surviving);
 +    const matching = surviving.filter((order) => order.binId === target.binId);
-+    return { mode: "batch", binId: target.binId, orderIds: matching.map((order) => order.id), urgent: true };
++    return {
++      mode: "batch",
++      binId: target.binId,
++      orderIds: matching.map((order) => order.id),
++      urgent: true,
++    };
 +  }
 +
    const surviving = queue.filter((order) => batchOrderIds.has(order.id));
    const target = oldest(surviving);
    const matching = surviving.filter((order) => order.binId === target.binId);
-@@ -34,11 +51,19 @@ export function planNextPick(queue: readonly Order[]): PickInstruction {
+@@ -38,11 +60,19 @@ export function planNextPick(queue: readonly Order[]): PickInstruction {
  }
  
  export function recordPicked(orderId: string): void {
@@ -63,7 +68,7 @@ index 5d967b3..6cdc066 100644
    return mode;
  }
  
-@@ -46,4 +71,5 @@ export function currentMode(): "individual" | "batch" {
+@@ -50,4 +80,5 @@ export function currentMode(): "individual" | "batch" {
  export function resetPickingPolicy(): void {
    mode = "individual";
    batchOrderIds = new Set();

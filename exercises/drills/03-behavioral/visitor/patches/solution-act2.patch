@@ -11,7 +11,7 @@ index 528a294..0ce53ce 100644
 -export { costSeconds, isAnomaly, toLine } from "./reports.ts";
 +export { costSeconds, isAnomaly, operatorNote, toLine } from "./reports.ts";
  export type { LogRecordVisitor } from "./visitor.ts";
-diff --git a/solutions/visitor/records/dome.ts b/solutions/visitor/records/dome.ts
+diff --git a/after/solutions/visitor/records/dome.ts b/solutions/visitor/records/dome.ts
 new file mode 100644
 index 0000000..3cdaf5f
 --- /dev/null
@@ -31,27 +31,6 @@ index 0000000..3cdaf5f
 +  accept<R>(visitor: LogRecordVisitor<R>): R {
 +    return visitor.visitDome(this);
 +  }
-+}
-diff --git a/solutions/visitor/reports.ts b/solutions/visitor/reports.ts
-index 614871c..5ddfcca 100644
---- a/solutions/visitor/reports.ts
-+++ b/solutions/visitor/reports.ts
-@@ -1,6 +1,7 @@
- import type { LogRecord } from "./record.ts";
- import { AnomalyVisitor } from "./reports/anomaly.ts";
- import { CostVisitor } from "./reports/cost.ts";
-+import { OperatorNoteVisitor } from "./reports/operator-note.ts";
- import { ToLineVisitor } from "./reports/to-line.ts";
- 
- /** A human-readable line for the night's log. */
-@@ -17,3 +18,8 @@ export function costSeconds(record: LogRecord): number {
- export function isAnomaly(record: LogRecord): boolean {
-   return record.accept(new AnomalyVisitor());
- }
-+
-+/** A note for whoever is on shift, or null if this record needs no attention. */
-+export function operatorNote(record: LogRecord): string | null {
-+  return record.accept(new OperatorNoteVisitor());
 +}
 diff --git a/solutions/visitor/reports/anomaly.ts b/solutions/visitor/reports/anomaly.ts
 index 4237931..8611349 100644
@@ -89,7 +68,7 @@ index 2a15723..9d302fc 100644
 +    return 0;
 +  }
  }
-diff --git a/solutions/visitor/reports/operator-note.ts b/solutions/visitor/reports/operator-note.ts
+diff --git a/after/solutions/visitor/reports/operator-note.ts b/solutions/visitor/reports/operator-note.ts
 new file mode 100644
 index 0000000..00eb64f
 --- /dev/null
@@ -136,6 +115,27 @@ index 561926e..dfc6ea0 100644
 +    return `dome ${record.domeState}: ${record.reason}`;
 +  }
  }
+diff --git a/solutions/visitor/reports.ts b/solutions/visitor/reports.ts
+index 614871c..5ddfcca 100644
+--- a/solutions/visitor/reports.ts
++++ b/solutions/visitor/reports.ts
+@@ -1,6 +1,7 @@
+ import type { LogRecord } from "./record.ts";
+ import { AnomalyVisitor } from "./reports/anomaly.ts";
+ import { CostVisitor } from "./reports/cost.ts";
++import { OperatorNoteVisitor } from "./reports/operator-note.ts";
+ import { ToLineVisitor } from "./reports/to-line.ts";
+ 
+ /** A human-readable line for the night's log. */
+@@ -17,3 +18,8 @@ export function costSeconds(record: LogRecord): number {
+ export function isAnomaly(record: LogRecord): boolean {
+   return record.accept(new AnomalyVisitor());
+ }
++
++/** A note for whoever is on shift, or null if this record needs no attention. */
++export function operatorNote(record: LogRecord): string | null {
++  return record.accept(new OperatorNoteVisitor());
++}
 diff --git a/solutions/visitor/visitor.ts b/solutions/visitor/visitor.ts
 index 548eca4..f2be9ff 100644
 --- a/solutions/visitor/visitor.ts

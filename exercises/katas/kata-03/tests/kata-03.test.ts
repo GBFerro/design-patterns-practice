@@ -10,17 +10,33 @@ function state(overrides: Partial<RobotState> = {}): RobotState {
 
 describe("runCommand", () => {
   it("moves in each of the four directions", () => {
-    assert.deepEqual(runCommand(state(), { kind: "move", direction: "north" }), state({ y: 4 }));
-    assert.deepEqual(runCommand(state(), { kind: "move", direction: "south" }), state({ y: 6 }));
-    assert.deepEqual(runCommand(state(), { kind: "move", direction: "east" }), state({ x: 6 }));
-    assert.deepEqual(runCommand(state(), { kind: "move", direction: "west" }), state({ x: 4 }));
+    assert.deepEqual(
+      runCommand(state(), { kind: "move", direction: "north" }),
+      state({ y: 4 }),
+    );
+    assert.deepEqual(
+      runCommand(state(), { kind: "move", direction: "south" }),
+      state({ y: 6 }),
+    );
+    assert.deepEqual(
+      runCommand(state(), { kind: "move", direction: "east" }),
+      state({ x: 6 }),
+    );
+    assert.deepEqual(
+      runCommand(state(), { kind: "move", direction: "west" }),
+      state({ x: 4 }),
+    );
   });
 
   it("refuses a move that would leave the grid", () => {
     assert.throws(() => runCommand(state({ x: 9 }), { kind: "move", direction: "east" }));
     assert.throws(() => runCommand(state({ x: 0 }), { kind: "move", direction: "west" }));
-    assert.throws(() => runCommand(state({ y: 9 }), { kind: "move", direction: "south" }));
-    assert.throws(() => runCommand(state({ y: 0 }), { kind: "move", direction: "north" }));
+    assert.throws(() =>
+      runCommand(state({ y: 9 }), { kind: "move", direction: "south" }),
+    );
+    assert.throws(() =>
+      runCommand(state({ y: 0 }), { kind: "move", direction: "north" }),
+    );
   });
 
   it("picks up an item when not already holding one", () => {
@@ -29,7 +45,9 @@ describe("runCommand", () => {
   });
 
   it("refuses to pick up a second item while already holding one", () => {
-    assert.throws(() => runCommand(state({ holding: "crate-1" }), { kind: "pickUp", itemId: "crate-2" }));
+    assert.throws(() =>
+      runCommand(state({ holding: "crate-1" }), { kind: "pickUp", itemId: "crate-2" }),
+    );
   });
 
   it("drops off whatever is held", () => {

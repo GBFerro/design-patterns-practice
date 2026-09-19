@@ -1,12 +1,11 @@
 diff --git a/src/pipelines.ts b/src/pipelines.ts
-index 54ef925..b8fa719 100644
+index 54ef925..061464d 100644
 --- a/src/pipelines.ts
 +++ b/src/pipelines.ts
-@@ -63,6 +63,25 @@ function runThermalImagerNight(target: string): NightLog {
+@@ -63,6 +63,24 @@ function runThermalImagerNight(target: string): NightLog {
    return { instrument: "thermal-imager", target, steps };
  }
  
-+
 +function runGuideCameraNight(target: string): NightLog {
 +  const steps: StepLog[] = [];
 +
@@ -28,7 +27,7 @@ index 54ef925..b8fa719 100644
  export function runNight(instrument: string, target: string): NightLog {
    switch (instrument) {
      case "wide-field-camera":
-@@ -71,13 +90,15 @@ export function runNight(instrument: string, target: string): NightLog {
+@@ -71,13 +89,15 @@ export function runNight(instrument: string, target: string): NightLog {
        return runSpectrographNight(target);
      case "thermal-imager":
        return runThermalImagerNight(target);

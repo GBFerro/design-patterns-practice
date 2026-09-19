@@ -19,7 +19,7 @@ index 99ada3a..d7bf550 100644
 +    return base + this.surchargeService.peakSurchargeCents(route);
    }
  }
-diff --git a/solutions/facade/real-time-alert-service.ts b/solutions/facade/real-time-alert-service.ts
+diff --git a/after/solutions/facade/real-time-alert-service.ts b/solutions/facade/real-time-alert-service.ts
 new file mode 100644
 index 0000000..dad7c3b
 --- /dev/null
@@ -43,22 +43,24 @@ index 0000000..dad7c3b
 +  }
 +}
 diff --git a/solutions/facade/route-finder.ts b/solutions/facade/route-finder.ts
-index 3f11b99..f00fbca 100644
+index c7c102d..c897027 100644
 --- a/solutions/facade/route-finder.ts
 +++ b/solutions/facade/route-finder.ts
-@@ -7,6 +7,7 @@ const LEGS: Record<string, readonly RouteLeg[]> = {
+@@ -11,6 +11,9 @@ const LEGS: Record<string, readonly RouteLeg[]> = {
      { lineId: "red", fromStopId: "mill-ave", toStopId: "harbor-sq", minutes: 12 },
      { lineId: "blue", fromStopId: "harbor-sq", toStopId: "castleview", minutes: 9 },
    ],
-+  "mill-ave->riverside": [{ lineId: "green", fromStopId: "mill-ave", toStopId: "riverside", minutes: 15 }],
++  "mill-ave->riverside": [
++    { lineId: "green", fromStopId: "mill-ave", toStopId: "riverside", minutes: 15 },
++  ],
  };
  
  /** Subsystem 2: the legs a rider has to ride to get from one stop to another. */
 diff --git a/solutions/facade/schedule-lookup.ts b/solutions/facade/schedule-lookup.ts
-index b7912bb..7e2ded2 100644
+index b7912bb..ca515a8 100644
 --- a/solutions/facade/schedule-lookup.ts
 +++ b/solutions/facade/schedule-lookup.ts
-@@ -1,10 +1,19 @@
+@@ -1,10 +1,21 @@
  import type { Route } from "./types.ts";
  
  const MINUTES_PER_LEG = 4;
@@ -75,7 +77,9 @@ index b7912bb..7e2ded2 100644
    nextDepartureMinutes(route: Route): number {
 -    return route.legs.length * MINUTES_PER_LEG;
 +    const crossesIntoRiverside = route.legs.some((leg) => leg.lineId === GREEN_LINE_ID);
-+    const buffer = crossesIntoRiverside ? (RIVERSIDE_TIMEZONE_BUFFER_MINUTES[this.riversideTimezone] ?? 0) : 0;
++    const buffer = crossesIntoRiverside
++      ? (RIVERSIDE_TIMEZONE_BUFFER_MINUTES[this.riversideTimezone] ?? 0)
++      : 0;
 +    return route.legs.length * MINUTES_PER_LEG + buffer;
    }
  }
@@ -91,7 +95,7 @@ index c14775f..5d7bfab 100644
  };
  
  /** Subsystem 1: turns whatever a caller typed into a real Stop, or rejects it. */
-diff --git a/solutions/facade/surcharge-service.ts b/solutions/facade/surcharge-service.ts
+diff --git a/after/solutions/facade/surcharge-service.ts b/solutions/facade/surcharge-service.ts
 new file mode 100644
 index 0000000..d9e9d0d
 --- /dev/null
@@ -110,10 +114,10 @@ index 0000000..d9e9d0d
 +  }
 +}
 diff --git a/solutions/facade/trip-planner.ts b/solutions/facade/trip-planner.ts
-index 48b7ffc..429f1ff 100644
+index 48b7ffc..1eda982 100644
 --- a/solutions/facade/trip-planner.ts
 +++ b/solutions/facade/trip-planner.ts
-@@ -1,17 +1,18 @@
+@@ -1,17 +1,20 @@
 -import { AlertService } from "./alert-service.ts";
  import { FareCalculator } from "./fare-calculator.ts";
 +import { RealTimeAlertService } from "./real-time-alert-service.ts";
@@ -132,7 +136,9 @@ index 48b7ffc..429f1ff 100644
 -  private readonly alertService = new AlertService();
 +  private readonly scheduleLookup = new ScheduleLookup("America/Denver");
 +  private readonly fareCalculator = new FareCalculator(new SurchargeService());
-+  private readonly alertService = new RealTimeAlertService("https://caldermoor.example/alerts");
++  private readonly alertService = new RealTimeAlertService(
++    "https://caldermoor.example/alerts",
++  );
  
    plan(originName: string, destinationName: string): TripPlan {
      const origin = this.stopResolver.resolve(originName);

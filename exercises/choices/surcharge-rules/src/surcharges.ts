@@ -15,7 +15,8 @@ function isOversize(shipment: Shipment): boolean {
 
 export function quoteSurcharges(shipment: Shipment): SurchargeBreakdown {
   const fuelCents = Math.round(shipment.baseRateCents * FUEL_SURCHARGE_RATE);
-  const remoteAreaCents = shipment.destination === "remote" ? REMOTE_AREA_SURCHARGE_CENTS : 0;
+  const remoteAreaCents =
+    shipment.destination === "remote" ? REMOTE_AREA_SURCHARGE_CENTS : 0;
   const oversizeCents = isOversize(shipment) ? OVERSIZE_SURCHARGE_CENTS : 0;
   const totalCents = fuelCents + remoteAreaCents + oversizeCents;
   return { fuelCents, remoteAreaCents, oversizeCents, totalCents };
@@ -23,7 +24,8 @@ export function quoteSurcharges(shipment: Shipment): SurchargeBreakdown {
 
 export function totalSurchargeCents(shipment: Shipment): number {
   const fuelCents = Math.round(shipment.baseRateCents * FUEL_SURCHARGE_RATE);
-  const remoteAreaCents = shipment.destination === "remote" ? REMOTE_AREA_SURCHARGE_CENTS : 0;
+  const remoteAreaCents =
+    shipment.destination === "remote" ? REMOTE_AREA_SURCHARGE_CENTS : 0;
   const oversizeCents = isOversize(shipment) ? OVERSIZE_SURCHARGE_CENTS : 0;
   return fuelCents + remoteAreaCents + oversizeCents;
 }

@@ -11,7 +11,10 @@ interface CompositeNode {
 }
 
 class ItemNode implements CompositeNode {
-  constructor(private readonly weightKg: number, private readonly volumeM3: number) {}
+  constructor(
+    private readonly weightKg: number,
+    private readonly volumeM3: number,
+  ) {}
 
   weight(): number {
     return this.weightKg;

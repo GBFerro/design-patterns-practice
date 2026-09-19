@@ -1,7 +1,14 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { ExposureRecord, SeeingRecord, WeatherRecord, costSeconds, isAnomaly, toLine } from "#exercise";
+import {
+  ExposureRecord,
+  SeeingRecord,
+  WeatherRecord,
+  costSeconds,
+  isAnomaly,
+  toLine,
+} from "#exercise";
 
 test("toLine formats a seeing record", () => {
   assert.equal(toLine(new SeeingRecord(2.1)), 'seeing 2.1"');
@@ -12,7 +19,10 @@ test("toLine formats a weather record", () => {
 });
 
 test("toLine formats an exposure record", () => {
-  assert.equal(toLine(new ExposureRecord("wide-field camera", 300)), "exposure 300s on wide-field camera");
+  assert.equal(
+    toLine(new ExposureRecord("wide-field camera", 300)),
+    "exposure 300s on wide-field camera",
+  );
 });
 
 test("costSeconds is zero for seeing and weather records", () => {

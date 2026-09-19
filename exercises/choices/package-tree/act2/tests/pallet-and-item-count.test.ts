@@ -45,7 +45,10 @@ test("totalItemCount counts every item leaf, through cartons and pallets alike",
 });
 
 test("totalItemCount on a lone item is 1, and on an empty carton is 0", () => {
-  assert.equal(totalItemCount({ kind: "item", sku: "C1", weightKg: 1, volumeM3: 0.01 }), 1);
+  assert.equal(
+    totalItemCount({ kind: "item", sku: "C1", weightKg: 1, volumeM3: 0.01 }),
+    1,
+  );
   assert.equal(totalItemCount({ kind: "carton", label: "empty", children: [] }), 0);
 });
 

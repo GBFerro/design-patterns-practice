@@ -17,7 +17,7 @@ index 715b8ef..1185ca7 100644
 +      return new MacroCommand(action.actions.map((sub) => toCommand(state, sub)));
    }
  }
-diff --git a/solutions/command/commands/macro.ts b/solutions/command/commands/macro.ts
+diff --git a/after/solutions/command/commands/macro.ts b/solutions/command/commands/macro.ts
 new file mode 100644
 index 0000000..ef0e6e6
 --- /dev/null

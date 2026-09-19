@@ -1,8 +1,8 @@
 diff --git a/src/dashboard.ts b/src/dashboard.ts
-index 51c8e03..aa7f5b7 100644
+index 51c8e03..7eb38b4 100644
 --- a/src/dashboard.ts
 +++ b/src/dashboard.ts
-@@ -2,9 +2,13 @@ import { RealVehiclePositionService } from "./real-vehicle-position-service.ts";
+@@ -2,9 +2,14 @@ import { RealVehiclePositionService } from "./real-vehicle-position-service.ts";
  import type { VehiclePosition } from "./types.ts";
  
  const realService = new RealVehiclePositionService();
@@ -13,7 +13,8 @@ index 51c8e03..aa7f5b7 100644
  export function currentPositions(vehicleIds: readonly string[]): VehiclePosition[] {
 -  return vehicleIds.map((vehicleId) => realService.currentPosition(vehicleId));
 +  return vehicleIds.map((vehicleId) => {
-+    if (RESTRICTED_VEHICLE_IDS.has(vehicleId)) throw new Error(`access denied for vehicle: ${vehicleId}`);
++    if (RESTRICTED_VEHICLE_IDS.has(vehicleId))
++      throw new Error(`access denied for vehicle: ${vehicleId}`);
 +    return realService.currentPosition(vehicleId);
 +  });
  }
@@ -37,10 +38,10 @@ index 34ce9fc..03a274b 100644
 +  "svc-9": { latitude: 41.201, longitude: -111.43 },
  };
 diff --git a/src/vehicle-position-cli.ts b/src/vehicle-position-cli.ts
-index b4a560f..33dfece 100644
+index b4a560f..a372caf 100644
 --- a/src/vehicle-position-cli.ts
 +++ b/src/vehicle-position-cli.ts
-@@ -2,9 +2,13 @@ import { RealVehiclePositionService } from "./real-vehicle-position-service.ts";
+@@ -2,9 +2,14 @@ import { RealVehiclePositionService } from "./real-vehicle-position-service.ts";
  import type { VehiclePosition } from "./types.ts";
  
  const realService = new RealVehiclePositionService();
@@ -51,7 +52,8 @@ index b4a560f..33dfece 100644
  export function printFleetPositions(vehicleIds: readonly string[]): VehiclePosition[] {
 -  return vehicleIds.map((vehicleId) => realService.currentPosition(vehicleId));
 +  return vehicleIds.map((vehicleId) => {
-+    if (RESTRICTED_VEHICLE_IDS.has(vehicleId)) throw new Error(`access denied for vehicle: ${vehicleId}`);
++    if (RESTRICTED_VEHICLE_IDS.has(vehicleId))
++      throw new Error(`access denied for vehicle: ${vehicleId}`);
 +    return realService.currentPosition(vehicleId);
 +  });
  }

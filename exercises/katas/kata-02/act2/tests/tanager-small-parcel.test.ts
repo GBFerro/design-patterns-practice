@@ -29,14 +29,21 @@ describe("tanager's national small-parcel exception", () => {
   });
 
   it("leaves tanager's local eligibility unchanged", () => {
-    const decision = pickCheapestCarrier(request({ destinationZone: "local", weightKg: 20 }), [quote()]);
+    const decision = pickCheapestCarrier(
+      request({ destinationZone: "local", weightKg: 20 }),
+      [quote()],
+    );
     assert.equal(decision.winningCarrierId, "tanager");
   });
 
   it("leaves tanager's overall 25kg cap unchanged, even for a small-parcel-eligible zone", () => {
     // 12kg is within the new national exception's own limit, so this exercises the general
     // cap on a zone the small-parcel exception doesn't touch at all.
-    assert.throws(() => pickCheapestCarrier(request({ destinationZone: "regional", weightKg: 30 }), [quote()]));
+    assert.throws(() =>
+      pickCheapestCarrier(request({ destinationZone: "regional", weightKg: 30 }), [
+        quote(),
+      ]),
+    );
   });
 
   it("does not change ravenex's or skyfreight's eligibility", () => {

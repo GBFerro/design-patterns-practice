@@ -1,5 +1,5 @@
 diff --git a/solutions/line-construction/invoicing.ts b/solutions/line-construction/invoicing.ts
-index 4a54f62..6a19dff 100644
+index ca2ec57..6d2973b 100644
 --- a/solutions/line-construction/invoicing.ts
 +++ b/solutions/line-construction/invoicing.ts
 @@ -1,6 +1,7 @@
@@ -10,7 +10,7 @@ index 4a54f62..6a19dff 100644
  
  /**
   * What one order line becomes on the invoice - pulled out of both
-@@ -41,6 +42,9 @@ export function finalizeInvoice(order: Order): Invoice {
+@@ -44,6 +45,9 @@ export function finalizeInvoice(order: Order): Invoice {
    if (totalCents > LARGE_ORDER_THRESHOLD_CENTS) {
      notifiedChannels.push("large-order-desk");
    }
@@ -18,9 +18,9 @@ index 4a54f62..6a19dff 100644
 +    notifiedChannels.push("low-value-review");
 +  }
  
-   return { orderId: order.orderId, lines, subtotalCents, surchargeCents, totalCents, notifiedChannels };
- }
-@@ -73,6 +77,9 @@ export function finalizeInvoiceBatch(orders: readonly Order[]): readonly Invoice
+   return {
+     orderId: order.orderId,
+@@ -83,6 +87,9 @@ export function finalizeInvoiceBatch(orders: readonly Order[]): readonly Invoice
      if (totalCents > LARGE_ORDER_THRESHOLD_CENTS) {
        notifiedChannels.push("large-order-desk");
      }
@@ -28,5 +28,5 @@ index 4a54f62..6a19dff 100644
 +      notifiedChannels.push("low-value-review");
 +    }
  
-     invoices.push({ orderId: order.orderId, lines, subtotalCents, surchargeCents, totalCents, notifiedChannels });
-   }
+     invoices.push({
+       orderId: order.orderId,

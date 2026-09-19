@@ -15,7 +15,7 @@ index 04a51bb..dc4a429 100644
 +} from "./reports.ts";
  export type { LogEntry } from "./types.ts";
 diff --git a/src/reports.ts b/src/reports.ts
-index 78b649b..1d0ec61 100644
+index 78b649b..b1316b1 100644
 --- a/src/reports.ts
 +++ b/src/reports.ts
 @@ -12,15 +12,20 @@ export function allMessages(log: ObservationLog): string[] {
@@ -45,14 +45,17 @@ index 78b649b..1d0ec61 100644
  }
  
  /** The first entry whose message contains `needle`, or undefined if none does. */
-@@ -33,3 +38,56 @@ export function findFirst(log: ObservationLog, needle: string): LogEntry | undef
+@@ -33,3 +38,62 @@ export function findFirst(log: ObservationLog, needle: string): LogEntry | undef
    }
    return undefined;
  }
 +
 +/** The most recent entry whose message contains `needle`, or undefined if
 + *  none does - searched from the end, not the start. */
-+export function mostRecentMatch(log: ObservationLog, needle: string): LogEntry | undefined {
++export function mostRecentMatch(
++  log: ObservationLog,
++  needle: string,
++): LogEntry | undefined {
 +  // Reverse walk: offset starts at entriesInPage(page) - 1, not
 +  // entriesInPage(page), or this reads one entry past the page.
 +  for (let page = log.pageCount - 1; page >= 0; page--) {
@@ -66,7 +69,10 @@ index 78b649b..1d0ec61 100644
 +
 +/** The `count` most recent messages, most recent first, without walking the
 + *  log from the start. */
-+export function recentMessages(log: ObservationLog, count: number): { messages: string[]; scanned: number } {
++export function recentMessages(
++  log: ObservationLog,
++  count: number,
++): { messages: string[]; scanned: number } {
 +  const messages: string[] = [];
 +  let scanned = 0;
 +  // Reverse walk: offset starts at entriesInPage(page) - 1, not

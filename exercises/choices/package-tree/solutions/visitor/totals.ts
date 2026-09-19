@@ -16,7 +16,8 @@ function walk<T>(node: PackageNode, visitor: PackageVisitor<T>): T {
   );
 }
 
-const sum = (values: readonly number[]): number => values.reduce((total, value) => total + value, 0);
+const sum = (values: readonly number[]): number =>
+  values.reduce((total, value) => total + value, 0);
 
 const weightVisitor: PackageVisitor<number> = {
   visitItem: (item) => item.weightKg,

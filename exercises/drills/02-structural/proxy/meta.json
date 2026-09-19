@@ -16,7 +16,7 @@
   "act2": {
     "axis": "aligned",
     "summary": "access control added, with zero edits to caller or subject",
-    "extensionBudget": { "maxFilesModified": 3, "maxLinesModified": 13, "maxHunks": 3 }
+    "extensionBudget": { "maxFilesModified": 3, "maxLinesModified": 14, "maxHunks": 3 }
   },
   "forbidden": ["realService\\.currentPosition\\(vehicleId\\)"],
   "solutions": [

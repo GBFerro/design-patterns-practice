@@ -19,7 +19,10 @@ export class PickingPolicy {
       this.batchOrderIds = new Set(queue.map((order) => order.id));
     }
 
-    const round = this.mode === "individual" ? new IndividualRound() : new BatchRound(this.batchOrderIds!);
+    const round =
+      this.mode === "individual"
+        ? new IndividualRound()
+        : new BatchRound(this.batchOrderIds!);
     return round.pick(queue);
   }
 

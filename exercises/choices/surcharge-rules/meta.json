@@ -15,7 +15,7 @@
   "act2": {
     "axis": "orthogonal",
     "summary": "a hazmat surcharge arrives that only applies when two existing surcharges (remote-area and oversize) already do - a rule about the relationship between surcharges, not a new independent one",
-    "extensionBudget": { "maxFilesModified": 3, "maxLinesModified": 8, "maxHunks": 4 }
+    "extensionBudget": { "maxFilesModified": 3, "maxLinesModified": 9, "maxHunks": 4 }
   },
   "solutions": [
     {

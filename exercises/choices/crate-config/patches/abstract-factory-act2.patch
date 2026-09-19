@@ -1,5 +1,5 @@
 diff --git a/solutions/abstract-factory/crate-spec.ts b/solutions/abstract-factory/crate-spec.ts
-index 92b878f..2d04fe8 100644
+index 92b878f..77162bd 100644
 --- a/solutions/abstract-factory/crate-spec.ts
 +++ b/solutions/abstract-factory/crate-spec.ts
 @@ -1,12 +1,15 @@
@@ -36,25 +36,39 @@ index 92b878f..2d04fe8 100644
    };
  }
  
-@@ -29,8 +36,9 @@ export function buildExportCrate(
+@@ -29,8 +36,16 @@ export function buildExportCrate(
    widthCm: number,
    heightCm: number,
    maxLoadKg: number,
 +  insulated = false,
  ): CrateSpec {
 -  return assembleCrate(new WoodCrateFamily(), lengthCm, widthCm, heightCm, maxLoadKg);
-+  return assembleCrate(new WoodCrateFamily(), lengthCm, widthCm, heightCm, maxLoadKg, insulated);
++  return assembleCrate(
++    new WoodCrateFamily(),
++    lengthCm,
++    widthCm,
++    heightCm,
++    maxLoadKg,
++    insulated,
++  );
  }
  
  export function buildDomesticCrate(
-@@ -38,6 +46,7 @@ export function buildDomesticCrate(
+@@ -38,6 +53,14 @@ export function buildDomesticCrate(
    widthCm: number,
    heightCm: number,
    maxLoadKg: number,
 +  insulated = false,
  ): CrateSpec {
 -  return assembleCrate(new PlasticCrateFamily(), lengthCm, widthCm, heightCm, maxLoadKg);
-+  return assembleCrate(new PlasticCrateFamily(), lengthCm, widthCm, heightCm, maxLoadKg, insulated);
++  return assembleCrate(
++    new PlasticCrateFamily(),
++    lengthCm,
++    widthCm,
++    heightCm,
++    maxLoadKg,
++    insulated,
++  );
  }
 diff --git a/solutions/abstract-factory/types.ts b/solutions/abstract-factory/types.ts
 index fcffe93..c8867e7 100644

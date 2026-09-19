@@ -5,7 +5,11 @@ import { currentPositions, printFleetPositions } from "#exercise";
 
 test("returns the position for a single vehicle", () => {
   const [position] = currentPositions(["bus-14"]);
-  assert.deepEqual(position, { vehicleId: "bus-14", latitude: 41.234, longitude: -111.456 });
+  assert.deepEqual(position, {
+    vehicleId: "bus-14",
+    latitude: 41.234,
+    longitude: -111.456,
+  });
 });
 
 test("returns positions for several vehicles, in order", () => {

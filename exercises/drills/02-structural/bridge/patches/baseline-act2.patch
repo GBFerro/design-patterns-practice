@@ -1,5 +1,5 @@
 diff --git a/src/fare.ts b/src/fare.ts
-index cd3a1dc..44a808a 100644
+index aa889bc..d2e02c3 100644
 --- a/src/fare.ts
 +++ b/src/fare.ts
 @@ -3,6 +3,9 @@ import type { FarePolicyKind, FareResult, PaymentMediumKind } from "./types.ts";
@@ -12,7 +12,7 @@ index cd3a1dc..44a808a 100644
  
  /** Cash machines only accept quarters - round up to the nearest 25 cents. */
  function roundUpToQuarter(cents: number): number {
-@@ -35,7 +38,41 @@ class DistanceCardFare {
+@@ -41,7 +44,44 @@ class DistanceCardFare {
    }
  }
  
@@ -39,7 +39,10 @@ index cd3a1dc..44a808a 100644
 +
 +class DistancePassFare {
 +  calculate(measure: number): FareResult {
-+    const base = Math.max(DISTANCE_MIN_CENTS, Math.round(measure * DISTANCE_RATE_CENTS_PER_KM));
++    const base = Math.max(
++      DISTANCE_MIN_CENTS,
++      Math.round(measure * DISTANCE_RATE_CENTS_PER_KM),
++    );
 +    return { chargedCents: Math.round(base * PASS_DISCOUNT_FACTOR) };
 +  }
 +}
@@ -55,17 +58,24 @@ index cd3a1dc..44a808a 100644
   *  own class, because nothing in this file lets a policy and a medium mix
   *  and match on their own. */
  export function calculateFare(
-@@ -45,7 +82,12 @@ export function calculateFare(
- ): FareResult {
-   if (policyKind === "flat" && mediumKind === "cash") return new FlatCashFare().calculate();
-   if (policyKind === "flat" && mediumKind === "card") return new FlatCardFare().calculate();
-+  if (policyKind === "flat" && mediumKind === "pass") return new FlatPassFare().calculate();
-   if (policyKind === "distance" && mediumKind === "cash") return new DistanceCashFare().calculate(measure);
-   if (policyKind === "distance" && mediumKind === "card") return new DistanceCardFare().calculate(measure);
-+  if (policyKind === "distance" && mediumKind === "pass") return new DistancePassFare().calculate(measure);
-+  if (policyKind === "zone" && mediumKind === "cash") return new ZoneCashFare().calculate(measure);
-+  if (policyKind === "zone" && mediumKind === "card") return new ZoneCardFare().calculate(measure);
-+  if (policyKind === "zone" && mediumKind === "pass") return new ZonePassFare().calculate(measure);
+@@ -53,9 +93,19 @@ export function calculateFare(
+     return new FlatCashFare().calculate();
+   if (policyKind === "flat" && mediumKind === "card")
+     return new FlatCardFare().calculate();
++  if (policyKind === "flat" && mediumKind === "pass")
++    return new FlatPassFare().calculate();
+   if (policyKind === "distance" && mediumKind === "cash")
+     return new DistanceCashFare().calculate(measure);
+   if (policyKind === "distance" && mediumKind === "card")
+     return new DistanceCardFare().calculate(measure);
++  if (policyKind === "distance" && mediumKind === "pass")
++    return new DistancePassFare().calculate(measure);
++  if (policyKind === "zone" && mediumKind === "cash")
++    return new ZoneCashFare().calculate(measure);
++  if (policyKind === "zone" && mediumKind === "card")
++    return new ZoneCardFare().calculate(measure);
++  if (policyKind === "zone" && mediumKind === "pass")
++    return new ZonePassFare().calculate(measure);
    throw new Error(`no fare rule for ${policyKind}/${mediumKind}`);
  }
 diff --git a/src/types.ts b/src/types.ts

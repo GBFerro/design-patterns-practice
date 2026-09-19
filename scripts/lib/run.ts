@@ -5,7 +5,10 @@ import { join } from "node:path";
 import type { Exercise } from "./exercises.ts";
 
 /** The only two flags the harness needs. No test runner to install. */
-const NODE_FLAGS = ["--experimental-transform-types", "--disable-warning=ExperimentalWarning"];
+const NODE_FLAGS = [
+  "--experimental-transform-types",
+  "--disable-warning=ExperimentalWarning",
+];
 
 export interface TestRunOptions {
   /** Run the act-2 suite instead of the act-1 suite. */
@@ -32,11 +35,17 @@ export function runTests(exercise: Exercise, options: TestRunOptions = {}): Test
   const cwd = options.cwd ?? exercise.dir;
   const pattern = options.act2 ? "act2/tests/*.test.ts" : "tests/*.test.ts";
   if (!existsSync(join(cwd, options.act2 ? "act2/tests" : "tests"))) {
-    return { ok: true, pass: 0, fail: 0, output: `no ${options.act2 ? "act2" : "act1"} suite\n` };
+    return {
+      ok: true,
+      pass: 0,
+      fail: 0,
+      output: `no ${options.act2 ? "act2" : "act1"} suite\n`,
+    };
   }
 
   const args = [...NODE_FLAGS];
-  if (options.solution !== undefined) args.push(`--conditions=solution-${options.solution}`);
+  if (options.solution !== undefined)
+    args.push(`--conditions=solution-${options.solution}`);
   if (options.coverage === true) args.push("--experimental-test-coverage");
   if (options.watch === true) args.push("--watch");
   args.push("--test", pattern);
@@ -47,7 +56,8 @@ export function runTests(exercise: Exercise, options: TestRunOptions = {}): Test
     stdio: options.watch === true ? "inherit" : "pipe",
   });
 
-  if (options.watch === true) return { ok: result.status === 0, pass: 0, fail: 0, output: "" };
+  if (options.watch === true)
+    return { ok: result.status === 0, pass: 0, fail: 0, output: "" };
 
   const output = `${result.stdout ?? ""}${result.stderr ?? ""}`;
   if (options.quiet !== true) process.stdout.write(output);
@@ -60,7 +70,9 @@ export function runTests(exercise: Exercise, options: TestRunOptions = {}): Test
 }
 
 export function hasCommand(command: string): boolean {
-  return spawnSync("sh", ["-c", `command -v ${command}`], { stdio: "ignore" }).status === 0;
+  return (
+    spawnSync("sh", ["-c", `command -v ${command}`], { stdio: "ignore" }).status === 0
+  );
 }
 
 export function git(args: readonly string[], cwd: string): { ok: boolean; out: string } {

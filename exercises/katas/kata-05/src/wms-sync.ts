@@ -1,11 +1,18 @@
-import type { BinLocation, InventoryRecord, InventoryStatus, LegacyWmsRecord } from "./types.ts";
+import type {
+  BinLocation,
+  InventoryRecord,
+  InventoryStatus,
+  LegacyWmsRecord,
+} from "./types.ts";
 
 /**
  * The nightly full-file import: every bin location's current record, from
  * the legacy WMS's overnight export, translated into the shape the rest of
  * the app expects.
  */
-export function syncInventorySnapshot(records: readonly LegacyWmsRecord[]): readonly InventoryRecord[] {
+export function syncInventorySnapshot(
+  records: readonly LegacyWmsRecord[],
+): readonly InventoryRecord[] {
   const out: InventoryRecord[] = [];
 
   for (const record of records) {

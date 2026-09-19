@@ -10,5 +10,8 @@ export function quoteSurcharges(shipment: Shipment): SurchargeBreakdown {
 }
 
 export function totalSurchargeCents(shipment: Shipment): number {
-  return Object.values(SURCHARGE_TABLE).reduce((total, rule) => total + rule(shipment), 0);
+  return Object.values(SURCHARGE_TABLE).reduce(
+    (total, rule) => total + rule(shipment),
+    0,
+  );
 }

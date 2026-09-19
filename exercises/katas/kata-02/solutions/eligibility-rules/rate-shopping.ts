@@ -1,4 +1,10 @@
-import type { CarrierQuote, DestinationZone, RateDecision, ShipmentRequest, SpeedTier } from "./types.ts";
+import type {
+  CarrierQuote,
+  DestinationZone,
+  RateDecision,
+  ShipmentRequest,
+  SpeedTier,
+} from "./types.ts";
 
 function speedRank(tier: SpeedTier): number {
   if (tier === "standard") return 0;
@@ -12,7 +18,11 @@ function speedRank(tier: SpeedTier): number {
  * `pickCheapestForBatch`: it's the rule most likely to gain a new carrier or
  * a new excluded zone next.
  */
-function isEligible(carrierId: CarrierQuote["carrierId"], zone: DestinationZone, weightKg: number): boolean {
+function isEligible(
+  carrierId: CarrierQuote["carrierId"],
+  zone: DestinationZone,
+  weightKg: number,
+): boolean {
   let zoneOk: boolean;
   if (carrierId === "ravenex") {
     zoneOk = zone !== "international";
@@ -40,7 +50,10 @@ function isEligible(carrierId: CarrierQuote["carrierId"], zone: DestinationZone,
  * cheapest after each carrier's own negotiated discount. Ties go to whichever
  * eligible quote came first in `quotes`.
  */
-export function pickCheapestCarrier(request: ShipmentRequest, quotes: readonly CarrierQuote[]): RateDecision {
+export function pickCheapestCarrier(
+  request: ShipmentRequest,
+  quotes: readonly CarrierQuote[],
+): RateDecision {
   let bestCarrierId: RateDecision["winningCarrierId"] | undefined;
   let bestTotalCents = 0;
 
@@ -68,7 +81,11 @@ export function pickCheapestCarrier(request: ShipmentRequest, quotes: readonly C
     throw new Error(`no eligible carrier for shipment ${request.shipmentId}`);
   }
 
-  return { shipmentId: request.shipmentId, winningCarrierId: bestCarrierId, totalCents: bestTotalCents };
+  return {
+    shipmentId: request.shipmentId,
+    winningCarrierId: bestCarrierId,
+    totalCents: bestTotalCents,
+  };
 }
 
 /**
@@ -88,7 +105,8 @@ export function pickCheapestForBatch(
     let bestTotalCents = 0;
 
     for (const quote of quotes) {
-      if (!isEligible(quote.carrierId, request.destinationZone, request.weightKg)) continue;
+      if (!isEligible(quote.carrierId, request.destinationZone, request.weightKg))
+        continue;
       if (speedRank(quote.speedTier) < speedRank(request.requiredSpeedTier)) continue;
 
       let discountRate: number;
@@ -111,7 +129,11 @@ export function pickCheapestForBatch(
       throw new Error(`no eligible carrier for shipment ${request.shipmentId}`);
     }
 
-    decisions.push({ shipmentId: request.shipmentId, winningCarrierId: bestCarrierId, totalCents: bestTotalCents });
+    decisions.push({
+      shipmentId: request.shipmentId,
+      winningCarrierId: bestCarrierId,
+      totalCents: bestTotalCents,
+    });
   }
 
   return decisions;

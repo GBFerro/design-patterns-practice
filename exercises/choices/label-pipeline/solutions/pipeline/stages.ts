@@ -9,7 +9,8 @@ export const address: Stage = (shipment) => shipment.address;
 
 export const weight: Stage = (shipment) => `${shipment.weightKg} kg`;
 
-export const fragileWarning: Stage = (shipment) => (shipment.fragile ? "HANDLE WITH CARE - FRAGILE" : null);
+export const fragileWarning: Stage = (shipment) =>
+  shipment.fragile ? "HANDLE WITH CARE - FRAGILE" : null;
 
 export const hazmatWarning: Stage = (shipment) =>
   shipment.hazmat ? "HAZARDOUS MATERIALS - SEE MSDS" : null;

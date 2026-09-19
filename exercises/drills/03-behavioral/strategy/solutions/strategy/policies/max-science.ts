@@ -4,6 +4,8 @@ import type { SchedulingPolicy } from "../policy.ts";
 export const maxScience: SchedulingPolicy = {
   name: "max-science",
   rank(candidates) {
-    return [...candidates].sort((a, b) => b.priority - a.priority || a.minutes - b.minutes);
+    return [...candidates].sort(
+      (a, b) => b.priority - a.priority || a.minutes - b.minutes,
+    );
   },
 };

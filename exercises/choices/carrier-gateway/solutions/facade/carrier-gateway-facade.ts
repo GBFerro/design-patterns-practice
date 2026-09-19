@@ -16,7 +16,12 @@ function validate(originZip: string, destZip: string, weightKg: number): void {
  * `carrierId` as an argument instead of being built with one.
  */
 export class CarrierGatewayFacade {
-  rate(carrierId: CarrierId, originZip: string, destZip: string, weightKg: number): CarrierRate {
+  rate(
+    carrierId: CarrierId,
+    originZip: string,
+    destZip: string,
+    weightKg: number,
+  ): CarrierRate {
     validate(originZip, destZip, weightKg);
     return mappers[carrierId](originZip, destZip, weightKg);
   }

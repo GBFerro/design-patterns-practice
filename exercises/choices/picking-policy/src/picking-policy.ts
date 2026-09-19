@@ -30,7 +30,11 @@ export function planNextPick(queue: readonly Order[]): PickInstruction {
   const surviving = queue.filter((order) => batchOrderIds.has(order.id));
   const target = oldest(surviving);
   const matching = surviving.filter((order) => order.binId === target.binId);
-  return { mode: "batch", binId: target.binId, orderIds: matching.map((order) => order.id) };
+  return {
+    mode: "batch",
+    binId: target.binId,
+    orderIds: matching.map((order) => order.id),
+  };
 }
 
 export function recordPicked(orderId: string): void {

@@ -5,7 +5,9 @@ import type { ReturnOutcome, ReturnRequest } from "./types.ts";
  * worth pulling out of `processReturn` and `processBulkReturns` both: it is
  * the decision the warehouse floor cares most about getting consistent.
  */
-function dispositionFor(condition: ReturnRequest["condition"]): ReturnOutcome["restockDisposition"] {
+function dispositionFor(
+  condition: ReturnRequest["condition"],
+): ReturnOutcome["restockDisposition"] {
   if (condition === "sealed") return "restock-new";
   if (condition === "opened-good") return "restock-open-box";
   return "scrap";
@@ -52,7 +54,9 @@ export function processReturn(request: ReturnRequest): ReturnOutcome {
  * per return. Same three decisions, same rules — this just has more than
  * one request to make them for.
  */
-export function processBulkReturns(requests: readonly ReturnRequest[]): readonly ReturnOutcome[] {
+export function processBulkReturns(
+  requests: readonly ReturnRequest[],
+): readonly ReturnOutcome[] {
   const outcomes: ReturnOutcome[] = [];
 
   for (const request of requests) {

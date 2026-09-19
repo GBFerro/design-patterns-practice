@@ -14,7 +14,7 @@
   "act2": {
     "axis": "aligned",
     "summary": "tanager signs a small-parcel arrangement - a new national-zone eligibility exception, unaffected by weight caps, speed tiers or discounts",
-    "extensionBudget": { "maxFilesModified": 1, "maxLinesModified": 2, "maxHunks": 1 }
+    "extensionBudget": { "maxFilesModified": 1, "maxLinesModified": 3, "maxHunks": 1 }
   },
   "solutions": [
     {

@@ -18,7 +18,11 @@
     "summary": "a fourth report (cheap, aligned with the pattern) and then a new record kind (expensive, the pattern's known price)",
     "extensionBudget": { "maxFilesModified": 6, "maxLinesModified": 26, "maxHunks": 11 }
   },
-  "forbidden": ["abstract toLine\\(\\)", "abstract costSeconds\\(\\)", "abstract isAnomaly\\("],
+  "forbidden": [
+    "abstract toLine\\(\\)",
+    "abstract costSeconds\\(\\)",
+    "abstract isAnomaly\\("
+  ],
   "solutions": [
     {
       "slug": "visitor",

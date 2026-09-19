@@ -16,7 +16,7 @@
   "act2": {
     "axis": "aligned",
     "summary": "one new value on each axis, at the same time",
-    "extensionBudget": { "maxFilesModified": 5, "maxLinesModified": 29, "maxHunks": 6 }
+    "extensionBudget": { "maxFilesModified": 5, "maxLinesModified": 44, "maxHunks": 6 }
   },
   "forbidden": ["class FlatCashFare", "class DistanceCashFare"],
   "solutions": [

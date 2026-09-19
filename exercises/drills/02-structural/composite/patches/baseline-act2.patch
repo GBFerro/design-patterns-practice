@@ -8,7 +8,7 @@ index bf6e25b..21c07ab 100644
  export type { RouteNode } from "./types.ts";
 +export { WalkingTransfer } from "./walking-transfer.ts";
 diff --git a/src/total-minutes.ts b/src/total-minutes.ts
-index 8e67c42..2f24d8f 100644
+index 71debcf..f4c3010 100644
 --- a/src/total-minutes.ts
 +++ b/src/total-minutes.ts
 @@ -1,4 +1,5 @@
@@ -22,9 +22,9 @@ index 8e67c42..2f24d8f 100644
    if (node instanceof Stop) return node.dwellMinutes;
    if (node instanceof Segment) return node.travelMinutes;
 +  if (node instanceof WalkingTransfer) return node.walkMinutes;
-   if (node instanceof Line) return node.children.reduce((sum, child) => sum + totalMinutes(child), 0);
-   if (node instanceof Journey) return node.children.reduce((sum, child) => sum + totalMinutes(child), 0);
-   throw new Error("unknown route node");
+   if (node instanceof Line)
+     return node.children.reduce((sum, child) => sum + totalMinutes(child), 0);
+   if (node instanceof Journey)
 diff --git a/src/types.ts b/src/types.ts
 index 19523fb..940d6e6 100644
 --- a/src/types.ts
@@ -41,7 +41,7 @@ index 19523fb..940d6e6 100644
  
 -export type RouteNode = Stop | Segment | Line | Journey;
 +export type RouteNode = Stop | Segment | Line | Journey | WalkingTransfer;
-diff --git a/src/walking-transfer.ts b/src/walking-transfer.ts
+diff --git a/after/src/walking-transfer.ts b/src/walking-transfer.ts
 new file mode 100644
 index 0000000..11f0378
 --- /dev/null

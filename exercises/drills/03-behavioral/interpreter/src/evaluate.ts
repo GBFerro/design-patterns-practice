@@ -29,7 +29,8 @@ export function evaluateConstraint(expression: string, context: SkyContext): boo
       const parts = clause.split(">").map((part) => part.trim());
       const field = parts[0];
       const raw = parts[1];
-      if (field === undefined || raw === undefined) throw new Error(`unparseable clause: ${clause}`);
+      if (field === undefined || raw === undefined)
+        throw new Error(`unparseable clause: ${clause}`);
       const getValue = FIELD_GETTERS[field];
       if (getValue === undefined) throw new Error(`unknown field: ${field}`);
       if (!(getValue(context) > Number(raw))) return false;
@@ -40,7 +41,8 @@ export function evaluateConstraint(expression: string, context: SkyContext): boo
       const parts = clause.split("<").map((part) => part.trim());
       const field = parts[0];
       const raw = parts[1];
-      if (field === undefined || raw === undefined) throw new Error(`unparseable clause: ${clause}`);
+      if (field === undefined || raw === undefined)
+        throw new Error(`unparseable clause: ${clause}`);
       const getValue = FIELD_GETTERS[field];
       if (getValue === undefined) throw new Error(`unknown field: ${field}`);
       if (!(getValue(context) < Number(raw))) return false;

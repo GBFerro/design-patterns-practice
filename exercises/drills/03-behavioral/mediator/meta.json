@@ -18,10 +18,7 @@
     "summary": "a seventh widget (dome status) that gates readiness, and the removal of weather's now-redundant direct effect on readiness",
     "extensionBudget": { "maxFilesModified": 3, "maxLinesModified": 20, "maxHunks": 6 }
   },
-  "forbidden": [
-    "connect\\(readyLamp",
-    "this\\.readyLamp\\.refresh\\(\\)"
-  ],
+  "forbidden": ["connect\\(readyLamp", "this\\.readyLamp\\.refresh\\(\\)"],
   "solutions": [
     {
       "slug": "mediator",

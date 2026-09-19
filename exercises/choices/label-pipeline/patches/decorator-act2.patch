@@ -1,8 +1,8 @@
 diff --git a/solutions/decorator/label-content.ts b/solutions/decorator/label-content.ts
-index f33f7b4..1cea468 100644
+index f33f7b4..6955d1d 100644
 --- a/solutions/decorator/label-content.ts
 +++ b/solutions/decorator/label-content.ts
-@@ -1,15 +1,27 @@
+@@ -1,15 +1,33 @@
  import {
 -  BaseLabelRenderer,
    CustomsDeclarationDecorator,
@@ -26,16 +26,22 @@ index f33f7b4..1cea468 100644
 +  const renderer =
 +    shipment.destinationCountry === "US"
 +      ? new CustomsDeclarationDecorator(
-+          withWarnings(new WeightDecorator(new SignatureRequiredDecorator(new HeaderAddressRenderer()))),
++          withWarnings(
++            new WeightDecorator(
++              new SignatureRequiredDecorator(new HeaderAddressRenderer()),
++            ),
++          ),
 +        )
 +      : new SignatureRequiredDecorator(
-+          new CustomsDeclarationDecorator(withWarnings(new WeightDecorator(new HeaderAddressRenderer()))),
++          new CustomsDeclarationDecorator(
++            withWarnings(new WeightDecorator(new HeaderAddressRenderer())),
++          ),
 +        );
    return renderer.render(shipment);
  }
  
 diff --git a/solutions/decorator/renderer.ts b/solutions/decorator/renderer.ts
-index 16d4ec3..9ec3111 100644
+index ab509f4..00df001 100644
 --- a/solutions/decorator/renderer.ts
 +++ b/solutions/decorator/renderer.ts
 @@ -4,10 +4,10 @@ export interface LabelRenderer {
@@ -65,8 +71,8 @@ index 16d4ec3..9ec3111 100644
  export class FragileWarningDecorator extends LabelDecorator {
    render(shipment: Shipment): string[] {
      const lines = this.wrapped.render(shipment);
-@@ -36,3 +42,12 @@ export class CustomsDeclarationDecorator extends LabelDecorator {
-     return shipment.destinationCountry !== "US" ? [...lines, "CUSTOMS: contents declared, origin US"] : lines;
+@@ -38,3 +44,14 @@ export class CustomsDeclarationDecorator extends LabelDecorator {
+       : lines;
    }
  }
 +
@@ -75,6 +81,8 @@ index 16d4ec3..9ec3111 100644
 +export class SignatureRequiredDecorator extends LabelDecorator {
 +  render(shipment: Shipment): string[] {
 +    const lines = this.wrapped.render(shipment);
-+    return shipment.weightKg > SIGNATURE_WEIGHT_THRESHOLD_KG ? [...lines, "SIGNATURE REQUIRED"] : lines;
++    return shipment.weightKg > SIGNATURE_WEIGHT_THRESHOLD_KG
++      ? [...lines, "SIGNATURE REQUIRED"]
++      : lines;
 +  }
 +}

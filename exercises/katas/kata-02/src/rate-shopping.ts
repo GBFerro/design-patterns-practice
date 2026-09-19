@@ -12,7 +12,10 @@ function speedRank(tier: SpeedTier): number {
  * cheapest after each carrier's own negotiated discount. Ties go to whichever
  * eligible quote came first in `quotes`.
  */
-export function pickCheapestCarrier(request: ShipmentRequest, quotes: readonly CarrierQuote[]): RateDecision {
+export function pickCheapestCarrier(
+  request: ShipmentRequest,
+  quotes: readonly CarrierQuote[],
+): RateDecision {
   let bestCarrierId: RateDecision["winningCarrierId"] | undefined;
   let bestTotalCents = 0;
 
@@ -23,7 +26,8 @@ export function pickCheapestCarrier(request: ShipmentRequest, quotes: readonly C
     } else if (quote.carrierId === "skyfreight") {
       zoneOk = true;
     } else {
-      zoneOk = request.destinationZone === "local" || request.destinationZone === "regional";
+      zoneOk =
+        request.destinationZone === "local" || request.destinationZone === "regional";
     }
     if (!zoneOk) continue;
 
@@ -59,7 +63,11 @@ export function pickCheapestCarrier(request: ShipmentRequest, quotes: readonly C
     throw new Error(`no eligible carrier for shipment ${request.shipmentId}`);
   }
 
-  return { shipmentId: request.shipmentId, winningCarrierId: bestCarrierId, totalCents: bestTotalCents };
+  return {
+    shipmentId: request.shipmentId,
+    winningCarrierId: bestCarrierId,
+    totalCents: bestTotalCents,
+  };
 }
 
 /**
@@ -85,7 +93,8 @@ export function pickCheapestForBatch(
       } else if (quote.carrierId === "skyfreight") {
         zoneOk = true;
       } else {
-        zoneOk = request.destinationZone === "local" || request.destinationZone === "regional";
+        zoneOk =
+          request.destinationZone === "local" || request.destinationZone === "regional";
       }
       if (!zoneOk) continue;
 
@@ -121,7 +130,11 @@ export function pickCheapestForBatch(
       throw new Error(`no eligible carrier for shipment ${request.shipmentId}`);
     }
 
-    decisions.push({ shipmentId: request.shipmentId, winningCarrierId: bestCarrierId, totalCents: bestTotalCents });
+    decisions.push({
+      shipmentId: request.shipmentId,
+      winningCarrierId: bestCarrierId,
+      totalCents: bestTotalCents,
+    });
   }
 
   return decisions;

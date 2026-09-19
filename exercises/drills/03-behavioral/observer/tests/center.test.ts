@@ -29,7 +29,11 @@ test("several alerts accumulate, in the order they were published", () => {
   center.publish({ kind: "weather", condition: "wind gust" });
   center.publish({ kind: "seeing", fwhmArcsec: 2.4 });
 
-  assert.deepEqual(center.logEntries, ['seeing 1.8"', "weather: wind gust", 'seeing 2.4"']);
+  assert.deepEqual(center.logEntries, [
+    'seeing 1.8"',
+    "weather: wind gust",
+    'seeing 2.4"',
+  ]);
   assert.deepEqual(center.domeEntries, ["closed: wind gust"]);
 });
 

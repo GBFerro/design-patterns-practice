@@ -16,8 +16,15 @@ export abstract class PickingRound {
   pick(queue: readonly Order[]): PickInstruction {
     const candidates = this.selectCandidates(queue);
     const target = oldest(candidates);
-    const matching = this.mode === "batch" ? candidates.filter((order) => order.binId === target.binId) : [target];
-    return { mode: this.mode, binId: target.binId, orderIds: matching.map((order) => order.id) };
+    const matching =
+      this.mode === "batch"
+        ? candidates.filter((order) => order.binId === target.binId)
+        : [target];
+    return {
+      mode: this.mode,
+      binId: target.binId,
+      orderIds: matching.map((order) => order.id),
+    };
   }
 
   protected abstract selectCandidates(queue: readonly Order[]): readonly Order[];

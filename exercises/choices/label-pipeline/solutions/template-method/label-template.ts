@@ -2,7 +2,12 @@ import type { Shipment } from "./types.ts";
 
 export abstract class LabelTemplate {
   sections(shipment: Shipment): string[] {
-    return [this.header(shipment), this.address(shipment), this.weight(shipment), ...this.extras(shipment)];
+    return [
+      this.header(shipment),
+      this.address(shipment),
+      this.weight(shipment),
+      ...this.extras(shipment),
+    ];
   }
 
   private header(shipment: Shipment): string {

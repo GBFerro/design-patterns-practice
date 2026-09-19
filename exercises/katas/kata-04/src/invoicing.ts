@@ -13,7 +13,10 @@ export function finalizeInvoice(order: Order): Invoice {
       return { sku: line.sku, totalCents: line.quantity * line.unitPriceCents };
     }
     if (line.kind === "bundle") {
-      return { sku: line.sku, totalCents: Math.round(line.quantity * line.unitPriceCents * 0.9) };
+      return {
+        sku: line.sku,
+        totalCents: Math.round(line.quantity * line.unitPriceCents * 0.9),
+      };
     }
     return { sku: line.sku, totalCents: line.unitPriceCents };
   });
@@ -36,7 +39,14 @@ export function finalizeInvoice(order: Order): Invoice {
     notifiedChannels.push("large-order-desk");
   }
 
-  return { orderId: order.orderId, lines, subtotalCents, surchargeCents, totalCents, notifiedChannels };
+  return {
+    orderId: order.orderId,
+    lines,
+    subtotalCents,
+    surchargeCents,
+    totalCents,
+    notifiedChannels,
+  };
 }
 
 /**
@@ -54,7 +64,10 @@ export function finalizeInvoiceBatch(orders: readonly Order[]): readonly Invoice
         return { sku: line.sku, totalCents: line.quantity * line.unitPriceCents };
       }
       if (line.kind === "bundle") {
-        return { sku: line.sku, totalCents: Math.round(line.quantity * line.unitPriceCents * 0.9) };
+        return {
+          sku: line.sku,
+          totalCents: Math.round(line.quantity * line.unitPriceCents * 0.9),
+        };
       }
       return { sku: line.sku, totalCents: line.unitPriceCents };
     });
@@ -77,7 +90,14 @@ export function finalizeInvoiceBatch(orders: readonly Order[]): readonly Invoice
       notifiedChannels.push("large-order-desk");
     }
 
-    invoices.push({ orderId: order.orderId, lines, subtotalCents, surchargeCents, totalCents, notifiedChannels });
+    invoices.push({
+      orderId: order.orderId,
+      lines,
+      subtotalCents,
+      surchargeCents,
+      totalCents,
+      notifiedChannels,
+    });
   }
 
   return invoices;

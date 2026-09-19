@@ -50,7 +50,9 @@ test("courier delivery is available for large enough orders", () => {
 test("courier delivery is refused for small orders", () => {
   assert.throws(
     () =>
-      startQuote("Rowan Ito", "business-cards", 10, 0.2, "Priya").setDeliveryMethod("courier").build(),
+      startQuote("Rowan Ito", "business-cards", 10, 0.2, "Priya")
+        .setDeliveryMethod("courier")
+        .build(),
     /courier delivery is not available/,
   );
 });

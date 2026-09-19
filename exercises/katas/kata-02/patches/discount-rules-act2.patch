@@ -1,25 +1,23 @@
 diff --git a/solutions/discount-rules/rate-shopping.ts b/solutions/discount-rules/rate-shopping.ts
-index 48c8bd6..6718210 100644
+index b5b6c34..b5f0402 100644
 --- a/solutions/discount-rules/rate-shopping.ts
 +++ b/solutions/discount-rules/rate-shopping.ts
-@@ -40,7 +40,10 @@ export function pickCheapestCarrier(request: ShipmentRequest, quotes: readonly C
-     } else if (quote.carrierId === "skyfreight") {
+@@ -47,7 +47,9 @@ export function pickCheapestCarrier(
        zoneOk = true;
      } else {
--      zoneOk = request.destinationZone === "local" || request.destinationZone === "regional";
-+      zoneOk =
+       zoneOk =
+-        request.destinationZone === "local" || request.destinationZone === "regional";
 +        request.destinationZone === "local" ||
 +        request.destinationZone === "regional" ||
 +        (request.destinationZone === "national" && request.weightKg <= 12);
      }
      if (!zoneOk) continue;
  
-@@ -94,7 +97,10 @@ export function pickCheapestForBatch(
-       } else if (quote.carrierId === "skyfreight") {
+@@ -106,7 +108,9 @@ export function pickCheapestForBatch(
          zoneOk = true;
        } else {
--        zoneOk = request.destinationZone === "local" || request.destinationZone === "regional";
-+        zoneOk =
+         zoneOk =
+-          request.destinationZone === "local" || request.destinationZone === "regional";
 +          request.destinationZone === "local" ||
 +          request.destinationZone === "regional" ||
 +          (request.destinationZone === "national" && request.weightKg <= 12);

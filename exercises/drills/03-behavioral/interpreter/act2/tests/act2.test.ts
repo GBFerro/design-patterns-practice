@@ -18,20 +18,38 @@ test(">= passes when the value is exactly at the threshold", () => {
 });
 
 test(">= passes when the value is above the threshold, like >", () => {
-  assert.equal(evaluateConstraint("altitude >= 30", { ...baseContext, altitudeDegrees: 45 }), true);
+  assert.equal(
+    evaluateConstraint("altitude >= 30", { ...baseContext, altitudeDegrees: 45 }),
+    true,
+  );
 });
 
 test(">= fails when the value is below the threshold", () => {
-  assert.equal(evaluateConstraint("altitude >= 30", { ...baseContext, altitudeDegrees: 29 }), false);
+  assert.equal(
+    evaluateConstraint("altitude >= 30", { ...baseContext, altitudeDegrees: 29 }),
+    false,
+  );
 });
 
 test("moon_below_horizon reads the matching flag off the context", () => {
-  assert.equal(evaluateConstraint("moon_below_horizon", { ...baseContext, moonBelowHorizon: true }), true);
-  assert.equal(evaluateConstraint("moon_below_horizon", { ...baseContext, moonBelowHorizon: false }), false);
+  assert.equal(
+    evaluateConstraint("moon_below_horizon", { ...baseContext, moonBelowHorizon: true }),
+    true,
+  );
+  assert.equal(
+    evaluateConstraint("moon_below_horizon", { ...baseContext, moonBelowHorizon: false }),
+    false,
+  );
 });
 
 test("the new operator and the new term combine with && and with existing clauses", () => {
   const expression = "moon_below_horizon && altitude >= 30 && clear";
-  assert.equal(evaluateConstraint(expression, { ...baseContext, moonBelowHorizon: true }), true);
-  assert.equal(evaluateConstraint(expression, { ...baseContext, moonBelowHorizon: false }), false);
+  assert.equal(
+    evaluateConstraint(expression, { ...baseContext, moonBelowHorizon: true }),
+    true,
+  );
+  assert.equal(
+    evaluateConstraint(expression, { ...baseContext, moonBelowHorizon: false }),
+    false,
+  );
 });

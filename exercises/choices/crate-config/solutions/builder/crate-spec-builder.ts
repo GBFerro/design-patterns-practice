@@ -29,11 +29,16 @@ export class CrateSpecBuilder {
   }
 
   build(): CrateSpec {
-    const { materialValue, lengthCmValue, widthCmValue, heightCmValue, maxLoadKgValue } = this;
+    const { materialValue, lengthCmValue, widthCmValue, heightCmValue, maxLoadKgValue } =
+      this;
     if (materialValue === undefined) {
       throw new Error("material is required");
     }
-    if (lengthCmValue === undefined || widthCmValue === undefined || heightCmValue === undefined) {
+    if (
+      lengthCmValue === undefined ||
+      widthCmValue === undefined ||
+      heightCmValue === undefined
+    ) {
       throw new Error("dimensions are required");
     }
     if (maxLoadKgValue === undefined) {

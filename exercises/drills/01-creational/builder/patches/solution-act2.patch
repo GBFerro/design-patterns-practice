@@ -1,5 +1,5 @@
 diff --git a/solutions/builder/quote-builder.ts b/solutions/builder/quote-builder.ts
-index e3d3734..0ecf74b 100644
+index f4fc59a..b76771c 100644
 --- a/solutions/builder/quote-builder.ts
 +++ b/solutions/builder/quote-builder.ts
 @@ -1,4 +1,4 @@
@@ -16,7 +16,7 @@ index e3d3734..0ecf74b 100644
  }
  
  /** Fluent stages mutate one internal state object and hand back `this` - no
-@@ -42,8 +43,13 @@ class QuoteBuilder implements QuoteDraft {
+@@ -42,9 +43,20 @@ class QuoteBuilder implements QuoteDraft {
      return this;
    }
  
@@ -26,12 +26,20 @@ index e3d3734..0ecf74b 100644
 +  }
 +
    build(): Quote {
--    const { discountPercent, rushFee, deliveryMethod, quantity, baseUnitCost } = this.state;
-+    const { discountPercent, rushFee, deliveryMethod, quantity, baseUnitCost, packaging } = this.state;
+-    const { discountPercent, rushFee, deliveryMethod, quantity, baseUnitCost } =
+-      this.state;
++    const {
++      discountPercent,
++      rushFee,
++      deliveryMethod,
++      quantity,
++      baseUnitCost,
++      packaging,
++    } = this.state;
  
      if (discountPercent > 0 && rushFee > 0) {
        throw new Error("a rush job cannot also receive a discount");
-@@ -51,6 +57,9 @@ class QuoteBuilder implements QuoteDraft {
+@@ -52,6 +64,9 @@ class QuoteBuilder implements QuoteDraft {
      if (deliveryMethod === "courier" && quantity < 50) {
        throw new Error("courier delivery is not available for orders under 50 units");
      }
@@ -41,7 +49,7 @@ index e3d3734..0ecf74b 100644
  
      const totalCost = baseUnitCost * quantity * (1 - discountPercent / 100) + rushFee;
      return { ...this.state, totalCost };
-@@ -76,5 +85,6 @@ export function startQuote(
+@@ -77,5 +92,6 @@ export function startQuote(
      discountPercent: 0,
      proofRequired: false,
      deliveryMethod: "pickup",

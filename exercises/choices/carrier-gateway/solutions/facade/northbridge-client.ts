@@ -9,7 +9,11 @@ const BASE_CENTS = 480;
 const CENTS_PER_KG = 62;
 
 /** A pre-existing SDK function. Its shape is not ours to change. */
-export function northbridgeQuote(originZip: string, destZip: string, weightKg: number): NorthbridgeQuote {
+export function northbridgeQuote(
+  originZip: string,
+  destZip: string,
+  weightKg: number,
+): NorthbridgeQuote {
   recordCarrierCall("northbridge");
   const distanceFactor = Math.abs(Number(destZip) - Number(originZip)) % 37;
   return {

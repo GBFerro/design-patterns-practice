@@ -12,7 +12,9 @@ export const fairShare: SchedulingPolicy = {
   },
 };
 
-function groupByProposal(candidates: readonly ObservationRequest[]): ObservationRequest[][] {
+function groupByProposal(
+  candidates: readonly ObservationRequest[],
+): ObservationRequest[][] {
   const groups = new Map<string, ObservationRequest[]>();
   for (const request of candidates) {
     const group = groups.get(request.proposalId);

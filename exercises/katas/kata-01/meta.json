@@ -14,7 +14,7 @@
   "act2": {
     "axis": "aligned",
     "summary": "a supplier recall arrives - a new return reason with its own refund rule, unaffected by restock disposition or notification channel",
-    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 5, "maxHunks": 2 }
+    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 8, "maxHunks": 2 }
   },
   "solutions": [
     {

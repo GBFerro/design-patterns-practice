@@ -18,9 +18,7 @@
     "summary": "a fifth, unforeseen consumer that can subscribe and unsubscribe at runtime, and one that throws without taking the others down",
     "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 19, "maxHunks": 2 }
   },
-  "forbidden": [
-    "this\\.log\\.record\\(alert\\);\\s*\\n\\s*this\\.pager\\.page"
-  ],
+  "forbidden": ["this\\.log\\.record\\(alert\\);\\s*\\n\\s*this\\.pager\\.page"],
   "solutions": [
     {
       "slug": "observer",

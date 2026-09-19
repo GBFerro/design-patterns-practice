@@ -19,12 +19,18 @@ test("a plain domestic label gets header, address and weight, nothing else", () 
 
 test("a fragile label adds one warning line after the weight", () => {
   const label = buildLabel({ ...base, fragile: true });
-  assert.equal(label, "RG-A100\n123 Elm St, Springfield, IL 62704\n5 kg\nHANDLE WITH CARE - FRAGILE");
+  assert.equal(
+    label,
+    "RG-A100\n123 Elm St, Springfield, IL 62704\n5 kg\nHANDLE WITH CARE - FRAGILE",
+  );
 });
 
 test("a hazmat label adds one warning line after the weight", () => {
   const label = buildLabel({ ...base, hazmat: true });
-  assert.equal(label, "RG-A100\n123 Elm St, Springfield, IL 62704\n5 kg\nHAZARDOUS MATERIALS - SEE MSDS");
+  assert.equal(
+    label,
+    "RG-A100\n123 Elm St, Springfield, IL 62704\n5 kg\nHAZARDOUS MATERIALS - SEE MSDS",
+  );
 });
 
 test("fragile and hazmat both present, in that order", () => {
@@ -37,11 +43,19 @@ test("fragile and hazmat both present, in that order", () => {
 
 test("an international label adds a customs line, last", () => {
   const label = buildLabel({ ...base, destinationCountry: "CA" });
-  assert.equal(label, "RG-A100\n123 Elm St, Springfield, IL 62704\n5 kg\nCUSTOMS: contents declared, origin US");
+  assert.equal(
+    label,
+    "RG-A100\n123 Elm St, Springfield, IL 62704\n5 kg\nCUSTOMS: contents declared, origin US",
+  );
 });
 
 test("international, fragile and hazmat: customs always comes after the warnings", () => {
-  const label = buildLabel({ ...base, destinationCountry: "CA", fragile: true, hazmat: true });
+  const label = buildLabel({
+    ...base,
+    destinationCountry: "CA",
+    fragile: true,
+    hazmat: true,
+  });
   assert.equal(
     label,
     "RG-A100\n123 Elm St, Springfield, IL 62704\n5 kg\n" +
@@ -58,7 +72,10 @@ test("the manifest entry carries the same sections, joined by ' | ' instead of n
 });
 
 test("the manifest entry for a plain domestic shipment has just three parts", () => {
-  assert.equal(buildManifestEntry(base), "RG-A100 | 123 Elm St, Springfield, IL 62704 | 5 kg");
+  assert.equal(
+    buildManifestEntry(base),
+    "RG-A100 | 123 Elm St, Springfield, IL 62704 | 5 kg",
+  );
 });
 
 test("buildLabel and buildManifestEntry agree on which optional sections apply", () => {

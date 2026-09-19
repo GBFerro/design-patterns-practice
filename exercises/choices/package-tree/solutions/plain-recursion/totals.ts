@@ -15,7 +15,8 @@ function reduceTree<T>(
   return combine(node.children.map((child) => reduceTree(child, fromItem, combine)));
 }
 
-const sum = (values: readonly number[]): number => values.reduce((total, value) => total + value, 0);
+const sum = (values: readonly number[]): number =>
+  values.reduce((total, value) => total + value, 0);
 
 export function totalWeight(node: PackageNode): number {
   return reduceTree(node, (item) => item.weightKg, sum);

@@ -7,9 +7,17 @@ import type { OrderRequest, PrintJob } from "./types.ts";
 export function createJobFromReprint(request: OrderRequest): PrintJob {
   switch (request.jobKind) {
     case "business-cards":
-      return new BusinessCardJob(request.customerName, request.quantity, request.doubleSided ?? false);
+      return new BusinessCardJob(
+        request.customerName,
+        request.quantity,
+        request.doubleSided ?? false,
+      );
     case "brochure":
-      return new BrochureJob(request.customerName, request.quantity, request.foldType ?? "bi");
+      return new BrochureJob(
+        request.customerName,
+        request.quantity,
+        request.foldType ?? "bi",
+      );
     case "banner":
       return new BannerJob(request.customerName, request.quantity, request.widthCm ?? 90);
   }

@@ -21,7 +21,11 @@ test("the guide camera still connects, captures, downloads and disconnects in or
 // The pipeline must stay generic: skipping calibrate for one instrument must not
 // touch what the other three report.
 test("the existing three instruments still calibrate", () => {
-  for (const instrument of ["wide-field-camera", "spectrograph", "thermal-imager"] as const) {
+  for (const instrument of [
+    "wide-field-camera",
+    "spectrograph",
+    "thermal-imager",
+  ] as const) {
     const log = runNight(instrument, "M31");
     assert.ok(log.steps.some((step) => step.step === "calibrate"));
   }

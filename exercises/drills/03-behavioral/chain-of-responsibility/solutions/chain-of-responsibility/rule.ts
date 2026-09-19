@@ -21,5 +21,8 @@ export abstract class BaseRule implements ValidationRule {
     return this.next?.handle(request, telescope) ?? null;
   }
 
-  protected abstract check(request: ObservationRequest, telescope: Telescope): string | null;
+  protected abstract check(
+    request: ObservationRequest,
+    telescope: Telescope,
+  ): string | null;
 }

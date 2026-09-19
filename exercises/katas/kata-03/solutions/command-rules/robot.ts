@@ -27,13 +27,17 @@ function validateCommand(state: RobotState, command: RobotCommand): void {
     const nextX = state.x + dx;
     const nextY = state.y + dy;
     if (nextX < 0 || nextX > GRID_MAX || nextY < 0 || nextY > GRID_MAX) {
-      throw new Error(`move ${command.direction} would leave the grid at (${nextX}, ${nextY})`);
+      throw new Error(
+        `move ${command.direction} would leave the grid at (${nextX}, ${nextY})`,
+      );
     }
     return;
   }
   if (command.kind === "pickUp") {
     if (state.holding !== null) {
-      throw new Error(`already holding ${state.holding}, cannot pick up ${command.itemId}`);
+      throw new Error(
+        `already holding ${state.holding}, cannot pick up ${command.itemId}`,
+      );
     }
     return;
   }
@@ -68,8 +72,14 @@ export function runCommand(state: RobotState, command: RobotCommand): RobotState
  * every command already applied in this batch is rolled back, in reverse
  * order, and the batch reports which index failed and why.
  */
-export function replayBatch(state: RobotState, commands: readonly RobotCommand[]): BatchResult {
-  const journal: { readonly command: RobotCommand; readonly priorHolding: string | null }[] = [];
+export function replayBatch(
+  state: RobotState,
+  commands: readonly RobotCommand[],
+): BatchResult {
+  const journal: {
+    readonly command: RobotCommand;
+    readonly priorHolding: string | null;
+  }[] = [];
   let current = state;
 
   for (let i = 0; i < commands.length; i++) {
@@ -95,7 +105,10 @@ export function replayBatch(state: RobotState, commands: readonly RobotCommand[]
         // invert
         let inverse: RobotCommand;
         if (entry.command.kind === "move") {
-          inverse = { kind: "move", direction: OPPOSITE_DIRECTION[entry.command.direction] };
+          inverse = {
+            kind: "move",
+            direction: OPPOSITE_DIRECTION[entry.command.direction],
+          };
         } else if (entry.command.kind === "pickUp") {
           inverse = { kind: "dropOff" };
         } else {

@@ -1,4 +1,9 @@
-import { AnalyticsObserver, EmailObserver, InventoryObserver, SmsObserver } from "./observers.ts";
+import {
+  AnalyticsObserver,
+  EmailObserver,
+  InventoryObserver,
+  SmsObserver,
+} from "./observers.ts";
 import { OrderShippedSubject } from "./subject.ts";
 import type { Order } from "./types.ts";
 

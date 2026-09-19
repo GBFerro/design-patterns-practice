@@ -108,7 +108,14 @@ export function act2(argv: readonly string[]): number {
   }
 
   printMarkdown(join(exercise.dir, "act2", "README.en.md"));
-  line(cyan("Quando terminar:  ./dp test " + exercise.meta.id + " --act2   e depois  ./dp trade " + exercise.meta.id));
+  line(
+    cyan(
+      "Quando terminar:  ./dp test " +
+        exercise.meta.id +
+        " --act2   e depois  ./dp trade " +
+        exercise.meta.id,
+    ),
+  );
   line();
   return 0;
 }
@@ -128,11 +135,15 @@ export function shape(argv: readonly string[]): number {
   }
 
   const root = repoRoot();
-  const files = git(["ls-files", join(exercise.rel, "src")], root).out.split("\n").filter(Boolean);
+  const files = git(["ls-files", join(exercise.rel, "src")], root)
+    .out.split("\n")
+    .filter(Boolean);
   let found = 0;
   for (const pattern of forbidden) {
     const regex = new RegExp(pattern);
-    const hits = files.filter((file) => regex.test(readFileSync(join(root, file), "utf8")));
+    const hits = files.filter((file) =>
+      regex.test(readFileSync(join(root, file), "utf8")),
+    );
     if (hits.length > 0) {
       found += 1;
       line(`  ${CROSS} ${dim("/" + pattern + "/")} ainda presente em ${hits.join(", ")}`);
@@ -154,14 +165,21 @@ export function shape(argv: readonly string[]): number {
 
 export function choose(argv: readonly string[]): number {
   const { positional, flags } = parseArgs(argv);
-  if (positional[0] === undefined) fail("Qual exercício? Ex.: ./dp choose picking-policy --pattern State --because \"...\"");
+  if (positional[0] === undefined)
+    fail(
+      'Qual exercício? Ex.: ./dp choose picking-policy --pattern State --because "..."',
+    );
   const exercise = resolveExercise(positional[0]);
   const pattern = flags["pattern"];
   const because = flags["because"];
 
   if (exercise.meta.type !== "choice") {
     line();
-    line(yellow(`${exercise.meta.id} é um ${exercise.meta.type}: o pattern já está no enunciado.`));
+    line(
+      yellow(
+        `${exercise.meta.id} é um ${exercise.meta.type}: o pattern já está no enunciado.`,
+      ),
+    );
     line(dim("Não há escolha a registrar. ./dp choose só vale para exercises/choices/."));
     line();
     return 1;
@@ -196,23 +214,27 @@ export function choose(argv: readonly string[]): number {
 
 export function diff(argv: readonly string[]): number {
   const { positional, flags } = parseArgs(argv);
-  if (positional[0] === undefined) fail("Qual exercício? Ex.: ./dp diff strategy --steps");
+  if (positional[0] === undefined)
+    fail("Qual exercício? Ex.: ./dp diff strategy --steps");
   const exercise = resolveExercise(positional[0]);
 
   const green = runTests(exercise, { quiet: true });
   if (!green.ok) {
     line();
     line(`${CROSS} ${green.fail} testes falhando.`);
+    line("  A comparação só faz sentido depois que o comportamento estiver preservado —");
     line(
-      "  A comparação só faz sentido depois que o comportamento estiver preservado —",
+      "  é isso que reestruturar quer dizer. Rode `./dp test " +
+        exercise.meta.id +
+        "` e volte.",
     );
-    line("  é isso que reestruturar quer dizer. Rode `./dp test " + exercise.meta.id + "` e volte.");
     line();
     return 1;
   }
 
   const solutions = exercise.meta.solutions;
-  const wanted = typeof flags["solution"] === "string" ? flags["solution"] : solutions[0]?.slug;
+  const wanted =
+    typeof flags["solution"] === "string" ? flags["solution"] : solutions[0]?.slug;
   const solution = solutions.find((candidate) => candidate.slug === wanted);
   if (solution === undefined) fail(`Solução "${String(wanted)}" não existe.`);
 
@@ -236,7 +258,14 @@ export function diff(argv: readonly string[]): number {
 
   const root = repoRoot();
   const result = git(
-    ["--no-pager", "diff", "--no-index", "--", join(exercise.rel, "src"), join(exercise.rel, "solutions", solution.slug)],
+    [
+      "--no-pager",
+      "diff",
+      "--no-index",
+      "--",
+      join(exercise.rel, "src"),
+      join(exercise.rel, "solutions", solution.slug),
+    ],
     root,
   );
   line(result.out);

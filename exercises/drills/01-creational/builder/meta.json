@@ -16,7 +16,7 @@
   "act2": {
     "axis": "orthogonal",
     "summary": "a new optional stage, and a rule spanning it and an existing one",
-    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 17, "maxHunks": 8 }
+    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 25, "maxHunks": 8 }
   },
   "forbidden": ["draftFrom\\("],
   "solutions": [

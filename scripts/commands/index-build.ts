@@ -93,13 +93,29 @@ function readmeBody(language: "en" | "pt"): string {
 
   const tableHead =
     language === "en"
-      ? ["| Id | Pattern | Difficulty | Time | Verdict | Act 2 axis |", "| --- | --- | --- | --- | --- | --- |"]
-      : ["| Id | Pattern | Dificuldade | Tempo | Veredito | Eixo do ato 2 |", "| --- | --- | --- | --- | --- | --- |"];
+      ? [
+          "| Id | Pattern | Difficulty | Time | Verdict | Act 2 axis |",
+          "| --- | --- | --- | --- | --- | --- |",
+        ]
+      : [
+          "| Id | Pattern | Dificuldade | Tempo | Veredito | Eixo do ato 2 |",
+          "| --- | --- | --- | --- | --- | --- |",
+        ];
 
   const sections: string[] = [];
   for (const [key, label] of [
-    ["drill", language === "en" ? "Drills — the pattern is named" : "Drills — o pattern é nomeado"],
-    ["choice", language === "en" ? "Choices — you pick, and act 2 decides" : "Choices — você escolhe, e o ato 2 decide"],
+    [
+      "drill",
+      language === "en"
+        ? "Drills — the pattern is named"
+        : "Drills — o pattern é nomeado",
+    ],
+    [
+      "choice",
+      language === "en"
+        ? "Choices — you pick, and act 2 decides"
+        : "Choices — você escolhe, e o ato 2 decide",
+    ],
     ["kata", language === "en" ? "Katas — nothing is named" : "Katas — nada é nomeado"],
   ] as const) {
     const rows = exercises.filter((exercise) => exercise.meta.type === key);
@@ -113,7 +129,9 @@ function readmeBody(language: "en" | "pt"): string {
       ? `${done} of 36 exercises written (23 drills · 8 choices · 5 katas).`
       : `${done} de 36 exercícios escritos (23 drills · 8 choices · 5 katas).`;
 
-  return [header, "", ...intro, ...sections, "", "---", "", dimLine(progress), ""].join("\n");
+  return [header, "", ...intro, ...sections, "", "---", "", dimLine(progress), ""].join(
+    "\n",
+  );
 }
 
 function dimLine(text: string): string {
@@ -163,11 +181,17 @@ function catalogBody(): string {
     ["structural", "Structural"],
     ["behavioral", "Behavioral"],
   ] as const) {
-    out.push(`## ${label}`, "", "| Pattern | Drill | Verdict | Status |", "| --- | --- | --- | --- |");
+    out.push(
+      `## ${label}`,
+      "",
+      "| Pattern | Drill | Verdict | Status |",
+      "| --- | --- | --- | --- |",
+    );
     for (const pattern of groups[category] ?? []) {
       const exercise = byPattern.get(pattern);
       const status = exercise === undefined ? "⬜" : "✅";
-      const link = exercise === undefined ? "—" : `[\`${exercise.meta.id}\`](../${exercise.rel}/)`;
+      const link =
+        exercise === undefined ? "—" : `[\`${exercise.meta.id}\`](../${exercise.rel}/)`;
       const verdict = exercise?.meta.verdict ?? "—";
       out.push(`| ${pattern} | ${link} | \`${verdict}\` | ${status} |`);
     }
@@ -178,7 +202,9 @@ function catalogBody(): string {
   out.push("---", "", `_${written} of 23 drills written._`, "");
 
   const counts = VERDICT_ORDER.map((verdict) => {
-    const total = exercises.filter((exercise) => exercise.meta.verdict === verdict).length;
+    const total = exercises.filter(
+      (exercise) => exercise.meta.verdict === verdict,
+    ).length;
     return `${verdict}: ${total}`;
   }).join(" · ");
   out.push(`_Verdicts so far — ${counts}._`, "");

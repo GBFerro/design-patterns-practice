@@ -15,7 +15,7 @@
   "act2": {
     "axis": "aligned",
     "summary": "a new node kind (a pallet, with its own tare weight added to totalWeight but not totalVolume) and a new traversal (totalItemCount) arrive together",
-    "extensionBudget": { "maxFilesModified": 3, "maxLinesModified": 44, "maxHunks": 3 }
+    "extensionBudget": { "maxFilesModified": 3, "maxLinesModified": 54, "maxHunks": 3 }
   },
   "solutions": [
     {

@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { buildTimetable, renderStopTime, resetStopMetadataAllocations, stopMetadataAllocationCount } from "#exercise";
+import {
+  buildTimetable,
+  renderStopTime,
+  resetStopMetadataAllocations,
+  stopMetadataAllocationCount,
+} from "#exercise";
 
 const STOP_IDS = ["mill-ave", "harbor-sq", "castleview"] as const;
 const STOP_TIME_COUNT = 200_000;
@@ -26,7 +31,12 @@ test("every stop-time still renders correctly at that scale", () => {
   resetStopMetadataAllocations();
 
   const timetable = buildTimetable([
-    { tripId: "199999", stopId: "castleview", arrivalMinutes: 500, departureMinutes: 501 },
+    {
+      tripId: "199999",
+      stopId: "castleview",
+      arrivalMinutes: 500,
+      departureMinutes: 501,
+    },
   ]);
 
   assert.equal(renderStopTime(timetable[0]!), "08:20 · Castleview (Zone B) ♿");

@@ -44,7 +44,10 @@ test("a target too close to the moon is refused", () => {
 });
 
 test("an instrument not on this telescope is refused", () => {
-  const result = validateRequest(validRequest({ instrumentName: "spectrograph" }), ridgeline);
+  const result = validateRequest(
+    validRequest({ instrumentName: "spectrograph" }),
+    ridgeline,
+  );
   assert.equal(result, "spectrograph is not available on Ridgeline");
 });
 
@@ -70,7 +73,11 @@ test("heavy cloud cover is refused", () => {
 
 test("when two conditions fail at once, the earlier check in the order is the one reported", () => {
   const result = validateRequest(
-    validRequest({ altitudeDegrees: 10, moonSeparationDegrees: 5, cloudCoverPercent: 90 }),
+    validRequest({
+      altitudeDegrees: 10,
+      moonSeparationDegrees: 5,
+      cloudCoverPercent: 90,
+    }),
     meridian,
   );
   assert.equal(result, "target is below the minimum altitude");

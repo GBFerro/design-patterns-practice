@@ -1,5 +1,5 @@
 diff --git a/solutions/lookup-table/quote.ts b/solutions/lookup-table/quote.ts
-index 3e77127..ef50486 100644
+index 711b3f4..08ef758 100644
 --- a/solutions/lookup-table/quote.ts
 +++ b/solutions/lookup-table/quote.ts
 @@ -5,8 +5,9 @@ export function quoteSurcharges(shipment: Shipment): SurchargeBreakdown {
@@ -15,24 +15,24 @@ index 3e77127..ef50486 100644
  
  export function totalSurchargeCents(shipment: Shipment): number {
 diff --git a/solutions/lookup-table/surcharges.ts b/solutions/lookup-table/surcharges.ts
-index 0c22445..b6bf61f 100644
+index 07bb492..d2c9c66 100644
 --- a/solutions/lookup-table/surcharges.ts
 +++ b/solutions/lookup-table/surcharges.ts
-@@ -11,8 +11,14 @@ function isOversize(shipment: Shipment): boolean {
- }
+@@ -12,10 +12,14 @@ function isOversize(shipment: Shipment): boolean {
  
  /** One entry per surcharge - a pure function from the shipment alone to its amount. */
--export const SURCHARGE_TABLE: Record<"fuel" | "remoteArea" | "oversize", (shipment: Shipment) => number> = {
-+export const SURCHARGE_TABLE: Record<
+ export const SURCHARGE_TABLE: Record<
+-  "fuel" | "remoteArea" | "oversize",
 +  "fuel" | "remoteArea" | "oversize" | "hazmat",
-+  (shipment: Shipment) => number
-+> = {
+   (shipment: Shipment) => number
+ > = {
    fuel: (shipment) => Math.round(shipment.baseRateCents * 0.12),
    remoteArea: (shipment) => (shipment.destination === "remote" ? 1500 : 0),
    oversize: (shipment) => (isOversize(shipment) ? 2000 : 0),
 +  // No entry here can see another entry's result, so this one re-derives both conditions
 +  // from the shipment itself instead of reading remoteArea/oversize's computed amounts.
-+  hazmat: (shipment) => (shipment.destination === "remote" && isOversize(shipment) ? 3000 : 0),
++  hazmat: (shipment) =>
++    shipment.destination === "remote" && isOversize(shipment) ? 3000 : 0,
  };
 diff --git a/solutions/lookup-table/types.ts b/solutions/lookup-table/types.ts
 index d41f9db..d4390f1 100644

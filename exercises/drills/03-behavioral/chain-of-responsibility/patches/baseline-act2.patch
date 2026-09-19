@@ -11,13 +11,13 @@ index 34e72f6..c4d240c 100644
  
  export interface Telescope {
 diff --git a/src/validate.ts b/src/validate.ts
-index 73bed7b..32217c0 100644
+index 2cf17ea..f27e66c 100644
 --- a/src/validate.ts
 +++ b/src/validate.ts
-@@ -1,12 +1,41 @@
- import type { ObservationRequest, Telescope } from "./types.ts";
- 
- export function validateRequest(request: ObservationRequest, telescope: Telescope): string | null {
+@@ -4,12 +4,41 @@ export function validateRequest(
+   request: ObservationRequest,
+   telescope: Telescope,
+ ): string | null {
 +  // Ridgeline is remote and robotic: weather is the cheapest check, so it
 +  // runs first there and nowhere else. The rest of the order below is
 +  // duplicated rather than shared, because there is no single place left

@@ -8,7 +8,12 @@ test("buildExportCrate is wood, fastened with nails", () => {
   assert.equal(crate.material, "wood");
   assert.equal(crate.fastener, "nails");
   assert.deepEqual(
-    { lengthCm: crate.lengthCm, widthCm: crate.widthCm, heightCm: crate.heightCm, maxLoadKg: crate.maxLoadKg },
+    {
+      lengthCm: crate.lengthCm,
+      widthCm: crate.widthCm,
+      heightCm: crate.heightCm,
+      maxLoadKg: crate.maxLoadKg,
+    },
     { lengthCm: 120, widthCm: 80, heightCm: 100, maxLoadKg: 500 },
   );
 });

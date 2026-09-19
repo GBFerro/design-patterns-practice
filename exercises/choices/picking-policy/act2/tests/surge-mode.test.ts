@@ -16,7 +16,11 @@ const batch = [order("o1", "bin-a", 1), order("o2", "bin-a", 2), order("o3", "bi
 
 test("escalates to surge once three orders outside the batch pile up", () => {
   planNextPick(batch); // enters batch mode; batchOrderIds = {o1, o2, o3}
-  const waiting = [order("o4", "bin-c", 4), order("o5", "bin-c", 5), order("o6", "bin-d", 6)];
+  const waiting = [
+    order("o4", "bin-c", 4),
+    order("o5", "bin-c", 5),
+    order("o6", "bin-d", 6),
+  ];
 
   const instruction = planNextPick([...batch, ...waiting]);
   assert.equal(currentMode(), "surge");
@@ -32,7 +36,11 @@ test("outside a surge, urgent is not set", () => {
 
 test("a surging picker works through the whole waiting group, oldest bin first", () => {
   planNextPick(batch);
-  const waiting = [order("o4", "bin-c", 4), order("o5", "bin-c", 5), order("o6", "bin-d", 6)];
+  const waiting = [
+    order("o4", "bin-c", 4),
+    order("o5", "bin-c", 5),
+    order("o6", "bin-d", 6),
+  ];
   planNextPick([...batch, ...waiting]); // escalates, returns o4/o5 (bin-c)
 
   recordPicked("o4");
@@ -46,7 +54,11 @@ test("a surging picker works through the whole waiting group, oldest bin first",
 
 test("falls back to batch mode, never straight to individual, once the surge clears", () => {
   planNextPick(batch);
-  const waiting = [order("o4", "bin-c", 4), order("o5", "bin-c", 5), order("o6", "bin-d", 6)];
+  const waiting = [
+    order("o4", "bin-c", 4),
+    order("o5", "bin-c", 5),
+    order("o6", "bin-d", 6),
+  ];
   planNextPick([...batch, ...waiting]);
 
   recordPicked("o4");
@@ -63,7 +75,11 @@ test("falls back to batch mode, never straight to individual, once the surge cle
 
 test("the suspended batch does not lose members while a surge is in progress", () => {
   planNextPick(batch);
-  const waiting = [order("o4", "bin-c", 4), order("o5", "bin-c", 5), order("o6", "bin-d", 6)];
+  const waiting = [
+    order("o4", "bin-c", 4),
+    order("o5", "bin-c", 5),
+    order("o6", "bin-d", 6),
+  ];
   planNextPick([...batch, ...waiting]);
 
   // o1 belongs to the suspended batch, not the active surge group - recording it

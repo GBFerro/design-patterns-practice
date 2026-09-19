@@ -1,5 +1,5 @@
 diff --git a/src/quote-draft.ts b/src/quote-draft.ts
-index 33f6387..1d3e2c4 100644
+index 5e6823b..ca95ec1 100644
 --- a/src/quote-draft.ts
 +++ b/src/quote-draft.ts
 @@ -1,4 +1,4 @@
@@ -40,7 +40,7 @@ index 33f6387..1d3e2c4 100644
      setDeliveryMethod(deliveryMethod: DeliveryMethod): QuoteDraft {
        if (deliveryMethod === "courier" && state.quantity < 50) {
          throw new Error("courier delivery is not available for orders under 50 units");
-@@ -70,5 +81,6 @@ export function startQuote(
+@@ -71,5 +82,6 @@ export function startQuote(
      discountPercent: 0,
      proofRequired: false,
      deliveryMethod: "pickup",

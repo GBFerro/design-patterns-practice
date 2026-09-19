@@ -18,7 +18,11 @@ test("allMessages returns messages in insertion order", () => {
   const log = new ObservationLog();
   fill(log, ["dome opened", "target acquired", "guide star locked"]);
 
-  assert.deepEqual(allMessages(log), ["dome opened", "target acquired", "guide star locked"]);
+  assert.deepEqual(allMessages(log), [
+    "dome opened",
+    "target acquired",
+    "guide star locked",
+  ]);
 });
 
 test("a log longer than one page still returns every message, in order", () => {

@@ -1,10 +1,10 @@
 diff --git a/solutions/command-effects/robot.ts b/solutions/command-effects/robot.ts
-index 2c0b39c..1502174 100644
+index fb40c39..c9139d8 100644
 --- a/solutions/command-effects/robot.ts
 +++ b/solutions/command-effects/robot.ts
-@@ -49,6 +49,9 @@ export function runCommand(state: RobotState, command: RobotCommand): RobotState
-     if (state.holding !== null) {
-       throw new Error(`already holding ${state.holding}, cannot pick up ${command.itemId}`);
+@@ -53,6 +53,9 @@ export function runCommand(state: RobotState, command: RobotCommand): RobotState
+         `already holding ${state.holding}, cannot pick up ${command.itemId}`,
+       );
      }
 +    if (command.itemId === "contraband" && !(state.x >= 8 && state.y >= 8)) {
 +      throw new Error("contraband can only be picked up inside the inspection zone");
@@ -12,9 +12,9 @@ index 2c0b39c..1502174 100644
    } else {
      if (state.holding === null) {
        throw new Error("not holding anything to drop off");
-@@ -85,6 +88,9 @@ export function replayBatch(state: RobotState, commands: readonly RobotCommand[]
-         if (current.holding !== null) {
-           throw new Error(`already holding ${current.holding}, cannot pick up ${command.itemId}`);
+@@ -99,6 +102,9 @@ export function replayBatch(
+             `already holding ${current.holding}, cannot pick up ${command.itemId}`,
+           );
          }
 +        if (command.itemId === "contraband" && !(current.x >= 8 && current.y >= 8)) {
 +          throw new Error("contraband can only be picked up inside the inspection zone");

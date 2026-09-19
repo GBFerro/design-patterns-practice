@@ -11,7 +11,7 @@ index 26e8b49..80c12b9 100644
    };
  }
 diff --git a/solutions/strategy/surcharges.ts b/solutions/strategy/surcharges.ts
-index 0994453..105c1c0 100644
+index 0994453..269b87b 100644
 --- a/solutions/strategy/surcharges.ts
 +++ b/solutions/strategy/surcharges.ts
 @@ -12,7 +12,7 @@ function isOversize(shipment: Shipment): boolean {
@@ -23,7 +23,7 @@ index 0994453..105c1c0 100644
    compute(shipment: Shipment): number;
  }
  
-@@ -43,8 +43,20 @@ export class OversizeSurcharge implements Surcharge {
+@@ -43,8 +43,22 @@ export class OversizeSurcharge implements Surcharge {
    }
  }
  
@@ -34,7 +34,9 @@ index 0994453..105c1c0 100644
 +  // No strategy can see another strategy's result, so this one re-derives both conditions
 +  // from the shipment itself instead of reading remoteArea/oversize's computed amounts.
 +  compute(shipment: Shipment): number {
-+    return shipment.destination === "remote" && isOversize(shipment) ? HazmatSurcharge.CENTS : 0;
++    return shipment.destination === "remote" && isOversize(shipment)
++      ? HazmatSurcharge.CENTS
++      : 0;
 +  }
 +}
 +

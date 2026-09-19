@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import { beforeEach, test } from "node:test";
 
-import { carrierCallCount, checkoutRate, compareRates, resetCarrierCalls } from "#exercise";
+import {
+  carrierCallCount,
+  checkoutRate,
+  compareRates,
+  resetCarrierCalls,
+} from "#exercise";
 
 // resetCarrierCalls only zeroes the call counter, not the cache itself (the
 // cache is exactly what act 2 is testing exists) - so each test below uses

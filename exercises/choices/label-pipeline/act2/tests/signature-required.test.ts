@@ -15,7 +15,10 @@ const base: Shipment = {
 
 test("a heavy domestic label gets SIGNATURE REQUIRED between the address and the weight", () => {
   const label = buildLabel({ ...base, weightKg: 25 });
-  assert.equal(label, "RG-A100\n123 Elm St, Springfield, IL 62704\nSIGNATURE REQUIRED\n25 kg");
+  assert.equal(
+    label,
+    "RG-A100\n123 Elm St, Springfield, IL 62704\nSIGNATURE REQUIRED\n25 kg",
+  );
 });
 
 test("a light domestic label gets no signature line at all", () => {
@@ -46,11 +49,20 @@ test("a heavy international label gets SIGNATURE REQUIRED last, after customs", 
 
 test("a light international label keeps customs as the last line - no signature", () => {
   const label = buildLabel({ ...base, weightKg: 10, destinationCountry: "CA" });
-  assert.equal(label, "RG-A100\n123 Elm St, Springfield, IL 62704\n10 kg\nCUSTOMS: contents declared, origin US");
+  assert.equal(
+    label,
+    "RG-A100\n123 Elm St, Springfield, IL 62704\n10 kg\nCUSTOMS: contents declared, origin US",
+  );
 });
 
 test("a heavy, fragile, hazmat international label: signature is still the very last line", () => {
-  const label = buildLabel({ ...base, weightKg: 25, destinationCountry: "CA", fragile: true, hazmat: true });
+  const label = buildLabel({
+    ...base,
+    weightKg: 25,
+    destinationCountry: "CA",
+    fragile: true,
+    hazmat: true,
+  });
   assert.equal(
     label,
     "RG-A100\n123 Elm St, Springfield, IL 62704\n25 kg\n" +
@@ -61,11 +73,19 @@ test("a heavy, fragile, hazmat international label: signature is still the very 
 
 test("the manifest entry gets the same signature rule, joined by ' | ' instead", () => {
   const entry = buildManifestEntry({ ...base, weightKg: 25 });
-  assert.equal(entry, "RG-A100 | 123 Elm St, Springfield, IL 62704 | SIGNATURE REQUIRED | 25 kg");
+  assert.equal(
+    entry,
+    "RG-A100 | 123 Elm St, Springfield, IL 62704 | SIGNATURE REQUIRED | 25 kg",
+  );
 });
 
 test("buildLabel and buildManifestEntry still agree on section count once signature is in play", () => {
-  const shipment: Shipment = { ...base, weightKg: 30, destinationCountry: "MX", hazmat: true };
+  const shipment: Shipment = {
+    ...base,
+    weightKg: 30,
+    destinationCountry: "MX",
+    hazmat: true,
+  };
   const label = buildLabel(shipment);
   const entry = buildManifestEntry(shipment);
   assert.equal(label.split("\n").length, entry.split(" | ").length);

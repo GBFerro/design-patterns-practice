@@ -1,9 +1,9 @@
 diff --git a/solutions/observer/center.ts b/solutions/observer/center.ts
-index 3b91cc6..af2019b 100644
+index 4e89b78..bcc44f1 100644
 --- a/solutions/observer/center.ts
 +++ b/solutions/observer/center.ts
-@@ -12,7 +12,22 @@ class ConcreteAlertCenter implements AlertCenter {
-   private readonly observers: AlertObserver[] = [this.log, this.pager, this.dome, this.report];
+@@ -17,7 +17,22 @@ class ConcreteAlertCenter implements AlertCenter {
+   ];
  
    publish(alert: Alert): void {
 -    for (const observer of this.observers) observer.onAlert(alert);

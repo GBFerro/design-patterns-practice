@@ -16,12 +16,9 @@
   "act2": {
     "axis": "aligned",
     "summary": "a fourth policy, and the policy name now arrives from a config file an operator can typo",
-    "extensionBudget": { "maxFilesModified": 1, "maxLinesModified": 3 }
+    "extensionBudget": { "maxFilesModified": 1, "maxLinesModified": 8 }
   },
-  "forbidden": [
-    "switch\\s*\\(\\s*options\\.policy",
-    "options\\.policy\\s*===\\s*\""
-  ],
+  "forbidden": ["switch\\s*\\(\\s*options\\.policy", "options\\.policy\\s*===\\s*\""],
   "solutions": [
     {
       "slug": "strategy",

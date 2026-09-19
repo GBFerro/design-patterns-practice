@@ -48,7 +48,9 @@ export function processReturn(request: ReturnRequest): ReturnOutcome {
  * per return. Same three decisions, same rules — this just has more than
  * one request to make them for.
  */
-export function processBulkReturns(requests: readonly ReturnRequest[]): readonly ReturnOutcome[] {
+export function processBulkReturns(
+  requests: readonly ReturnRequest[],
+): readonly ReturnOutcome[] {
   const outcomes: ReturnOutcome[] = [];
 
   for (const request of requests) {

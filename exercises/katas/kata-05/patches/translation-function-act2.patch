@@ -12,10 +12,10 @@ index 86210df..f974378 100644
  export interface BinLocation {
    readonly aisle: string;
 diff --git a/solutions/translation-function/wms-sync.ts b/solutions/translation-function/wms-sync.ts
-index 4e4627c..1444778 100644
+index 3f4df8c..5f4c65b 100644
 --- a/solutions/translation-function/wms-sync.ts
 +++ b/solutions/translation-function/wms-sync.ts
-@@ -9,6 +9,8 @@ function toInventoryRecord(record: LegacyWmsRecord): InventoryRecord {
+@@ -14,6 +14,8 @@ function toInventoryRecord(record: LegacyWmsRecord): InventoryRecord {
      status = "onHold";
    } else if (record.statusCode === "D") {
      status = "discontinued";
@@ -24,7 +24,7 @@ index 4e4627c..1444778 100644
    } else {
      throw new Error(`unknown legacy status code: ${record.statusCode}`);
    }
-@@ -24,7 +26,7 @@ function toInventoryRecord(record: LegacyWmsRecord): InventoryRecord {
+@@ -29,7 +31,7 @@ function toInventoryRecord(record: LegacyWmsRecord): InventoryRecord {
  
    return {
      sku: record.itemCode,

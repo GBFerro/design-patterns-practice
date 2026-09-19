@@ -3,7 +3,11 @@ import { spectrograph } from "./spectrograph.ts";
 import { thermalImager } from "./thermal-imager.ts";
 import { wideFieldCamera } from "./wide-field-camera.ts";
 
-const instruments: readonly InstrumentHooks[] = [wideFieldCamera, spectrograph, thermalImager];
+const instruments: readonly InstrumentHooks[] = [
+  wideFieldCamera,
+  spectrograph,
+  thermalImager,
+];
 
 export function findInstrument(name: string): InstrumentHooks {
   const instrument = instruments.find((candidate) => candidate.name === name);

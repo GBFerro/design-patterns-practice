@@ -53,7 +53,9 @@ function skippedIds(
   entries: readonly PlanEntry[],
 ): readonly string[] {
   const scheduled = new Set(entries.map((entry) => entry.requestId));
-  return submitted.filter((request) => !scheduled.has(request.id)).map((request) => request.id);
+  return submitted
+    .filter((request) => !scheduled.has(request.id))
+    .map((request) => request.id);
 }
 
 function isAboveHorizon(request: ObservationRequest): boolean {

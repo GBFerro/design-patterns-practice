@@ -27,7 +27,11 @@ test("only park() is legal from fault", () => {
   assert.throws(() => scope.slewTo("M31"), /fault/);
   assert.throws(() => scope.arrive(), /fault/);
   assert.throws(() => scope.nudge(5), /fault/);
-  assert.equal(scope.status, "fault", "every refused call must leave the state unchanged");
+  assert.equal(
+    scope.status,
+    "fault",
+    "every refused call must leave the state unchanged",
+  );
 
   assert.doesNotThrow(() => scope.park());
   assert.equal(scope.status, "parked");
@@ -36,5 +40,7 @@ test("only park() is legal from fault", () => {
 test("raising a fault is itself recorded in the history", () => {
   const scope = new TelescopeController();
   scope.raiseFault("motor stall");
-  assert.deepEqual(scope.history, [{ from: "parked", action: "raiseFault(motor stall)" }]);
+  assert.deepEqual(scope.history, [
+    { from: "parked", action: "raiseFault(motor stall)" },
+  ]);
 });

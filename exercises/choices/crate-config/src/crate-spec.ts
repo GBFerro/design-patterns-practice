@@ -17,7 +17,14 @@ export function buildExportCrate(
     throw new Error("maxLoadKg must be positive");
   }
   const material: Material = "wood";
-  return { material, fastener: fastenerFor(material), lengthCm, widthCm, heightCm, maxLoadKg };
+  return {
+    material,
+    fastener: fastenerFor(material),
+    lengthCm,
+    widthCm,
+    heightCm,
+    maxLoadKg,
+  };
 }
 
 export function buildDomesticCrate(
@@ -33,5 +40,12 @@ export function buildDomesticCrate(
     throw new Error("maxLoadKg must be positive");
   }
   const material: Material = "plastic";
-  return { material, fastener: fastenerFor(material), lengthCm, widthCm, heightCm, maxLoadKg };
+  return {
+    material,
+    fastener: fastenerFor(material),
+    lengthCm,
+    widthCm,
+    heightCm,
+    maxLoadKg,
+  };
 }

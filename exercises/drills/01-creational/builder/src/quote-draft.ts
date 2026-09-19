@@ -46,7 +46,8 @@ function draftFrom(state: DraftState): QuoteDraft {
 
     build(): Quote {
       const totalCost =
-        state.baseUnitCost * state.quantity * (1 - state.discountPercent / 100) + state.rushFee;
+        state.baseUnitCost * state.quantity * (1 - state.discountPercent / 100) +
+        state.rushFee;
       return { ...state, totalCost };
     },
   };

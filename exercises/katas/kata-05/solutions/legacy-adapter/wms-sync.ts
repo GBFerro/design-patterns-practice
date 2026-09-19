@@ -8,7 +8,9 @@ const adapter = new LegacyWmsAdapter();
  * the legacy WMS's overnight export, translated into the shape the rest of
  * the app expects.
  */
-export function syncInventorySnapshot(records: readonly LegacyWmsRecord[]): readonly InventoryRecord[] {
+export function syncInventorySnapshot(
+  records: readonly LegacyWmsRecord[],
+): readonly InventoryRecord[] {
   return records.map((record) => adapter.read(record));
 }
 

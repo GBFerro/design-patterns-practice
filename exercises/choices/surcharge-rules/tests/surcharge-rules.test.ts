@@ -55,10 +55,16 @@ test("a shipment over the threshold on any one dimension pays the flat oversize 
 
 test("totalCents is the sum of fuel, remote-area and oversize for a shipment that triggers only those", () => {
   const quote = quoteSurcharges(remoteOnly);
-  assert.equal(quote.totalCents, quote.fuelCents + quote.remoteAreaCents + quote.oversizeCents);
+  assert.equal(
+    quote.totalCents,
+    quote.fuelCents + quote.remoteAreaCents + quote.oversizeCents,
+  );
 });
 
 test("totalSurchargeCents agrees with quoteSurcharges's totalCents for the same shipment", () => {
-  assert.equal(totalSurchargeCents(remoteOversize), quoteSurcharges(remoteOversize).totalCents);
+  assert.equal(
+    totalSurchargeCents(remoteOversize),
+    quoteSurcharges(remoteOversize).totalCents,
+  );
   assert.equal(totalSurchargeCents(metroSmall), quoteSurcharges(metroSmall).totalCents);
 });

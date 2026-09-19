@@ -1,4 +1,9 @@
-import type { BinLocation, InventoryRecord, InventoryStatus, LegacyWmsRecord } from "./types.ts";
+import type {
+  BinLocation,
+  InventoryRecord,
+  InventoryStatus,
+  LegacyWmsRecord,
+} from "./types.ts";
 
 /** The one place a legacy record becomes a clean inventory record. */
 function toInventoryRecord(record: LegacyWmsRecord): InventoryRecord {
@@ -36,7 +41,9 @@ function toInventoryRecord(record: LegacyWmsRecord): InventoryRecord {
  * the legacy WMS's overnight export, translated into the shape the rest of
  * the app expects.
  */
-export function syncInventorySnapshot(records: readonly LegacyWmsRecord[]): readonly InventoryRecord[] {
+export function syncInventorySnapshot(
+  records: readonly LegacyWmsRecord[],
+): readonly InventoryRecord[] {
   return records.map(toInventoryRecord);
 }
 

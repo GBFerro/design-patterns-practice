@@ -1,4 +1,4 @@
-diff --git a/solutions/observer/fraud-check.ts b/solutions/observer/fraud-check.ts
+diff --git a/after/solutions/observer/fraud-check.ts b/solutions/observer/fraud-check.ts
 new file mode 100644
 index 0000000..198445d
 --- /dev/null
@@ -11,11 +11,13 @@ index 0000000..198445d
 +  return order.customerEmail.endsWith("@flagged.example");
 +}
 diff --git a/solutions/observer/order-events.ts b/solutions/observer/order-events.ts
-index 7658e20..8add547 100644
+index 7934982..0340f8d 100644
 --- a/solutions/observer/order-events.ts
 +++ b/solutions/observer/order-events.ts
-@@ -1,17 +1,18 @@
- import { AnalyticsObserver, EmailObserver, InventoryObserver, SmsObserver } from "./observers.ts";
+@@ -4,19 +4,20 @@ import {
+   InventoryObserver,
+   SmsObserver,
+ } from "./observers.ts";
 +import { fraudCheck } from "./fraud-check.ts";
  import { OrderShippedSubject } from "./subject.ts";
  import type { Order } from "./types.ts";

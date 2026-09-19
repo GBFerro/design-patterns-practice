@@ -7,5 +7,7 @@ export function compareRates(
   destZip: string,
   weightKg: number,
 ): CarrierRate[] {
-  return carrierIds.map((carrierId) => gateways[carrierId].rate(originZip, destZip, weightKg));
+  return carrierIds.map((carrierId) =>
+    gateways[carrierId].rate(originZip, destZip, weightKg),
+  );
 }

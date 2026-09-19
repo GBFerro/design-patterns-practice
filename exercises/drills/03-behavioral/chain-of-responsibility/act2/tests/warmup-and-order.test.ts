@@ -35,7 +35,10 @@ test("a request with a completed warmup passes on Meridian", () => {
 });
 
 test("an instrument that has not completed warmup is refused", () => {
-  const result = validateRequest(validRequest({ instrumentWarmupComplete: false }), meridian);
+  const result = validateRequest(
+    validRequest({ instrumentWarmupComplete: false }),
+    meridian,
+  );
   assert.equal(result, "instrument has not completed its warmup sequence");
 });
 

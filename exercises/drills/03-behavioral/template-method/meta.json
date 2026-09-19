@@ -16,7 +16,7 @@
   "act2": {
     "axis": "orthogonal",
     "summary": "a fourth instrument that must SKIP the calibrate step entirely, not run it as a no-op",
-    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 17, "maxHunks": 3 }
+    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 17, "maxHunks": 4 }
   },
   "forbidden": [
     "function runWideFieldCameraNight",

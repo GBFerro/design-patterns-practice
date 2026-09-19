@@ -9,7 +9,12 @@ class ConcreteAlertCenter implements AlertCenter {
   private readonly pager = new OperatorPager();
   private readonly dome = new DomeGuard();
   private readonly report = new NightReport();
-  private readonly observers: AlertObserver[] = [this.log, this.pager, this.dome, this.report];
+  private readonly observers: AlertObserver[] = [
+    this.log,
+    this.pager,
+    this.dome,
+    this.report,
+  ];
 
   publish(alert: Alert): void {
     for (const observer of this.observers) observer.onAlert(alert);

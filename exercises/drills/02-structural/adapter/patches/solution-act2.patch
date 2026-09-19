@@ -1,16 +1,21 @@
 diff --git a/solutions/adapter/admit.ts b/solutions/adapter/admit.ts
-index 33d85a4..515d71c 100644
+index 33d85a4..4db2504 100644
 --- a/solutions/adapter/admit.ts
 +++ b/solutions/adapter/admit.ts
-@@ -1,5 +1,6 @@
+@@ -1,5 +1,11 @@
 +import { ContactlessReaderAdapter } from "./contactless-reader-adapter.ts";
  import { LegacyReaderAdapter } from "./legacy-reader-adapter.ts";
 -import type { AdmissionResult, FareReader, LegacyCardScanner } from "./types.ts";
-+import type { AdmissionResult, ContactlessReader, FareReader, LegacyCardScanner } from "./types.ts";
++import type {
++  AdmissionResult,
++  ContactlessReader,
++  FareReader,
++  LegacyCardScanner,
++} from "./types.ts";
  
  const FARE_CENTS = 275;
  
-@@ -20,3 +21,7 @@ export function admitPassenger(reader: FareReader): AdmissionResult {
+@@ -20,3 +26,7 @@ export function admitPassenger(reader: FareReader): AdmissionResult {
  export function admitLegacyPassenger(scanner: LegacyCardScanner): AdmissionResult {
    return admitPassenger(new LegacyReaderAdapter(scanner));
  }
@@ -18,7 +23,7 @@ index 33d85a4..515d71c 100644
 +export function admitContactlessPassenger(reader: ContactlessReader): AdmissionResult {
 +  return admitPassenger(new ContactlessReaderAdapter(reader));
 +}
-diff --git a/solutions/adapter/contactless-reader-adapter.ts b/solutions/adapter/contactless-reader-adapter.ts
+diff --git a/after/solutions/adapter/contactless-reader-adapter.ts b/solutions/adapter/contactless-reader-adapter.ts
 new file mode 100644
 index 0000000..b476122
 --- /dev/null
@@ -43,12 +48,16 @@ index 0000000..b476122
 +  }
 +}
 diff --git a/solutions/adapter/index.ts b/solutions/adapter/index.ts
-index 20810f5..e0a1991 100644
+index 20810f5..429fe33 100644
 --- a/solutions/adapter/index.ts
 +++ b/solutions/adapter/index.ts
-@@ -1,7 +1,9 @@
+@@ -1,7 +1,13 @@
 -export { admitLegacyPassenger, admitPassenger } from "./admit.ts";
-+export { admitContactlessPassenger, admitLegacyPassenger, admitPassenger } from "./admit.ts";
++export {
++  admitContactlessPassenger,
++  admitLegacyPassenger,
++  admitPassenger,
++} from "./admit.ts";
 +export { ContactlessReaderAdapter } from "./contactless-reader-adapter.ts";
  export { LegacyReaderAdapter } from "./legacy-reader-adapter.ts";
  export type {

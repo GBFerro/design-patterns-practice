@@ -11,13 +11,21 @@ export abstract class JobFactory {
 
 class BusinessCardJobFactory extends JobFactory {
   createJob(request: OrderRequest): PrintJob {
-    return new BusinessCardJob(request.customerName, request.quantity, request.doubleSided ?? false);
+    return new BusinessCardJob(
+      request.customerName,
+      request.quantity,
+      request.doubleSided ?? false,
+    );
   }
 }
 
 class BrochureJobFactory extends JobFactory {
   createJob(request: OrderRequest): PrintJob {
-    return new BrochureJob(request.customerName, request.quantity, request.foldType ?? "bi");
+    return new BrochureJob(
+      request.customerName,
+      request.quantity,
+      request.foldType ?? "bi",
+    );
   }
 }
 

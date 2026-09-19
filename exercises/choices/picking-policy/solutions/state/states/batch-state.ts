@@ -12,7 +12,11 @@ export class BatchState implements PolicyState {
     const target = oldest(surviving);
     const matching = surviving.filter((order) => order.binId === target.binId);
     return {
-      instruction: { mode: "batch", binId: target.binId, orderIds: matching.map((order) => order.id) },
+      instruction: {
+        mode: "batch",
+        binId: target.binId,
+        orderIds: matching.map((order) => order.id),
+      },
       next: this,
     };
   }

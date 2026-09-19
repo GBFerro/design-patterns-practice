@@ -1,15 +1,19 @@
 diff --git a/src/checkout.ts b/src/checkout.ts
-index 04b70a4..b5e12f4 100644
+index 210fd1a..a403c94 100644
 --- a/src/checkout.ts
 +++ b/src/checkout.ts
-@@ -1,18 +1,25 @@
+@@ -1,6 +1,7 @@
  import { aerolaneRate } from "./aerolane-client.ts";
  import { coastalEstimate } from "./coastal-client.ts";
  import { northbridgeQuote } from "./northbridge-client.ts";
 +import { cachedRate, storeRate } from "./rate-cache.ts";
  import type { CarrierId, CarrierRate } from "./types.ts";
  
- export function checkoutRate(carrierId: CarrierId, originZip: string, destZip: string, weightKg: number): CarrierRate {
+ export function checkoutRate(
+@@ -9,15 +10,21 @@ export function checkoutRate(
+   destZip: string,
+   weightKg: number,
+ ): CarrierRate {
 +  const cached = cachedRate(carrierId, originZip, destZip, weightKg);
 +  if (cached) return cached;
 +
@@ -45,17 +49,22 @@ index 02e6e57..7ee7566 100644
  export { checkoutRate } from "./checkout.ts";
  export { compareRates } from "./rate-comparison.ts";
  export type { CarrierGateway, CarrierId, CarrierRate } from "./types.ts";
-diff --git a/src/rate-cache.ts b/src/rate-cache.ts
+diff --git a/after/src/rate-cache.ts b/src/rate-cache.ts
 new file mode 100644
-index 0000000..3597e55
+index 0000000..f5790bb
 --- /dev/null
 +++ b/src/rate-cache.ts
-@@ -0,0 +1,26 @@
+@@ -0,0 +1,31 @@
 +import type { CarrierId, CarrierRate } from "./types.ts";
 +
 +const cache = new Map<string, CarrierRate>();
 +
-+function key(carrierId: CarrierId, originZip: string, destZip: string, weightKg: number): string {
++function key(
++  carrierId: CarrierId,
++  originZip: string,
++  destZip: string,
++  weightKg: number,
++): string {
 +  return `${carrierId}|${originZip}|${destZip}|${weightKg}`;
 +}
 +

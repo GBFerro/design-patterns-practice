@@ -20,7 +20,10 @@ function attachTree(title: string, dir: string, extension: string): void {
       continue;
     }
     if (!entry.name.endsWith(extension)) continue;
-    attach(`${title} — ${entry.name}`, "```ts\n" + readFileSync(join(dir, entry.name), "utf8") + "```");
+    attach(
+      `${title} — ${entry.name}`,
+      "```ts\n" + readFileSync(join(dir, entry.name), "utf8") + "```",
+    );
   }
 }
 
@@ -40,7 +43,9 @@ export function run(argv: readonly string[]): number {
   line();
   line(bold(`## O material — ${exercise.meta.title} (${exercise.meta.id})`));
   line();
-  line(dim("As soluções publicadas NÃO estão neste pacote. Isso é deliberado: um revisor"));
+  line(
+    dim("As soluções publicadas NÃO estão neste pacote. Isso é deliberado: um revisor"),
+  );
   line(dim("com gabarito avalia semelhança em vez de qualidade."));
 
   const focus = exercise.meta.reviewFocus ?? [];
@@ -51,21 +56,33 @@ export function run(argv: readonly string[]): number {
     for (const item of focus) line(`- ${item}`);
   }
 
-  attach("O enunciado do ato 1", readFileSync(join(exercise.dir, "README.en.md"), "utf8"));
+  attach(
+    "O enunciado do ato 1",
+    readFileSync(join(exercise.dir, "README.en.md"), "utf8"),
+  );
   const act2Readme = join(exercise.dir, "act2", "README.en.md");
   if (existsSync(act2Readme)) {
     attach("O requisito do ato 2", readFileSync(act2Readme, "utf8"));
   }
   const choice = join(exercise.dir, "CHOICE.md");
   if (existsSync(choice)) {
-    attach("A decisão que você registrou ANTES de ver o ato 2", readFileSync(choice, "utf8"));
+    attach(
+      "A decisão que você registrou ANTES de ver o ato 2",
+      readFileSync(choice, "utf8"),
+    );
   }
 
   attachTree("A suíte intocada", join(exercise.dir, "tests"), ".ts");
   attachTree("O código como está", join(exercise.dir, "src"), ".ts");
 
-  const log = git(["--no-pager", "log", "--oneline", "--", join(exercise.rel, "src")], root);
-  attach("A rota (git log do seu src/)", "```\n" + (log.out || "(sem commits)") + "\n```");
+  const log = git(
+    ["--no-pager", "log", "--oneline", "--", join(exercise.rel, "src")],
+    root,
+  );
+  attach(
+    "A rota (git log do seu src/)",
+    "```\n" + (log.out || "(sem commits)") + "\n```",
+  );
 
   line();
   return 0;

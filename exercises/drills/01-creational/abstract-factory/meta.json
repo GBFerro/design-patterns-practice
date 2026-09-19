@@ -16,7 +16,7 @@
   "act2": {
     "axis": "aligned",
     "summary": "a third family, wide-format, whose parts overlap in name with offset",
-    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 16, "maxHunks": 3 }
+    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 20, "maxHunks": 3 }
   },
   "forbidden": ["case\\s*\"wide-format\""],
   "solutions": [

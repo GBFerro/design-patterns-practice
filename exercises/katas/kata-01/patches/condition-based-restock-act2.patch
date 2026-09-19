@@ -1,8 +1,8 @@
 diff --git a/solutions/condition-based-restock/returns.ts b/solutions/condition-based-restock/returns.ts
-index 0dba9f2..3e17cec 100644
+index d656152..7e68d48 100644
 --- a/solutions/condition-based-restock/returns.ts
 +++ b/solutions/condition-based-restock/returns.ts
-@@ -27,6 +27,9 @@ export function processReturn(request: ReturnRequest): ReturnOutcome {
+@@ -29,6 +29,9 @@ export function processReturn(request: ReturnRequest): ReturnOutcome {
    } else if (request.reason === "wrong-item") {
      refundCents = request.itemPriceCents;
      refundMethod = "original-payment";
@@ -12,7 +12,7 @@ index 0dba9f2..3e17cec 100644
    } else {
      refundCents = Math.round(request.itemPriceCents * 0.85);
      refundMethod = "store-credit";
-@@ -65,6 +68,9 @@ export function processBulkReturns(requests: readonly ReturnRequest[]): readonly
+@@ -69,6 +72,9 @@ export function processBulkReturns(
      } else if (request.reason === "wrong-item") {
        refundCents = request.itemPriceCents;
        refundMethod = "original-payment";

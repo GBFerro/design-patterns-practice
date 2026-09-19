@@ -77,7 +77,11 @@ test("undoing a macro reverses every sub-action, in reverse order, as one undo",
   });
   panel.undo();
   assert.equal(panel.focuserPosition, 0);
-  assert.equal(panel.filterSlot, 4, "undo must restore the slot from before the macro, not slot 1");
+  assert.equal(
+    panel.filterSlot,
+    4,
+    "undo must restore the slot from before the macro, not slot 1",
+  );
 });
 
 test("a macro nested inside a macro still undoes as one unit", () => {

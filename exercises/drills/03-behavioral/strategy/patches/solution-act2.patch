@@ -1,4 +1,4 @@
-diff --git a/solutions/strategy/policies/darkest-first.ts b/solutions/strategy/policies/darkest-first.ts
+diff --git a/after/solutions/strategy/policies/darkest-first.ts b/solutions/strategy/policies/darkest-first.ts
 new file mode 100644
 index 0000000..c3a811b
 --- /dev/null
@@ -14,10 +14,10 @@ index 0000000..c3a811b
 +  },
 +};
 diff --git a/solutions/strategy/policies/registry.ts b/solutions/strategy/policies/registry.ts
-index 80b78f4..f68aea2 100644
+index 80b78f4..cbffd72 100644
 --- a/solutions/strategy/policies/registry.ts
 +++ b/solutions/strategy/policies/registry.ts
-@@ -1,9 +1,10 @@
+@@ -1,9 +1,15 @@
  import type { SchedulingPolicy } from "../policy.ts";
 +import { darkestFirst } from "./darkest-first.ts";
  import { fairShare } from "./fair-share.ts";
@@ -25,7 +25,12 @@ index 80b78f4..f68aea2 100644
  import { maxTargets } from "./max-targets.ts";
  
 -const policies: readonly SchedulingPolicy[] = [maxTargets, maxScience, fairShare];
-+const policies: readonly SchedulingPolicy[] = [maxTargets, maxScience, fairShare, darkestFirst];
++const policies: readonly SchedulingPolicy[] = [
++  maxTargets,
++  maxScience,
++  fairShare,
++  darkestFirst,
++];
  
  /** The one place that knows which policies exist. */
  export function policyNames(): readonly string[] {

@@ -25,7 +25,9 @@ describe("a recalled item", () => {
 
   it("is refunded in full regardless of its condition", () => {
     for (const condition of ["sealed", "opened-good", "opened-damaged"] as const) {
-      const outcome = processReturn(request({ reason: "recalled", itemPriceCents: 2500, condition }));
+      const outcome = processReturn(
+        request({ reason: "recalled", itemPriceCents: 2500, condition }),
+      );
       assert.equal(outcome.refundCents, 2500);
     }
   });

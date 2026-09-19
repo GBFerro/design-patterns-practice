@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { currentPositions, printFleetPositions, realLookupCount, resetRealLookupCount } from "#exercise";
+import {
+  currentPositions,
+  printFleetPositions,
+  realLookupCount,
+  resetRealLookupCount,
+} from "#exercise";
 
 test("an allowed vehicle still returns its position from the dashboard", () => {
   const [position] = currentPositions(["bus-14"]);

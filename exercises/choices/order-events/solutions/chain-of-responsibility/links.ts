@@ -1,4 +1,9 @@
-import { recordAnalyticsEvent, sendConfirmationEmail, sendSmsNotification, updateInventoryCount } from "./consumers.ts";
+import {
+  recordAnalyticsEvent,
+  sendConfirmationEmail,
+  sendSmsNotification,
+  updateInventoryCount,
+} from "./consumers.ts";
 import type { Order } from "./types.ts";
 
 /** A link runs its own side effect and returns whether the chain should continue. */

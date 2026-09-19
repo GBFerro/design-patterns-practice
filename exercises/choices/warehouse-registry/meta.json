@@ -15,7 +15,7 @@
   "act2": {
     "axis": "aligned",
     "summary": "a second fulfilment site needs its own bin registry, live in the same process as the first - exactly the guarantee a single shared instance is built to prevent",
-    "extensionBudget": { "maxFilesModified": 1, "maxLinesModified": 3, "maxHunks": 1 }
+    "extensionBudget": { "maxFilesModified": 1, "maxLinesModified": 9, "maxHunks": 1 }
   },
   "solutions": [
     {

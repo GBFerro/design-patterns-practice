@@ -53,14 +53,22 @@ function markdownLinks(file: string): string[] {
   return [...text.matchAll(/]\((\.[^)\s#]+)/g)].map((match) => match[1]!);
 }
 
-function checkExercise(exercise: Exercise, names: Set<string>, problems: Problem[]): void {
+function checkExercise(
+  exercise: Exercise,
+  names: Set<string>,
+  problems: Problem[],
+): void {
   const { meta, dir } = exercise;
   const where = meta.id;
 
   for (const required of REQUIRED_FILES) {
-    if (!existsSync(join(dir, required))) problems.push({ where, what: `falta ${required}` });
+    if (!existsSync(join(dir, required)))
+      problems.push({ where, what: `falta ${required}` });
   }
-  if (!existsSync(join(dir, "act2", "tests")) || fileTree(join(dir, "act2", "tests")).length === 0) {
+  if (
+    !existsSync(join(dir, "act2", "tests")) ||
+    fileTree(join(dir, "act2", "tests")).length === 0
+  ) {
     problems.push({ where, what: "act2/tests/ está vazio ou não existe" });
   }
   if (meta.providesTests && fileTree(join(dir, "tests")).length === 0) {
@@ -74,7 +82,10 @@ function checkExercise(exercise: Exercise, names: Set<string>, problems: Problem
   }
 
   if (meta.type === "drill" && meta.solutions.length !== 1) {
-    problems.push({ where, what: `drill deve ter 1 solução, tem ${meta.solutions.length}` });
+    problems.push({
+      where,
+      what: `drill deve ter 1 solução, tem ${meta.solutions.length}`,
+    });
   }
   if (meta.type === "choice") {
     if (meta.solutions.length < 2) {
@@ -92,7 +103,10 @@ function checkExercise(exercise: Exercise, names: Set<string>, problems: Problem
   for (const solution of meta.solutions) {
     const solutionDir = join(dir, "solutions", solution.slug);
     if (!existsSync(solutionDir)) {
-      problems.push({ where, what: `meta declara solutions/${solution.slug}/ e ela não existe` });
+      problems.push({
+        where,
+        what: `meta declara solutions/${solution.slug}/ e ela não existe`,
+      });
       continue;
     }
     for (const required of ["index.ts", "STEPS.md", "WALKTHROUGH.md", "ACT2.md"]) {
@@ -125,7 +139,9 @@ function checkExercise(exercise: Exercise, names: Set<string>, problems: Problem
       join(solutionDir, "WALKTHROUGH.md"),
     );
     const mentions = walkthroughs.some(
-      (file) => existsSync(file) && /would have absorbed|teria absorvido/i.test(readFileSync(file, "utf8")),
+      (file) =>
+        existsSync(file) &&
+        /would have absorbed|teria absorvido/i.test(readFileSync(file, "utf8")),
     );
     if (!mentions) {
       problems.push({
@@ -160,7 +176,10 @@ export function run(): number {
   for (const exercise of exercises) {
     for (const prerequisite of exercise.meta.prerequisites) {
       if (!seen.has(prerequisite)) {
-        problems.push({ where: exercise.meta.id, what: `prerequisite inexistente: ${prerequisite}` });
+        problems.push({
+          where: exercise.meta.id,
+          what: `prerequisite inexistente: ${prerequisite}`,
+        });
       }
     }
     checkExercise(exercise, names, problems);
@@ -173,7 +192,8 @@ export function run(): number {
     line();
     return 0;
   }
-  for (const problem of problems) line(`  ${CROSS} ${bold(problem.where)} ${dim("·")} ${problem.what}`);
+  for (const problem of problems)
+    line(`  ${CROSS} ${bold(problem.where)} ${dim("·")} ${problem.what}`);
   line();
   return 1;
 }

@@ -1,10 +1,27 @@
-import { address, customsDeclaration, fragileWarning, hazmatWarning, header, weight, type Stage } from "./stages.ts";
+import {
+  address,
+  customsDeclaration,
+  fragileWarning,
+  hazmatWarning,
+  header,
+  weight,
+  type Stage,
+} from "./stages.ts";
 import type { Shipment } from "./types.ts";
 
-const stages: readonly Stage[] = [header, address, weight, fragileWarning, hazmatWarning, customsDeclaration];
+const stages: readonly Stage[] = [
+  header,
+  address,
+  weight,
+  fragileWarning,
+  hazmatWarning,
+  customsDeclaration,
+];
 
 function sections(shipment: Shipment): string[] {
-  return stages.map((stage) => stage(shipment)).filter((line): line is string => line !== null);
+  return stages
+    .map((stage) => stage(shipment))
+    .filter((line): line is string => line !== null);
 }
 
 export function buildLabel(shipment: Shipment): string {

@@ -15,7 +15,7 @@
   "act2": {
     "axis": "aligned",
     "summary": "a third mode, triggered while already inside the second one, that must fall back to the second mode and never straight to the first",
-    "extensionBudget": { "maxFilesModified": 3, "maxLinesModified": 12, "maxHunks": 4 }
+    "extensionBudget": { "maxFilesModified": 3, "maxLinesModified": 15, "maxHunks": 4 }
   },
   "solutions": [
     {

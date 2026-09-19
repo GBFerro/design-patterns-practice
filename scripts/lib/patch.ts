@@ -25,7 +25,9 @@ export interface PatchSummary {
  */
 export function summarisePatch(text: string): PatchSummary {
   const changes: FileChange[] = [];
-  let current: { path: string; isNew: boolean; hunks: number; added: number; removed: number } | undefined;
+  let current:
+    | { path: string; isNew: boolean; hunks: number; added: number; removed: number }
+    | undefined;
 
   const flush = (): void => {
     if (current !== undefined) changes.push({ ...current });
@@ -83,7 +85,9 @@ export function checkBudget(
     );
   }
   if (budget.maxHunks !== undefined && summary.hunks > budget.maxHunks) {
-    reasons.push(`${summary.hunks} hunks in existing files, budget allows ${budget.maxHunks}`);
+    reasons.push(
+      `${summary.hunks} hunks in existing files, budget allows ${budget.maxHunks}`,
+    );
   }
   return { withinBudget: reasons.length === 0, reasons };
 }

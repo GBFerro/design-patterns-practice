@@ -25,7 +25,10 @@ test("mild weather gets no operator note", () => {
 });
 
 test("a long exposure gets an operator note about guiding", () => {
-  assert.equal(operatorNote(new ExposureRecord("spectrograph", 1801)), "long exposure - verify guiding");
+  assert.equal(
+    operatorNote(new ExposureRecord("spectrograph", 1801)),
+    "long exposure - verify guiding",
+  );
 });
 
 test("a short exposure gets no operator note", () => {

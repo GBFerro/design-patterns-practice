@@ -3,7 +3,12 @@ import { coastalEstimate } from "./coastal-client.ts";
 import { northbridgeQuote } from "./northbridge-client.ts";
 import type { CarrierId, CarrierRate } from "./types.ts";
 
-export function checkoutRate(carrierId: CarrierId, originZip: string, destZip: string, weightKg: number): CarrierRate {
+export function checkoutRate(
+  carrierId: CarrierId,
+  originZip: string,
+  destZip: string,
+  weightKg: number,
+): CarrierRate {
   if (carrierId === "northbridge") {
     const quote = northbridgeQuote(originZip, destZip, weightKg);
     return { cents: quote.totalCents, etaDays: quote.transitDays };

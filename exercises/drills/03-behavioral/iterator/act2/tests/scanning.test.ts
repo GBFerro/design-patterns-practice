@@ -18,7 +18,10 @@ test("recentMessages returns the most recent entries, most recent first", () => 
 
 test("recentMessages does not scan the whole log to get a few recent entries", () => {
   const log = new ObservationLog();
-  fill(log, Array.from({ length: 20 }, (_, i) => `e${i}`));
+  fill(
+    log,
+    Array.from({ length: 20 }, (_, i) => `e${i}`),
+  );
 
   const result = recentMessages(log, 2);
 
