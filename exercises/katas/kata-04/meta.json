@@ -1,0 +1,39 @@
+{
+  "id": "kata-04",
+  "title": "Ravensgate invoice and surcharge engine",
+  "type": "kata",
+  "patterns": [],
+  "difficulty": 3,
+  "estimatedMinutes": 45,
+  "prerequisites": [],
+  "apiFrozen": true,
+  "providesTests": false,
+  "translations": ["en"],
+  "world": "Ravensgate Fulfilment",
+  "subDomain": "invoice and surcharge engine",
+  "act2": {
+    "axis": "aligned",
+    "summary": "compliance flags low-value invoices for review - a new notification threshold, unaffected by line construction or surcharges",
+    "extensionBudget": { "maxFilesModified": 1, "maxLinesModified": 4, "maxHunks": 2 }
+  },
+  "solutions": [
+    {
+      "slug": "notification-routing",
+      "title": "One shared function decides who hears about an invoice",
+      "absorbsAct2": true,
+      "tradeoff": "This route bet that which channels get notified was the pressure most likely to grow a new threshold, and pulled it into one function shared by both entry points. The low-value-review rule arrives on exactly that axis: one new clause, in the one place notification is decided, at 4 lines across 2 hunks."
+    },
+    {
+      "slug": "line-construction",
+      "title": "One shared function decides what an order line becomes on the invoice",
+      "tradeoff": "This route bet that how a line is built, by kind, was the pressure worth relieving first - a reasonable bet, since a new bundle rule or a new line kind is exactly the sort of thing product would ask for. The low-value-review rule never touches line construction at all: notification routing was never pulled out, so it still duplicates the new clause across both entry points, at exactly the no-pattern baseline's cost."
+    }
+  ],
+  "reviewFocus": [
+    "Does the reader's own restructuring name, honestly, which pressure it chose to relieve - line construction, or notification - and admit the other is still duplicated?",
+    "Would a reader who restructured line-construction instead of notification-routing still recognize, from the measured numbers alone, why the low-value-review rule landed cheaply or expensively?",
+    "Does the WALKTHROUGH.md for the losing route say plainly that its bet didn't pay off for this act 2, without pretending its own restructuring was worthless in general?",
+    "Do both routes agree, byte for byte, with src/ on every act-1 outcome before the low-value-review rule exists?",
+    "For a kata that ships without tests: does the reader's own safety net actually exercise all three cross-cutting concerns - line kinds, surcharge stacking, and the notification threshold - or only the happy path?"
+  ]
+}

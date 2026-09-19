@@ -1,0 +1,32 @@
+diff --git a/solutions/line-construction/invoicing.ts b/solutions/line-construction/invoicing.ts
+index 4a54f62..6a19dff 100644
+--- a/solutions/line-construction/invoicing.ts
++++ b/solutions/line-construction/invoicing.ts
+@@ -1,6 +1,7 @@
+ import type { Invoice, InvoiceLine, Order, OrderLine } from "./types.ts";
+ 
+ const LARGE_ORDER_THRESHOLD_CENTS = 100_000;
++const LOW_VALUE_REVIEW_THRESHOLD_CENTS = 500;
+ 
+ /**
+  * What one order line becomes on the invoice - pulled out of both
+@@ -41,6 +42,9 @@ export function finalizeInvoice(order: Order): Invoice {
+   if (totalCents > LARGE_ORDER_THRESHOLD_CENTS) {
+     notifiedChannels.push("large-order-desk");
+   }
++  if (totalCents < LOW_VALUE_REVIEW_THRESHOLD_CENTS) {
++    notifiedChannels.push("low-value-review");
++  }
+ 
+   return { orderId: order.orderId, lines, subtotalCents, surchargeCents, totalCents, notifiedChannels };
+ }
+@@ -73,6 +77,9 @@ export function finalizeInvoiceBatch(orders: readonly Order[]): readonly Invoice
+     if (totalCents > LARGE_ORDER_THRESHOLD_CENTS) {
+       notifiedChannels.push("large-order-desk");
+     }
++    if (totalCents < LOW_VALUE_REVIEW_THRESHOLD_CENTS) {
++      notifiedChannels.push("low-value-review");
++    }
+ 
+     invoices.push({ orderId: order.orderId, lines, subtotalCents, surchargeCents, totalCents, notifiedChannels });
+   }

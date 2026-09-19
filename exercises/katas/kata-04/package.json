@@ -1,0 +1,12 @@
+{
+  "name": "@dp/kata-04",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-line-construction": "./solutions/line-construction/index.ts",
+      "solution-notification-routing": "./solutions/notification-routing/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

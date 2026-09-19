@@ -1,0 +1,22 @@
+diff --git a/solutions/notification-routing/invoicing.ts b/solutions/notification-routing/invoicing.ts
+index 5b21805..26a9c31 100644
+--- a/solutions/notification-routing/invoicing.ts
++++ b/solutions/notification-routing/invoicing.ts
+@@ -1,6 +1,7 @@
+ import type { Invoice, InvoiceLine, Order } from "./types.ts";
+ 
+ const LARGE_ORDER_THRESHOLD_CENTS = 100_000;
++const LOW_VALUE_REVIEW_THRESHOLD_CENTS = 500;
+ 
+ /**
+  * Which channels need to hear about an invoice of this total - pulled out
+@@ -12,6 +13,9 @@ function notifiedChannelsFor(totalCents: number): string[] {
+   if (totalCents > LARGE_ORDER_THRESHOLD_CENTS) {
+     notifiedChannels.push("large-order-desk");
+   }
++  if (totalCents < LOW_VALUE_REVIEW_THRESHOLD_CENTS) {
++    notifiedChannels.push("low-value-review");
++  }
+   return notifiedChannels;
+ }
+ 
