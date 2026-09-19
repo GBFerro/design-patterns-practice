@@ -3,5 +3,17 @@ node_modules/
 coverage/
 *.log
 
-# Created by the optional toolchain install; the harness itself needs no lockfile.
+# Created by the optional toolchain install. "No install, no dependency, no
+# lockfile" is the harness's premise, so none of these belong in the repo.
 package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+
+# Editor and OS droppings. Shared config lives in .editorconfig, which IS tracked.
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
