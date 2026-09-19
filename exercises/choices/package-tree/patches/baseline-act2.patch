@@ -1,0 +1,54 @@
+diff --git a/src/index.ts b/src/index.ts
+index 38dcff9..d0a77ea 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -1,2 +1,2 @@
+-export { totalVolume, totalWeight } from "./totals.ts";
+-export type { Carton, Item, PackageNode } from "./types.ts";
++export { totalItemCount, totalVolume, totalWeight } from "./totals.ts";
++export type { Carton, Item, PackageNode, Pallet } from "./types.ts";
+diff --git a/src/totals.ts b/src/totals.ts
+index 6e5662a..23652d6 100644
+--- a/src/totals.ts
++++ b/src/totals.ts
+@@ -4,7 +4,11 @@ export function totalWeight(node: PackageNode): number {
+   if (node.kind === "item") {
+     return node.weightKg;
+   }
+-  return node.children.reduce((sum, child) => sum + totalWeight(child), 0);
++  const childrenWeight = node.children.reduce((sum, child) => sum + totalWeight(child), 0);
++  if (node.kind === "pallet") {
++    return node.tareWeightKg + childrenWeight;
++  }
++  return childrenWeight;
+ }
+
+ export function totalVolume(node: PackageNode): number {
+@@ -13,3 +17,10 @@ export function totalVolume(node: PackageNode): number {
+   }
+   return node.children.reduce((sum, child) => sum + totalVolume(child), 0);
+ }
++
++export function totalItemCount(node: PackageNode): number {
++  if (node.kind === "item") {
++    return 1;
++  }
++  return node.children.reduce((sum, child) => sum + totalItemCount(child), 0);
++}
+diff --git a/src/types.ts b/src/types.ts
+index ed792d6..830d83f 100644
+--- a/src/types.ts
++++ b/src/types.ts
+@@ -11,4 +11,11 @@ export interface Carton {
+   readonly children: readonly PackageNode[];
+ }
+
+-export type PackageNode = Item | Carton;
++export interface Pallet {
++  readonly kind: "pallet";
++  readonly label: string;
++  readonly tareWeightKg: number;
++  readonly children: readonly PackageNode[];
++}
++
++export type PackageNode = Item | Carton | Pallet;

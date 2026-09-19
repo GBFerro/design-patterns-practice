@@ -1,0 +1,102 @@
+diff --git a/solutions/composite/index.ts b/solutions/composite/index.ts
+index 38dcff9..d0a77ea 100644
+--- a/solutions/composite/index.ts
++++ b/solutions/composite/index.ts
+@@ -1,2 +1,2 @@
+-export { totalVolume, totalWeight } from "./totals.ts";
+-export type { Carton, Item, PackageNode } from "./types.ts";
++export { totalItemCount, totalVolume, totalWeight } from "./totals.ts";
++export type { Carton, Item, PackageNode, Pallet } from "./types.ts";
+diff --git a/solutions/composite/totals.ts b/solutions/composite/totals.ts
+index 9bb675d..217c2be 100644
+--- a/solutions/composite/totals.ts
++++ b/solutions/composite/totals.ts
+@@ -3,11 +3,12 @@ import type { PackageNode as PackageNodeData } from "./types.ts";
+ /**
+  * The tree crosses this exercise's frozen boundary as plain data (see types.ts) - a wire
+  * shape, not an object graph. build() is where that data becomes a real composite: a graph
+- * of objects, each one able to answer weight() and volume() on its own.
++ * of objects, each one able to answer weight(), volume() and itemCount() on its own.
+  */
+ interface CompositeNode {
+   weight(): number;
+   volume(): number;
++  itemCount(): number;
+ }
+
+ class ItemNode implements CompositeNode {
+@@ -20,6 +21,10 @@ class ItemNode implements CompositeNode {
+   volume(): number {
+     return this.volumeM3;
+   }
++
++  itemCount(): number {
++    return 1;
++  }
+ }
+
+ class CartonNode implements CompositeNode {
+@@ -32,12 +37,38 @@ class CartonNode implements CompositeNode {
+   volume(): number {
+     return this.children.reduce((sum, child) => sum + child.volume(), 0);
+   }
++
++  itemCount(): number {
++    return this.children.reduce((sum, child) => sum + child.itemCount(), 0);
++  }
++}
++
++class PalletNode implements CompositeNode {
++  constructor(
++    private readonly tareWeightKg: number,
++    private readonly children: readonly CompositeNode[],
++  ) {}
++
++  weight(): number {
++    return this.tareWeightKg + this.children.reduce((sum, child) => sum + child.weight(), 0);
++  }
++
++  volume(): number {
++    return this.children.reduce((sum, child) => sum + child.volume(), 0);
++  }
++
++  itemCount(): number {
++    return this.children.reduce((sum, child) => sum + child.itemCount(), 0);
++  }
+ }
+
+ function build(data: PackageNodeData): CompositeNode {
+   if (data.kind === "item") {
+     return new ItemNode(data.weightKg, data.volumeM3);
+   }
++  if (data.kind === "pallet") {
++    return new PalletNode(data.tareWeightKg, data.children.map(build));
++  }
+   return new CartonNode(data.children.map(build));
+ }
+
+@@ -48,3 +79,7 @@ export function totalWeight(node: PackageNodeData): number {
+ export function totalVolume(node: PackageNodeData): number {
+   return build(node).volume();
+ }
++
++export function totalItemCount(node: PackageNodeData): number {
++  return build(node).itemCount();
++}
+diff --git a/solutions/composite/types.ts b/solutions/composite/types.ts
+index ed792d6..830d83f 100644
+--- a/solutions/composite/types.ts
++++ b/solutions/composite/types.ts
+@@ -11,4 +11,11 @@ export interface Carton {
+   readonly children: readonly PackageNode[];
+ }
+
+-export type PackageNode = Item | Carton;
++export interface Pallet {
++  readonly kind: "pallet";
++  readonly label: string;
++  readonly tareWeightKg: number;
++  readonly children: readonly PackageNode[];
++}
++
++export type PackageNode = Item | Carton | Pallet;

@@ -1,0 +1,13 @@
+{
+  "name": "@dp/choice-package-tree",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-composite": "./solutions/composite/index.ts",
+      "solution-visitor": "./solutions/visitor/index.ts",
+      "solution-plain-recursion": "./solutions/plain-recursion/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

@@ -10,6 +10,7 @@ naming the answer in the path would answer it.
 | --- | --- |
 | Adapter | `choice-carrier-gateway` |
 | Chain of Responsibility | `choice-order-events` |
+| Composite | `choice-package-tree` |
 | Decorator | `choice-label-pipeline` |
 | Facade | `choice-carrier-gateway` |
 | Mediator | `choice-order-events` |
@@ -18,4 +19,6 @@ naming the answer in the path would answer it.
 | State | `choice-picking-policy` |
 | Strategy | `choice-picking-policy` |
 | Template Method | `choice-label-pipeline`, `choice-picking-policy` |
+| Visitor | `choice-package-tree` |
 | a pipeline of functions | `choice-label-pipeline` |
+| plain recursion | `choice-package-tree` |

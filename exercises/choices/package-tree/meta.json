@@ -1,0 +1,45 @@
+{
+  "id": "choice-package-tree",
+  "title": "Package tree",
+  "type": "choice",
+  "patterns": ["Composite", "Visitor"],
+  "candidates": ["Composite", "Visitor", "plain recursion"],
+  "difficulty": 3,
+  "estimatedMinutes": 40,
+  "prerequisites": ["drill-composite", "drill-visitor"],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Ravensgate Fulfilment",
+  "subDomain": "totalling weight and volume of nested cartons",
+  "act2": {
+    "axis": "aligned",
+    "summary": "a new node kind (a pallet, with its own tare weight added to totalWeight but not totalVolume) and a new traversal (totalItemCount) arrive together",
+    "extensionBudget": { "maxFilesModified": 3, "maxLinesModified": 44, "maxHunks": 3 }
+  },
+  "solutions": [
+    {
+      "slug": "composite",
+      "title": "Polymorphic node objects, one class per kind",
+      "tradeoff": "A new node kind is one new class satisfying the existing interface - cheap, and the classic Composite strength. But a new operation means adding a method to the interface and implementing it in every class, including the brand-new one: this act 2 asks for both at once, and this route pays the expensive side of both trades simultaneously."
+    },
+    {
+      "slug": "visitor",
+      "title": "One visitor object per operation, dispatch by node kind",
+      "tradeoff": "A new operation is one new visitor object, no existing code touched - the classic Visitor strength. But a new node kind means adding a method to the visitor interface and implementing it in every existing visitor: this act 2 asks for both at once, and this route pays the expensive side of both trades simultaneously, same as Composite from the other direction."
+    },
+    {
+      "slug": "plain-recursion",
+      "title": "One generic fold, two callbacks passed at each call site",
+      "absorbsAct2": true,
+      "tradeoff": "Neither a new node kind nor a new operation has a dedicated place to attach to - both mean touching the one fold function and every call site that uses it, in a single contiguous edit. That costs more total lines than the no-pattern baseline's scattered edits, but far fewer separate hunks: the whole change lands in one place instead of three."
+    }
+  ],
+  "reviewFocus": [
+    "Does the chosen candidate's WALKTHROUGH.md name what would change my mind about the choice, or does it just describe the code?",
+    "In the composite route, is PalletNode's weight() really the only place tare weight can leak in, or could a bug hide it somewhere else in the class?",
+    "In the visitor route, does every one of the three visitor objects (weight, volume, itemCount) implement visitPallet correctly - two of them should ignore the tare entirely, and it's easy to copy-paste the one that doesn't",
+    "Is 'this act 2 asks for both a new node kind and a new operation, which is exactly the axis each pattern was not built to protect' a fair reading of why plain recursion wins here - and would a reader's CHOICE.md, written before act 2, have said the same thing?",
+    "Do all three routes - and the no-pattern baseline - agree, byte for byte, on totalWeight, totalVolume and totalItemCount for the same tree, pallets included?"
+  ]
+}

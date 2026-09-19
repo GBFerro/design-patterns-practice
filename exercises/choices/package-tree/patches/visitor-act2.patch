@@ -1,0 +1,82 @@
+diff --git a/solutions/visitor/index.ts b/solutions/visitor/index.ts
+index 38dcff9..d0a77ea 100644
+--- a/solutions/visitor/index.ts
++++ b/solutions/visitor/index.ts
+@@ -1,2 +1,2 @@
+-export { totalVolume, totalWeight } from "./totals.ts";
+-export type { Carton, Item, PackageNode } from "./types.ts";
++export { totalItemCount, totalVolume, totalWeight } from "./totals.ts";
++export type { Carton, Item, PackageNode, Pallet } from "./types.ts";
+diff --git a/solutions/visitor/totals.ts b/solutions/visitor/totals.ts
+index efa8051..51b22ad 100644
+--- a/solutions/visitor/totals.ts
++++ b/solutions/visitor/totals.ts
+@@ -1,15 +1,22 @@
+-import type { Carton, Item, PackageNode } from "./types.ts";
++import type { Carton, Item, PackageNode, Pallet } from "./types.ts";
+
+ /** One named operation over the tree, one method per node kind. */
+ interface PackageVisitor<T> {
+   visitItem(item: Item): T;
+   visitCarton(carton: Carton, childResults: readonly T[]): T;
++  visitPallet(pallet: Pallet, childResults: readonly T[]): T;
+ }
+
+ function walk<T>(node: PackageNode, visitor: PackageVisitor<T>): T {
+   if (node.kind === "item") {
+     return visitor.visitItem(node);
+   }
++  if (node.kind === "pallet") {
++    return visitor.visitPallet(
++      node,
++      node.children.map((child) => walk(child, visitor)),
++    );
++  }
+   return visitor.visitCarton(
+     node,
+     node.children.map((child) => walk(child, visitor)),
+@@ -21,11 +28,19 @@ const sum = (values: readonly number[]): number => values.reduce((total, value)
+ const weightVisitor: PackageVisitor<number> = {
+   visitItem: (item) => item.weightKg,
+   visitCarton: (_carton, childResults) => sum(childResults),
++  visitPallet: (pallet, childResults) => pallet.tareWeightKg + sum(childResults),
+ };
+
+ const volumeVisitor: PackageVisitor<number> = {
+   visitItem: (item) => item.volumeM3,
+   visitCarton: (_carton, childResults) => sum(childResults),
++  visitPallet: (_pallet, childResults) => sum(childResults),
++};
++
++const itemCountVisitor: PackageVisitor<number> = {
++  visitItem: () => 1,
++  visitCarton: (_carton, childResults) => sum(childResults),
++  visitPallet: (_pallet, childResults) => sum(childResults),
+ };
+
+ export function totalWeight(node: PackageNode): number {
+@@ -35,3 +50,7 @@ export function totalWeight(node: PackageNode): number {
+ export function totalVolume(node: PackageNode): number {
+   return walk(node, volumeVisitor);
+ }
++
++export function totalItemCount(node: PackageNode): number {
++  return walk(node, itemCountVisitor);
++}
+diff --git a/solutions/visitor/types.ts b/solutions/visitor/types.ts
+index ed792d6..830d83f 100644
+--- a/solutions/visitor/types.ts
++++ b/solutions/visitor/types.ts
+@@ -11,4 +11,11 @@ export interface Carton {
+   readonly children: readonly PackageNode[];
+ }
+
+-export type PackageNode = Item | Carton;
++export interface Pallet {
++  readonly kind: "pallet";
++  readonly label: string;
++  readonly tareWeightKg: number;
++  readonly children: readonly PackageNode[];
++}
++
++export type PackageNode = Item | Carton | Pallet;

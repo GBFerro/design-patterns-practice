@@ -1,0 +1,81 @@
+diff --git a/solutions/plain-recursion/index.ts b/solutions/plain-recursion/index.ts
+index 38dcff9..d0a77ea 100644
+--- a/solutions/plain-recursion/index.ts
++++ b/solutions/plain-recursion/index.ts
+@@ -1,2 +1,2 @@
+-export { totalVolume, totalWeight } from "./totals.ts";
+-export type { Carton, Item, PackageNode } from "./types.ts";
++export { totalItemCount, totalVolume, totalWeight } from "./totals.ts";
++export type { Carton, Item, PackageNode, Pallet } from "./types.ts";
+diff --git a/solutions/plain-recursion/totals.ts b/solutions/plain-recursion/totals.ts
+index 0512e94..fb6ca08 100644
+--- a/solutions/plain-recursion/totals.ts
++++ b/solutions/plain-recursion/totals.ts
+@@ -1,26 +1,43 @@
+-import type { Item, PackageNode } from "./types.ts";
++import type { Item, PackageNode, Pallet } from "./types.ts";
+
+ /**
+- * One generic fold over the tree: a value from every item, and a way to combine a
+- * carton's children into one value. No object, no interface - two functions, passed in.
++ * One generic fold over the tree: a value from every item, a way to combine a carton's
++ * children, and a way to combine a pallet's children with its own tare. No object, no
++ * interface - three functions, passed in.
+  */
+ function reduceTree<T>(
+   node: PackageNode,
+   fromItem: (item: Item) => T,
+-  combine: (childValues: readonly T[]) => T,
++  combineCarton: (childValues: readonly T[]) => T,
++  combinePallet: (pallet: Pallet, childValues: readonly T[]) => T,
+ ): T {
+   if (node.kind === "item") {
+     return fromItem(node);
+   }
+-  return combine(node.children.map((child) => reduceTree(child, fromItem, combine)));
++  const childValues = node.children.map((child) =>
++    reduceTree(child, fromItem, combineCarton, combinePallet),
++  );
++  if (node.kind === "pallet") {
++    return combinePallet(node, childValues);
++  }
++  return combineCarton(childValues);
+ }
+
+ const sum = (values: readonly number[]): number => values.reduce((total, value) => total + value, 0);
+
+ export function totalWeight(node: PackageNode): number {
+-  return reduceTree(node, (item) => item.weightKg, sum);
++  return reduceTree(
++    node,
++    (item) => item.weightKg,
++    sum,
++    (pallet, childValues) => pallet.tareWeightKg + sum(childValues),
++  );
+ }
+
+ export function totalVolume(node: PackageNode): number {
+-  return reduceTree(node, (item) => item.volumeM3, sum);
++  return reduceTree(node, (item) => item.volumeM3, sum, (_pallet, childValues) => sum(childValues));
++}
++
++export function totalItemCount(node: PackageNode): number {
++  return reduceTree(node, () => 1, sum, (_pallet, childValues) => sum(childValues));
+ }
+diff --git a/solutions/plain-recursion/types.ts b/solutions/plain-recursion/types.ts
+index ed792d6..830d83f 100644
+--- a/solutions/plain-recursion/types.ts
++++ b/solutions/plain-recursion/types.ts
+@@ -11,4 +11,11 @@ export interface Carton {
+   readonly children: readonly PackageNode[];
+ }
+
+-export type PackageNode = Item | Carton;
++export interface Pallet {
++  readonly kind: "pallet";
++  readonly label: string;
++  readonly tareWeightKg: number;
++  readonly children: readonly PackageNode[];
++}
++
++export type PackageNode = Item | Carton | Pallet;
