@@ -1,4 +1,6 @@
 {
+  "//": "act2/tests/**/*.ts is deliberately excluded: those files import from an exercise's #exercise alias, whose resolved shape depends on which --conditions flag the test runner passes at runtime (the winning solution's, when proving act 2 is absorbed; none, when proving act 2 fails against src/ - that failure is the invariant, not a bug). tsc has no per-file way to vary customConditions, so it always resolves #exercise to the 'default' (src/) condition - which correctly does NOT have the act2-only shape yet. Typechecking act2 tests here would therefore always fail, on every exercise, regardless of whether the exercise is correct.",
   "extends": "./tsconfig.base.json",
-  "include": ["exercises/**/*.ts", "scripts/**/*.ts"]
+  "include": ["exercises/**/*.ts", "scripts/**/*.ts"],
+  "exclude": ["exercises/**/act2/**"]
 }
