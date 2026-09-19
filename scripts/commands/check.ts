@@ -4,7 +4,7 @@ import { spawnSync } from "node:child_process";
 
 import { allExercises, repoRoot } from "../lib/exercises.ts";
 import { runTests } from "../lib/run.ts";
-import { bold, CROSS, dim, line, TICK, yellow } from "../lib/ui.ts";
+import { bold, CROSS, dim, line, parseArgs, TICK, yellow } from "../lib/ui.ts";
 import { run as validate } from "./validate.ts";
 import { run as buildIndex } from "./index-build.ts";
 import { run as trade } from "./trade.ts";
@@ -45,16 +45,35 @@ function act1GreenAgainstSolutions(): boolean {
  * passes, the new requirement was already satisfied and act 2 proves nothing.
  */
 function act2FailsAgainstSrc(): boolean {
-  return allExercises().every((exercise) => !runTests(exercise, { act2: true, quiet: true }).ok);
+  return allExercises().every(
+    (exercise) => !runTests(exercise, { act2: true, quiet: true }).ok,
+  );
 }
 
 function tradeWithinBudget(): boolean {
-  return allExercises().every((exercise) => captureOutput(() => trade([exercise.meta.id])) === 0);
+  return allExercises().every(
+    (exercise) => captureOutput(() => trade([exercise.meta.id])) === 0,
+  );
 }
 
+/**
+ * Runs the repo's own copy of a tool. Not `npx`: on Windows the shims are .cmd
+ * files, which spawnSync cannot exec without a shell - the step then failed as
+ * if the tool itself had, on every Windows machine with node_modules present.
+ */
 function optional(tool: string, args: readonly string[]): boolean {
-  const result = spawnSync(tool, args, { cwd: repoRoot(), encoding: "utf8" });
-  if (result.status !== 0) process.stdout.write(`${result.stdout ?? ""}${result.stderr ?? ""}`);
+  const windows = process.platform === "win32";
+  const bin = join(repoRoot(), "node_modules", ".bin", windows ? `${tool}.cmd` : tool);
+  const options = { cwd: repoRoot(), encoding: "utf8" } as const;
+  // On Windows the whole command goes in as one string: passing an args array
+  // alongside shell:true is deprecated. Every arg below is a literal in STEPS.
+  const result = windows
+    ? spawnSync(`"${bin}" ${args.join(" ")}`, { ...options, shell: true })
+    : spawnSync(bin, args, options);
+  if (result.status !== 0)
+    process.stdout.write(
+      `${result.stdout ?? ""}${result.stderr ?? ""}${result.error?.message ?? ""}`,
+    );
   return result.status === 0;
 }
 
@@ -64,21 +83,24 @@ const STEPS: readonly Step[] = [
   { name: "act 2 falha contra src/ (é a invariante)", run: act2FailsAgainstSrc },
   { name: "trade dentro do orçamento, contrafactual estourando", run: tradeWithinBudget },
   { name: "metadados e estrutura", run: () => captureOutput(() => validate()) === 0 },
-  { name: "índices em dia", run: () => captureOutput(() => buildIndex(["--check"])) === 0 },
+  {
+    name: "índices em dia",
+    run: () => captureOutput(() => buildIndex(["--check"])) === 0,
+  },
   {
     name: "tipos (tsc --noEmit)",
     optionalTool: "tsc",
-    run: () => optional("npx", ["--no-install", "tsc", "--noEmit"]),
+    run: () => optional("tsc", ["--noEmit"]),
   },
   {
     name: "lint",
     optionalTool: "oxlint",
-    run: () => optional("npx", ["--no-install", "oxlint"]),
+    run: () => optional("oxlint", []),
   },
   {
     name: "formato",
     optionalTool: "oxfmt",
-    run: () => optional("npx", ["--no-install", "oxfmt", "--check", "."]),
+    run: () => optional("oxfmt", ["--check", "."]),
   },
 ];
 
@@ -90,18 +112,39 @@ function toolPresent(tool: string): boolean {
   return existsSync(join(repoRoot(), "node_modules", ".bin", tool));
 }
 
-export function run(): number {
+export function run(argv: readonly string[] = []): number {
+  // CI runs --strict: there, a skipped gate IS the bug. A gate that skips in
+  // silence is how oxlint, and then oxfmt, reached main without ever running.
+  const strict = parseArgs(argv).flags["strict"] === true;
+
   line();
   line(bold("./dp check"));
-  line(dim("na ordem que falha mais rápido"));
+  line(
+    dim(
+      strict
+        ? "na ordem que falha mais rápido · --strict: pular é falhar"
+        : "na ordem que falha mais rápido",
+    ),
+  );
   line();
 
   let failed = 0;
   let skipped = 0;
+  const skippedNames: string[] = [];
   for (const step of STEPS) {
     if (step.optionalTool !== undefined && !toolPresent(step.optionalTool)) {
+      if (strict) {
+        failed += 1;
+        line(
+          `  ${CROSS} ${step.name} ${dim(`— ${step.optionalTool} não instalado, e --strict não deixa pular`)}`,
+        );
+        break;
+      }
       skipped += 1;
-      line(`  ${yellow("~")} ${step.name} ${dim(`— ${step.optionalTool} não instalado, pulado`)}`);
+      skippedNames.push(step.optionalTool);
+      line(
+        `  ${yellow("~")} ${step.name} ${dim(`— ${step.optionalTool} não instalado, pulado`)}`,
+      );
       continue;
     }
     const ok = step.run();
@@ -118,12 +161,15 @@ export function run(): number {
     line();
     return 1;
   }
-  line(`${TICK} ${bold("check verde")}${skipped > 0 ? dim(` (${skipped} passo(s) opcional(is) pulado(s))`) : ""}`);
+  line(
+    `${TICK} ${bold("check verde")}${skipped > 0 ? yellow(` — mas ${skipped} de ${STEPS.length} passos NÃO rodaram`) : ""}`,
+  );
   if (skipped > 0) {
+    line(yellow(`  Este verde não cobre: ${skippedNames.join(", ")}.`));
     line(
       dim(
-        "  Os passos pulados precisam de tsc/oxlint/oxfmt: `npm i -D typescript oxlint oxfmt`.\n" +
-          "  Praticar não precisa deles. A CI do GitHub instala e roda os três.",
+        "  Para rodar tudo: `npm i -D typescript @types/node oxlint oxfmt@0.65.0`.\n" +
+          "  Praticar não precisa deles. A CI roda `./dp check --strict`, onde pular é falhar.",
       ),
     );
   }

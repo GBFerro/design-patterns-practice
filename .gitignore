@@ -2,3 +2,6 @@ node_modules/
 .dp/
 coverage/
 *.log
+
+# Created by the optional toolchain install; the harness itself needs no lockfile.
+package-lock.json

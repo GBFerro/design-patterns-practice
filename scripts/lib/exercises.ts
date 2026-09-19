@@ -1,5 +1,5 @@
 import { readdirSync, readFileSync, existsSync, statSync } from "node:fs";
-import { dirname, join, relative, resolve } from "node:path";
+import { dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export interface SolutionMeta {
@@ -44,7 +44,8 @@ export interface ExerciseMeta {
 export interface Exercise {
   /** Absolute path to the exercise directory. */
   readonly dir: string;
-  /** Path relative to the repository root. */
+  /** Path relative to the repository root, always with `/` separators: it is
+   *  split on `/` and written straight into markdown links. */
   readonly rel: string;
   readonly meta: ExerciseMeta;
 }
@@ -79,7 +80,7 @@ export function allExercises(): readonly Exercise[] {
   cache = dirs
     .map((dir) => ({
       dir,
-      rel: relative(root, dir),
+      rel: relative(root, dir).split(sep).join("/"),
       meta: JSON.parse(readFileSync(join(dir, "meta.json"), "utf8")) as ExerciseMeta,
     }))
     .sort((a, b) => a.rel.localeCompare(b.rel));

@@ -24,7 +24,7 @@ const COMMANDS: Readonly<Record<string, Handler>> = {
   review,
   validate: () => validate(),
   index: buildIndex,
-  check: () => check(),
+  check,
 };
 
 const handler = COMMANDS[command];
