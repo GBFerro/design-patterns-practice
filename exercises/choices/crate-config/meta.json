@@ -1,0 +1,45 @@
+{
+  "id": "choice-crate-config",
+  "title": "Crate config",
+  "type": "choice",
+  "patterns": ["Builder", "Abstract Factory"],
+  "candidates": ["Builder", "Abstract Factory", "an object literal"],
+  "difficulty": 2,
+  "estimatedMinutes": 35,
+  "prerequisites": ["drill-builder", "drill-abstract-factory"],
+  "apiFrozen": true,
+  "providesTests": true,
+  "translations": ["en"],
+  "world": "Ravensgate Fulfilment",
+  "subDomain": "building a crate specification",
+  "act2": {
+    "axis": "aligned",
+    "summary": "insulated export crates arrive - one new optional field, and one cross-field rule that has nothing to do with which material family was chosen",
+    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 14, "maxHunks": 6 }
+  },
+  "solutions": [
+    {
+      "slug": "builder",
+      "title": "A fluent CrateSpecBuilder, one step per field",
+      "tradeoff": "A new field means a new fluent step: a private field, an .insulated() method, a line in the constructor's destructuring, a line in the validation, a line in the return - and both call sites in crate-spec.ts need the new .insulated(insulated) link added to their chains. That's the most files, the most lines and the most hunks of any route, including the no-pattern baseline: the ceremony that pays off when a crate has many optional, order-independent fields to assemble buys nothing when the change is one field threaded through unconditionally."
+    },
+    {
+      "slug": "abstract-factory",
+      "title": "A CrateFamily per material, supplying the one product that varies by material",
+      "tradeoff": "Insulation has nothing to do with which family supplies the fastener - it cuts across both families equally. So the family classes (WoodCrateFamily, PlasticCrateFamily) need no change at all; only assembleCrate's shared validation grows the new check, same as the object-literal route's shared function. Measured byte-for-byte identical to object-literal on every dimension: the family axis this pattern protects isn't the axis this act 2 varies along, so it costs exactly what walking away from the pattern costs - not more, but not less either."
+    },
+    {
+      "slug": "object-literal",
+      "title": "A material-to-fastener lookup plus one shared validator function",
+      "absorbsAct2": true,
+      "tradeoff": "One shared assembleCrate function means the new field and its validation are written once and reused by both buildExportCrate and buildDomesticCrate. Cheapest route measured, tied exactly with Abstract Factory - the no-pattern baseline, which duplicates its validation across both functions instead of sharing it, pays for the same check twice and comes in a line more expensive."
+    }
+  ],
+  "reviewFocus": [
+    "Does the chosen candidate's WALKTHROUGH.md name what would change my mind about the choice, or does it just describe the code?",
+    "Is 'insulation cuts across material, so the family axis doesn't help here' a fair reading of why Abstract Factory doesn't pay off on this act 2?",
+    "In the builder route, is the new .insulated() step actually optional - does calling buildDomesticCrate still produce an uninsulated crate with no code path touching the new rule?",
+    "Do all three routes - and the no-pattern baseline - agree, byte for byte, on which combinations of material and maxLoadKg are rejected once insulation is in play?",
+    "Would a reader's CHOICE.md, written before act 2, have predicted that the axis this exercise tests (material family) isn't the axis act 2 actually varies along (insulated vs not)?"
+  ]
+}

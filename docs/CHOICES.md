@@ -8,7 +8,9 @@ naming the answer in the path would answer it.
 
 | Candidate | Considered in |
 | --- | --- |
+| Abstract Factory | `choice-crate-config` |
 | Adapter | `choice-carrier-gateway` |
+| Builder | `choice-crate-config` |
 | Chain of Responsibility | `choice-order-events` |
 | Composite | `choice-package-tree` |
 | Decorator | `choice-label-pipeline` |
@@ -21,4 +23,5 @@ naming the answer in the path would answer it.
 | Template Method | `choice-label-pipeline`, `choice-picking-policy` |
 | Visitor | `choice-package-tree` |
 | a pipeline of functions | `choice-label-pipeline` |
+| an object literal | `choice-crate-config` |
 | plain recursion | `choice-package-tree` |

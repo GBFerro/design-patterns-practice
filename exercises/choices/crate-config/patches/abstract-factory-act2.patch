@@ -1,0 +1,68 @@
+diff --git a/solutions/abstract-factory/crate-spec.ts b/solutions/abstract-factory/crate-spec.ts
+index 92b878f..2d04fe8 100644
+--- a/solutions/abstract-factory/crate-spec.ts
++++ b/solutions/abstract-factory/crate-spec.ts
+@@ -1,12 +1,15 @@
+ import { PlasticCrateFamily, WoodCrateFamily, type CrateFamily } from "./crate-family.ts";
+ import type { CrateSpec } from "./types.ts";
+ 
++const INSULATED_MAX_LOAD_KG = 800;
++
+ function assembleCrate(
+   family: CrateFamily,
+   lengthCm: number,
+   widthCm: number,
+   heightCm: number,
+   maxLoadKg: number,
++  insulated: boolean,
+ ): CrateSpec {
+   if (lengthCm <= 0 || widthCm <= 0 || heightCm <= 0) {
+     throw new Error("crate dimensions must be positive");
+@@ -14,6 +17,9 @@ function assembleCrate(
+   if (maxLoadKg <= 0) {
+     throw new Error("maxLoadKg must be positive");
+   }
++  if (insulated && maxLoadKg > INSULATED_MAX_LOAD_KG) {
++    throw new Error(`insulated crates cannot exceed ${INSULATED_MAX_LOAD_KG}kg`);
++  }
+   return {
+     material: family.material,
+     fastener: family.fastener(),
+@@ -21,6 +27,7 @@ function assembleCrate(
+     widthCm,
+     heightCm,
+     maxLoadKg,
++    insulated,
+   };
+ }
+ 
+@@ -29,8 +36,9 @@ export function buildExportCrate(
+   widthCm: number,
+   heightCm: number,
+   maxLoadKg: number,
++  insulated = false,
+ ): CrateSpec {
+-  return assembleCrate(new WoodCrateFamily(), lengthCm, widthCm, heightCm, maxLoadKg);
++  return assembleCrate(new WoodCrateFamily(), lengthCm, widthCm, heightCm, maxLoadKg, insulated);
+ }
+ 
+ export function buildDomesticCrate(
+@@ -38,6 +46,7 @@ export function buildDomesticCrate(
+   widthCm: number,
+   heightCm: number,
+   maxLoadKg: number,
++  insulated = false,
+ ): CrateSpec {
+-  return assembleCrate(new PlasticCrateFamily(), lengthCm, widthCm, heightCm, maxLoadKg);
++  return assembleCrate(new PlasticCrateFamily(), lengthCm, widthCm, heightCm, maxLoadKg, insulated);
+ }
+diff --git a/solutions/abstract-factory/types.ts b/solutions/abstract-factory/types.ts
+index fcffe93..c8867e7 100644
+--- a/solutions/abstract-factory/types.ts
++++ b/solutions/abstract-factory/types.ts
+@@ -8,4 +8,5 @@ export interface CrateSpec {
+   readonly widthCm: number;
+   readonly heightCm: number;
+   readonly maxLoadKg: number;
++  readonly insulated: boolean;
+ }

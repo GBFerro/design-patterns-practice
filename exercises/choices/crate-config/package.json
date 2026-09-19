@@ -1,0 +1,13 @@
+{
+  "name": "@dp/choice-crate-config",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-builder": "./solutions/builder/index.ts",
+      "solution-abstract-factory": "./solutions/abstract-factory/index.ts",
+      "solution-object-literal": "./solutions/object-literal/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

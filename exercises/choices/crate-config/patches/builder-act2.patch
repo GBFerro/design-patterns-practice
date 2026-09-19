@@ -1,0 +1,94 @@
+diff --git a/solutions/builder/crate-spec-builder.ts b/solutions/builder/crate-spec-builder.ts
+index 9a26b89..541073f 100644
+--- a/solutions/builder/crate-spec-builder.ts
++++ b/solutions/builder/crate-spec-builder.ts
+@@ -1,5 +1,7 @@
+ import type { CrateSpec, Fastener, Material } from "./types.ts";
+ 
++const INSULATED_MAX_LOAD_KG = 800;
++
+ function fastenerFor(material: Material): Fastener {
+   return material === "wood" ? "nails" : "bolts";
+ }
+@@ -10,6 +12,7 @@ export class CrateSpecBuilder {
+   private widthCmValue: number | undefined;
+   private heightCmValue: number | undefined;
+   private maxLoadKgValue: number | undefined;
++  private insulatedValue = false;
+ 
+   material(material: Material): this {
+     this.materialValue = material;
+@@ -28,8 +31,13 @@ export class CrateSpecBuilder {
+     return this;
+   }
+ 
++  insulated(insulated: boolean): this {
++    this.insulatedValue = insulated;
++    return this;
++  }
++
+   build(): CrateSpec {
+-    const { materialValue, lengthCmValue, widthCmValue, heightCmValue, maxLoadKgValue } = this;
++    const { materialValue, lengthCmValue, widthCmValue, heightCmValue, maxLoadKgValue, insulatedValue } = this;
+     if (materialValue === undefined) {
+       throw new Error("material is required");
+     }
+@@ -45,6 +53,9 @@ export class CrateSpecBuilder {
+     if (maxLoadKgValue <= 0) {
+       throw new Error("maxLoadKg must be positive");
+     }
++    if (insulatedValue && maxLoadKgValue > INSULATED_MAX_LOAD_KG) {
++      throw new Error(`insulated crates cannot exceed ${INSULATED_MAX_LOAD_KG}kg`);
++    }
+     return {
+       material: materialValue,
+       fastener: fastenerFor(materialValue),
+@@ -52,6 +63,7 @@ export class CrateSpecBuilder {
+       widthCm: widthCmValue,
+       heightCm: heightCmValue,
+       maxLoadKg: maxLoadKgValue,
++      insulated: insulatedValue,
+     };
+   }
+ }
+diff --git a/solutions/builder/crate-spec.ts b/solutions/builder/crate-spec.ts
+index bc4ed90..2c25a90 100644
+--- a/solutions/builder/crate-spec.ts
++++ b/solutions/builder/crate-spec.ts
+@@ -6,11 +6,13 @@ export function buildExportCrate(
+   widthCm: number,
+   heightCm: number,
+   maxLoadKg: number,
++  insulated = false,
+ ): CrateSpec {
+   return new CrateSpecBuilder()
+     .material("wood")
+     .dimensions(lengthCm, widthCm, heightCm)
+     .maxLoad(maxLoadKg)
++    .insulated(insulated)
+     .build();
+ }
+ 
+@@ -19,10 +21,12 @@ export function buildDomesticCrate(
+   widthCm: number,
+   heightCm: number,
+   maxLoadKg: number,
++  insulated = false,
+ ): CrateSpec {
+   return new CrateSpecBuilder()
+     .material("plastic")
+     .dimensions(lengthCm, widthCm, heightCm)
+     .maxLoad(maxLoadKg)
++    .insulated(insulated)
+     .build();
+ }
+diff --git a/solutions/builder/types.ts b/solutions/builder/types.ts
+index fcffe93..c8867e7 100644
+--- a/solutions/builder/types.ts
++++ b/solutions/builder/types.ts
+@@ -8,4 +8,5 @@ export interface CrateSpec {
+   readonly widthCm: number;
+   readonly heightCm: number;
+   readonly maxLoadKg: number;
++  readonly insulated: boolean;
+ }

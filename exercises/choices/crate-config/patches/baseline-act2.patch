@@ -1,0 +1,62 @@
+diff --git a/src/crate-spec.ts b/src/crate-spec.ts
+index 0a08674..749a678 100644
+--- a/src/crate-spec.ts
++++ b/src/crate-spec.ts
+@@ -1,5 +1,7 @@
+ import type { CrateSpec, Fastener, Material } from "./types.ts";
+ 
++const INSULATED_MAX_LOAD_KG = 800;
++
+ function fastenerFor(material: Material): Fastener {
+   return material === "wood" ? "nails" : "bolts";
+ }
+@@ -9,6 +11,7 @@ export function buildExportCrate(
+   widthCm: number,
+   heightCm: number,
+   maxLoadKg: number,
++  insulated = false,
+ ): CrateSpec {
+   if (lengthCm <= 0 || widthCm <= 0 || heightCm <= 0) {
+     throw new Error("crate dimensions must be positive");
+@@ -16,8 +19,11 @@ export function buildExportCrate(
+   if (maxLoadKg <= 0) {
+     throw new Error("maxLoadKg must be positive");
+   }
++  if (insulated && maxLoadKg > INSULATED_MAX_LOAD_KG) {
++    throw new Error(`insulated crates cannot exceed ${INSULATED_MAX_LOAD_KG}kg`);
++  }
+   const material: Material = "wood";
+-  return { material, fastener: fastenerFor(material), lengthCm, widthCm, heightCm, maxLoadKg };
++  return { material, fastener: fastenerFor(material), lengthCm, widthCm, heightCm, maxLoadKg, insulated };
+ }
+ 
+ export function buildDomesticCrate(
+@@ -25,6 +31,7 @@ export function buildDomesticCrate(
+   widthCm: number,
+   heightCm: number,
+   maxLoadKg: number,
++  insulated = false,
+ ): CrateSpec {
+   if (lengthCm <= 0 || widthCm <= 0 || heightCm <= 0) {
+     throw new Error("crate dimensions must be positive");
+@@ -32,6 +39,9 @@ export function buildDomesticCrate(
+   if (maxLoadKg <= 0) {
+     throw new Error("maxLoadKg must be positive");
+   }
++  if (insulated && maxLoadKg > INSULATED_MAX_LOAD_KG) {
++    throw new Error(`insulated crates cannot exceed ${INSULATED_MAX_LOAD_KG}kg`);
++  }
+   const material: Material = "plastic";
+-  return { material, fastener: fastenerFor(material), lengthCm, widthCm, heightCm, maxLoadKg };
++  return { material, fastener: fastenerFor(material), lengthCm, widthCm, heightCm, maxLoadKg, insulated };
+ }
+diff --git a/src/types.ts b/src/types.ts
+index fcffe93..c8867e7 100644
+--- a/src/types.ts
++++ b/src/types.ts
+@@ -8,4 +8,5 @@ export interface CrateSpec {
+   readonly widthCm: number;
+   readonly heightCm: number;
+   readonly maxLoadKg: number;
++  readonly insulated: boolean;
+ }
