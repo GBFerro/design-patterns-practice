@@ -1,0 +1,35 @@
+diff --git a/solutions/translation-function/types.ts b/solutions/translation-function/types.ts
+index 86210df..f974378 100644
+--- a/solutions/translation-function/types.ts
++++ b/solutions/translation-function/types.ts
+@@ -12,7 +12,7 @@ export interface LegacyWmsRecord {
+   readonly lastUpdatedRaw: string; // "20250131235959" (YYYYMMDDHHmmss, UTC)
+ }
+ 
+-export type InventoryStatus = "active" | "onHold" | "discontinued";
++export type InventoryStatus = "active" | "onHold" | "discontinued" | "pendingInspection";
+ 
+ export interface BinLocation {
+   readonly aisle: string;
+diff --git a/solutions/translation-function/wms-sync.ts b/solutions/translation-function/wms-sync.ts
+index 4e4627c..1444778 100644
+--- a/solutions/translation-function/wms-sync.ts
++++ b/solutions/translation-function/wms-sync.ts
+@@ -9,6 +9,8 @@ function toInventoryRecord(record: LegacyWmsRecord): InventoryRecord {
+     status = "onHold";
+   } else if (record.statusCode === "D") {
+     status = "discontinued";
++  } else if (record.statusCode === "P") {
++    status = "pendingInspection";
+   } else {
+     throw new Error(`unknown legacy status code: ${record.statusCode}`);
+   }
+@@ -24,7 +26,7 @@ function toInventoryRecord(record: LegacyWmsRecord): InventoryRecord {
+ 
+   return {
+     sku: record.itemCode,
+-    quantity: Number.parseInt(record.qtyStr, 10),
++    quantity: status === "pendingInspection" ? 0 : Number.parseInt(record.qtyStr, 10),
+     status,
+     location,
+     lastUpdated,

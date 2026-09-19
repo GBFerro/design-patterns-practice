@@ -1,0 +1,12 @@
+{
+  "name": "@dp/kata-05",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#exercise": {
+      "solution-translation-function": "./solutions/translation-function/index.ts",
+      "solution-legacy-adapter": "./solutions/legacy-adapter/index.ts",
+      "default": "./src/index.ts"
+    }
+  }
+}

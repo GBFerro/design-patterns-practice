@@ -1,0 +1,39 @@
+{
+  "id": "kata-05",
+  "title": "Ravensgate legacy WMS integration",
+  "type": "kata",
+  "patterns": [],
+  "difficulty": 3,
+  "estimatedMinutes": 45,
+  "prerequisites": [],
+  "apiFrozen": true,
+  "providesTests": false,
+  "translations": ["en"],
+  "world": "Ravensgate Fulfilment",
+  "subDomain": "legacy WMS integration",
+  "act2": {
+    "axis": "aligned",
+    "summary": "a new legacy status code (pending inspection) with a quantity override - the same translation axis both routes claim to protect",
+    "extensionBudget": { "maxFilesModified": 2, "maxLinesModified": 6, "maxHunks": 3 }
+  },
+  "solutions": [
+    {
+      "slug": "translation-function",
+      "title": "One shared function translates a legacy record",
+      "absorbsAct2": true,
+      "tradeoff": "This route bet that translating one legacy record shape into the app's clean domain shape didn't need more than a function - there is only one legacy WMS, nothing else will ever implement this translation differently, so there was nothing for an interface to abstract over. The pending-inspection rule lands on exactly the axis this route protects: one new branch and one new line, in the one function every caller already shares, at 6 lines across 2 files and 3 hunks."
+    },
+    {
+      "slug": "legacy-adapter",
+      "title": "An Adapter class wraps the legacy record",
+      "tradeoff": "This route bet that a legacy integration is exactly what the Adapter pattern is for, and built one: an InventoryReader interface, a class behind it, and a capability-advertising getter a caller could use to check compatibility before translating - all reasonable, textbook choices for a boundary like this one. But nothing ever calls through the interface polymorphically, and nothing ever will - there is one legacy WMS, not a family of them - so the interface's whole reason to exist is speculative. The pending-inspection rule still lands on the translation axis this route also protects, and this route still beats doing nothing - but the class's own ceremony (the capability list kept apart from the switch that actually maps codes) is one more place the same fact has to be written down: 8 lines across 2 files and 4 hunks, more than the plain function costs on every dimension the budget checks."
+    }
+  ],
+  "reviewFocus": [
+    "Does the reader's own act 1 resist reaching for Adapter just because 'wrap a legacy record' sounds like the textbook example - or does it ask what, specifically, in this domain would ever need a second implementation behind that interface?",
+    "Does the WALKTHROUGH.md for legacy-adapter say plainly that the pattern wasn't a mistake to attempt, only a bet that didn't pay off here, without pretending its own ceremony was free?",
+    "Would a reader who built the Adapter route recognize, from the measured numbers alone, which of its own pieces (the interface, the capability list, the class) were the ones that cost real lines when the change arrived?",
+    "Do both routes agree, byte for byte, with src/ on every act-1 outcome before the pending-inspection rule exists?",
+    "For a kata that ships without tests: does the reader's own safety net cover every legacy status code, the malformed-input error paths, and the batch/single-record agreement - or only the happy path?"
+  ]
+}

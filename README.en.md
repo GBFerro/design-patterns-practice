@@ -76,7 +76,8 @@ git clone <your fork> && cd design-patterns-practice
 | [`kata-02`](./exercises/katas/kata-02/) | Ravensgate rate-shopping engine | ●●● | ~45 min | `-` | aligned |
 | [`kata-03`](./exercises/katas/kata-03/) | Ravensgate warehouse robot command stream | ●●● | ~45 min | `-` | aligned |
 | [`kata-04`](./exercises/katas/kata-04/) | Ravensgate invoice and surcharge engine | ●●● | ~45 min | `-` | aligned |
+| [`kata-05`](./exercises/katas/kata-05/) | Ravensgate legacy WMS integration | ●●● | ~45 min | `-` | aligned |
 
 ---
 
-_35 of 36 exercises written (23 drills · 8 choices · 5 katas)._
+_36 of 36 exercises written (23 drills · 8 choices · 5 katas)._

@@ -1,0 +1,44 @@
+diff --git a/solutions/legacy-adapter/adapter.ts b/solutions/legacy-adapter/adapter.ts
+index 685aa53..2fe48b7 100644
+--- a/solutions/legacy-adapter/adapter.ts
++++ b/solutions/legacy-adapter/adapter.ts
+@@ -5,7 +5,7 @@ export interface InventoryReader {
+   read(record: LegacyWmsRecord): InventoryRecord;
+ }
+ 
+-const SUPPORTED_STATUS_CODES: readonly string[] = ["A", "H", "D"];
++const SUPPORTED_STATUS_CODES: readonly string[] = ["A", "H", "D", "P"];
+ 
+ /**
+  * Wraps the legacy WMS's record shape behind the `InventoryReader`
+@@ -36,7 +36,7 @@ export class LegacyWmsAdapter implements InventoryReader {
+ 
+     return {
+       sku: record.itemCode,
+-      quantity: Number.parseInt(record.qtyStr, 10),
++      quantity: status === "pendingInspection" ? 0 : Number.parseInt(record.qtyStr, 10),
+       status,
+       location,
+       lastUpdated,
+@@ -51,6 +51,8 @@ export class LegacyWmsAdapter implements InventoryReader {
+         return "onHold";
+       case "D":
+         return "discontinued";
++      case "P":
++        return "pendingInspection";
+       default:
+         throw new Error(`unknown legacy status code: ${code}`);
+     }
+diff --git a/solutions/legacy-adapter/types.ts b/solutions/legacy-adapter/types.ts
+index 86210df..f974378 100644
+--- a/solutions/legacy-adapter/types.ts
++++ b/solutions/legacy-adapter/types.ts
+@@ -12,7 +12,7 @@ export interface LegacyWmsRecord {
+   readonly lastUpdatedRaw: string; // "20250131235959" (YYYYMMDDHHmmss, UTC)
+ }
+ 
+-export type InventoryStatus = "active" | "onHold" | "discontinued";
++export type InventoryStatus = "active" | "onHold" | "discontinued" | "pendingInspection";
+ 
+ export interface BinLocation {
+   readonly aisle: string;

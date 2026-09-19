@@ -1,0 +1,53 @@
+diff --git a/src/types.ts b/src/types.ts
+index 86210df..f974378 100644
+--- a/src/types.ts
++++ b/src/types.ts
+@@ -12,7 +12,7 @@ export interface LegacyWmsRecord {
+   readonly lastUpdatedRaw: string; // "20250131235959" (YYYYMMDDHHmmss, UTC)
+ }
+ 
+-export type InventoryStatus = "active" | "onHold" | "discontinued";
++export type InventoryStatus = "active" | "onHold" | "discontinued" | "pendingInspection";
+ 
+ export interface BinLocation {
+   readonly aisle: string;
+diff --git a/src/wms-sync.ts b/src/wms-sync.ts
+index 969d72c..44899a6 100644
+--- a/src/wms-sync.ts
++++ b/src/wms-sync.ts
+@@ -17,6 +17,8 @@ export function syncInventorySnapshot(records: readonly LegacyWmsRecord[]): read
+       status = "onHold";
+     } else if (record.statusCode === "D") {
+       status = "discontinued";
++    } else if (record.statusCode === "P") {
++      status = "pendingInspection";
+     } else {
+       throw new Error(`unknown legacy status code: ${record.statusCode}`);
+     }
+@@ -34,7 +36,7 @@ export function syncInventorySnapshot(records: readonly LegacyWmsRecord[]): read
+ 
+     out.push({
+       sku: record.itemCode,
+-      quantity: Number.parseInt(record.qtyStr, 10),
++      quantity: status === "pendingInspection" ? 0 : Number.parseInt(record.qtyStr, 10),
+       status,
+       location,
+       lastUpdated,
+@@ -58,6 +60,8 @@ export function applyChangeFeedEvent(record: LegacyWmsRecord): InventoryRecord {
+     status = "onHold";
+   } else if (record.statusCode === "D") {
+     status = "discontinued";
++  } else if (record.statusCode === "P") {
++    status = "pendingInspection";
+   } else {
+     throw new Error(`unknown legacy status code: ${record.statusCode}`);
+   }
+@@ -75,7 +79,7 @@ export function applyChangeFeedEvent(record: LegacyWmsRecord): InventoryRecord {
+ 
+   return {
+     sku: record.itemCode,
+-    quantity: Number.parseInt(record.qtyStr, 10),
++    quantity: status === "pendingInspection" ? 0 : Number.parseInt(record.qtyStr, 10),
+     status,
+     location,
+     lastUpdated,
